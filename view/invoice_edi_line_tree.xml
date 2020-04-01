@@ -1,0 +1,23 @@
+<tree string="Edi Invoice Line">
+  <!-- <field name="sequence"/> -->
+  <field name="product"/>
+  <field name="code"/>
+  <field name="code_type"/>
+  <field name="description"/>
+  <field name="quantity"/>
+  <field name="delivery_date"/>
+  <field name="base_amount"/>
+  <field name="total_amount"/>
+  <field name="unit_price"/>
+  <field name="gross_price"/>
+  <field name="supplier_code"/>
+  <field name="purchaser_code"/>
+  <field name="lot_number"/>
+  <field name="serial_number"/>
+  <field name="customer_code"/>
+  <field name="producer_code"/>
+  <field name="national_code"/>
+  <field name="hibc_code"/>
+  <field name="characteristic"/>
+  <field name="qualifier"/>
+</tree>

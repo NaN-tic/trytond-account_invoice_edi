@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!--The COPYRIGHT file at the top level of this repository
+contains the full copyright notices and license terms. -->
+<data>
+    <xpath expr="/form/notebook" position="inside">
+      <page id="edi" string="Edi" col="4">
+          <label name="use_edi"/>
+          <field name="use_edi"/>
+          <field name="edi_invoices" colspan="4"/>
+        </page>
+    </xpath>
+</data>

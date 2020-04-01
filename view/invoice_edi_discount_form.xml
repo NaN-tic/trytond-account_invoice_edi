@@ -1,0 +1,16 @@
+<form string="Edi Invoice Discount">
+    <label name="type_"/>
+    <field name="type_"/>
+    <label name="sequence"/>
+    <field name="sequence"/>
+    <label name="discount"/>
+    <field name="discount"/>
+    <label name="percent"/>
+    <field name="percent"/>
+    <label name="amount"/>
+    <field name="amount"/>
+    <label name="invoice_edi"/>
+    <field name="invoice_edi"/>
+    <label name="invoice_edi_line"/>
+    <field name="invoice_edi_line"/>
+</form>

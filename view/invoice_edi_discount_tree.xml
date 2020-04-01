@@ -1,0 +1,9 @@
+<tree string="Edi Invoice Discount">
+    <field name="type_"/>
+    <field name="sequence"/>
+    <field name="discount"/>
+    <field name="percent"/>
+    <field name="amount"/>
+    <field name="invoice_edi"/>
+    <field name="invoice_edi_line"/>
+</tree>

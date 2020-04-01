@@ -1,0 +1,18 @@
+<tree string="Edi Invoice">
+    <field name="number"/>
+    <field name="type_"/>
+    <field name="function_"/>
+    <field name="invoice"/>
+    <field name="invoice_date"/>
+    <field name="payment_type_value"/>
+    <field name="net_amount"/>
+    <field name="gross_amount"/>
+    <field name="base_amount"/>
+    <field name="total_amount"/>
+    <field name="tax_amount"/>
+    <field name="discount_amount"/>
+    <field name="charge_amount"/>
+    <field name="state"/>
+    <field name="differences_state"/>
+    <field name="difference_amount"/>
+</tree>

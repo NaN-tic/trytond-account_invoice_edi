@@ -1,0 +1,8 @@
+<tree string="Invoice Edi Reference">
+    <field name="type_"/>
+    <field name="value"/>
+    <field name="line_number"/>
+    <field name="origin"/>
+    <field name="edi_invoice"/>
+    <field name="edi_invoice_line"/>
+</tree>

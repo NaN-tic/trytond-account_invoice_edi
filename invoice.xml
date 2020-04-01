@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
+<tryton>
+    <data>
+      <menuitem name="Edi Invoices" parent="account.menu_account"
+          id="menu_edi_invoices" sequence="40"/>
+
+      <record model="ir.ui.view" id="configuration_view_form">
+          <field name="model">invoice.edi.configuration</field>
+          <field name="type">form</field>
+          <field name="name">configuration_form</field>
+      </record>
+      <record model="ir.action.act_window"
+          id="act_configuration_form">
+          <field name="name">Invoice Edi Configuration</field>
+          <field name="res_model">invoice.edi.configuration</field>
+      </record>
+
+      <record model="ir.action.act_window.view"
+          id="act_configuration_view1">
+          <field name="sequence" eval="1"/>
+          <field name="view" ref="configuration_view_form"/>
+          <field name="act_window" ref="act_configuration_form"/>
+      </record>
+      <menuitem parent="menu_edi_invoices"
+          action="act_configuration_form"
+          id="menuitem_account_configuration"
+          sequence="0" icon="tryton-list"/>
+
+      <record model="ir.model.access" id="access_invoice_edi_configuration">
+          <field name="model"
+              search="[('model', '=', 'invoice.edi.configuration')]"/>
+          <field name="perm_read" eval="True"/>
+          <field name="perm_write" eval="False"/>
+          <field name="perm_create" eval="False"/>
+          <field name="perm_delete" eval="False"/>
+      </record>
+      <record model="ir.model.access"
+          id="access_invoice_edi_configuration_account_admin">
+          <field name="model"
+              search="[('model', '=', 'invoice.edi.configuration')]"/>
+          <field name="group" ref="account.group_account_admin"/>
+          <field name="perm_read" eval="True"/>
+          <field name="perm_write" eval="True"/>
+          <field name="perm_create" eval="True"/>
+          <field name="perm_delete" eval="True"/>
+      </record>
+
+
+      <record model="ir.ui.view" id="supplier_edi_view_form">
+          <field name="model">invoice.edi.supplier</field>
+          <field name="type">form</field>
+          <field name="name">supplier_edi_form</field>
+      </record>
+      <record model="ir.ui.view" id="supplier_edi_view_tree">
+          <field name="model">invoice.edi.supplier</field>
+          <field name="type">tree</field>
+          <field name="name">supplier_edi_tree</field>
+      </record>
+
+      <record model="ir.ui.view" id="invoice_edi_reference_view_form">
+          <field name="model">invoice.edi.reference</field>
+          <field name="type">form</field>
+          <field name="name">invoice_edi_reference_form</field>
+      </record>
+      <record model="ir.ui.view" id="invoice_edi_reference_view_tree">
+          <field name="model">invoice.edi.reference</field>
+          <field name="type">tree</field>
+          <field name="name">invoice_edi_reference_tree</field>
+      </record>
+
+      <record model="ir.ui.view" id="invoice_edit_maturity_date_view_form">
+          <field name="model">invoice.edi.maturity_date</field>
+          <field name="type">form</field>
+          <field name="name">invoice_edit_maturity_date_form</field>
+      </record>
+      <record model="ir.ui.view" id="invoice_edit_maturity_date_view_tree">
+          <field name="model">invoice.edi.maturity_date</field>
+          <field name="type">tree</field>
+          <field name="name">invoice_edi_maturity_date_tree</field>
+      </record>
+
+      <record model="ir.ui.view" id="invoice_edi_discount_view_form">
+          <field name="model">invoice.edi.discount</field>
+          <field name="type">form</field>
+          <field name="name">invoice_edi_discount_form</field>
+      </record>
+      <record model="ir.ui.view" id="invoice_edi_discount_view_tree">
+          <field name="model">invoice.edi.discount</field>
+          <field name="type">tree</field>
+          <field name="name">invoice_edi_discount_tree</field>
+      </record>
+
+      <record model="ir.ui.view" id="invoice_edi_view_form">
+          <field name="model">invoice.edi</field>
+          <field name="type">form</field>
+          <field name="name">invoice_edi_form</field>
+      </record>
+      <record model="ir.ui.view" id="invoice_edi_view_tree">
+          <field name="model">invoice.edi</field>
+          <field name="type">tree</field>
+          <field name="name">invoice_edi_tree</field>
+      </record>
+
+      <record model="ir.ui.view" id="invoice_edi_line_qty_view_form">
+          <field name="model">invoice.edi.line.quantity</field>
+          <field name="type">form</field>
+          <field name="name">invoice_edi_line_qty_form</field>
+      </record>
+      <record model="ir.ui.view" id="invoice_edi_line_qty_view_tree">
+          <field name="model">invoice.edi.line.quantity</field>
+          <field name="type">tree</field>
+          <field name="name">invoice_edi_line_qty_tree</field>
+      </record>
+      <record model="ir.ui.view" id="invoice_edi_tax_view_form">
+          <field name="model">invoice.edi.tax</field>
+          <field name="type">form</field>
+          <field name="name">invoice_edi_tax_form</field>
+      </record>
+      <record model="ir.ui.view" id="invoice_edi_tax_view_tree">
+          <field name="model">invoice.edi.tax</field>
+          <field name="type">tree</field>
+          <field name="name">invoice_edi_tax_tree</field>
+      </record>
+      <record model="ir.ui.view" id="invoice_edi_line_view_form">
+          <field name="model">invoice.edi.line</field>
+          <field name="type">form</field>
+          <field name="name">invoice_edi_line_form</field>
+      </record>
+      <record model="ir.ui.view" id="invoice_edi_line_view_tree">
+          <field name="model">invoice.edi.line</field>
+          <field name="type">tree</field>
+          <field name="name">invoice_edi_line_tree</field>
+      </record>
+
+
+      <record model="ir.action.act_window" id="act_edi_invoice_form">
+          <field name="name">Edi Invoices</field>
+          <field name="res_model">invoice.edi</field>
+      </record>
+
+      <record model="ir.action.act_window.view" id="act_edi_invoice_form_view1">
+          <field name="sequence" eval="10"/>
+          <field name="view" ref="invoice_edi_view_tree"/>
+          <field name="act_window" ref="act_edi_invoice_form"/>
+      </record>
+      <record model="ir.action.act_window.view" id="act_edi_invoice_form_view2">
+          <field name="sequence" eval="20"/>
+          <field name="view" ref="invoice_edi_view_form"/>
+          <field name="act_window" ref="act_edi_invoice_form"/>
+      </record>
+
+
+      <record model="ir.ui.view" id="aeat_sii_invoice_form_view">
+          <field name="model">account.invoice</field>
+          <field name="inherit" ref="account_invoice.invoice_view_form"/>
+          <field name="name">account_invoice_form</field>
+      </record>
+
+
+      <menuitem parent="menu_edi_invoices" action="act_edi_invoice_form"
+          id="menu_edi_invoice_form" sequence="10"/>
+
+
+      <record model="ir.ui.menu-res.group" id="menu_edi_invoice_group_account">
+          <field name="menu" ref="menu_edi_invoice_form"/>
+          <field name="group" ref="account.group_account"/>
+      </record>
+
+      <record model="ir.model.button" id="create_invoice_button">
+          <field name="name">create_invoices</field>
+          <field name="model" search="[('model', '=', 'invoice.edi')]"/>
+      </record>
+      <record model="ir.model.button-res.group"
+          id="create_invoice_button_group_account">
+          <field name="button" ref="create_invoice_button"/>
+          <field name="group" ref="account.group_account"/>
+      </record>
+
+
+</data>
+</tryton>
