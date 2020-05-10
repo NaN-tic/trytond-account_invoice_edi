@@ -3,6 +3,10 @@
     <field name="company"/>
     <label name="invoice"/>
     <field name="invoice"/>
+    <label name="party"/>
+    <field name="party"/>
+    <label name="manual_party"/>
+    <field name="manual_party"/>
     <newline/>
     <group id="numbers" col="8" colspan="6">
       <label name="number"/>

@@ -51,6 +51,7 @@ class SupplierEdi(ModelSQL, ModelView):
         ('NADBCO', 'Legal Purchaser'), ('NADSU', 'Supplier'),
         ('NADBY', 'Purchaser'), ('NADII', 'Invoice Issuer'),
         ('NADIV', 'Invoice Receiver'), ('NADDP', 'Stock Receiver'),
+        ('NADPW', 'NADPW'),('NADPE', 'NADPE'),
         ('NADPR', 'Payment Issuer'), ('NADDL', 'Endorser'),
         ('NAD', 'NAD')], 'Type')
 
@@ -110,6 +111,11 @@ class SupplierEdi(ModelSQL, ModelView):
         if message:
             self.vat = message.pop(0)
 
+    def read_NADPE(self, message):
+        self.type_ = 'NADPE'
+        self.edi_code = message.pop(0)
+        if message:
+            self.vat = message.pop(0)
 
     def read_NADSU(self, message):
         self.type_ = 'NADSU'
@@ -141,6 +147,10 @@ class SupplierEdi(ModelSQL, ModelView):
         self.type_ = 'NADDP'
         self.edi_code = message.pop(0)
 
+    def read_NADPW(self, message):
+        self.type_ = 'NADPW'
+        self.edi_code = message.pop(0)
+
     def search_party(self):
         PartyId = Pool().get('party.identifier')
         domain = []
@@ -151,6 +161,13 @@ class SupplierEdi(ModelSQL, ModelView):
         identifier = PartyId.search(domain, limit=1)
         if identifier:
             self.party = identifier[0].party
+            return
+        if hasattr(self, 'vat'):
+            domain = [('type', '=', 'vat'), ('code', '=', self.vat)]
+            identifier = PartyId.search(domain, limit=1)
+            if identifier:
+                self.party = identifier[0].party
+
 
 
 class InvoiceEdiReference(ModelSQL, ModelView):
@@ -200,6 +217,7 @@ class InvoiceEdiReference(ModelSQL, ModelView):
 
         Model = Pool().get(model)
         res = Model.search([('number', '=', self.value)], limit=1)
+        self.origin = None
         if res != []:
             self.origin = str(res[0])
 
@@ -285,9 +303,9 @@ class InvoiceEdi(ModelSQL, ModelView):
         'Difference State'), 'get_differences_state')
     difference_amount =fields.Function(fields.Numeric('Differences',
         digits=(16,2)), 'get_difference_amount')
-    party = fields.Function(fields.Many2One('party.party', 'Party'),
+    party = fields.Function(fields.Many2One('party.party', 'Invoice Party'),
         'get_party')
-
+    manual_party = fields.Many2One('party.party', 'Manual Party')
 
     @classmethod
     def __setup__(cls):
@@ -328,9 +346,11 @@ class InvoiceEdi(ModelSQL, ModelView):
         return self.total_amount - self.invoice.total_amount
 
     def get_party(self, name):
+        if self.manual_party:
+            return self.manual_party.id
         for s in self.suppliers:
             if s.type_ == 'NADSU':
-                return s.party
+                return s.party.id
 
     def read_INV(self, message):
         self.number = message.pop(0)
@@ -339,6 +359,8 @@ class InvoiceEdi(ModelSQL, ModelView):
         if message:
             self.function_ = message.pop(0)
 
+    def read_TXT(self, message):
+        self.comment = message.pop(0)
 
     def read_DTM(self, message):
         self.invoice_date = to_date(message.pop(0))
@@ -380,7 +402,8 @@ class InvoiceEdi(ModelSQL, ModelView):
         line = MaturityDate()
         line.type_ = message.pop(0)
         line.maturity_date = to_date(message.pop(0))
-        line.amount = to_decimal(message.pop(0))
+        if message:
+            line.amount = to_decimal(message.pop(0))
         if not getattr(self, 'maturity_dates', False):
             self.maturity_dates = []
         self.maturity_dates += (line,)
@@ -389,7 +412,8 @@ class InvoiceEdi(ModelSQL, ModelView):
         Discount =  Pool().get('invoice.edi.discount')
         discount = Discount()
         discount.type_ = message.pop(0)
-        discount.sequence = message.pop(0) and  int(message.pop(0)) or None
+        sequence = message.pop(0)
+        discount.sequence = int(sequence) or None
         discount.discount = message.pop(0)
         discount.percent = to_decimal(message.pop(0))
         discount.amount = to_decimal(message.pop(0))
@@ -459,7 +483,7 @@ class InvoiceEdi(ModelSQL, ModelView):
             elif 'LIN' in msg_id:
                 getattr(invoice_line, 'read_%s' %msg_id)(line)
             elif msg_id in ('NADSCO', 'NADBCO','NADSU', 'NADBY', 'NADII',
-                'NADIV', 'NADDP', 'NADPR', 'NADDL', 'NAD'):
+                'NADIV', 'NADDP', 'NADPR', 'NADDL', 'NAD', 'NADPE', 'NADPW'):
                 supplier = SupplierEdi()
                 getattr(supplier, 'read_%s' %msg_id)(line)
                 supplier.search_party()
@@ -540,14 +564,30 @@ class InvoiceEdi(ModelSQL, ModelView):
         invoice.state = 'draft'
         invoice.on_change_type()
         invoice.on_change_party()
-
         return invoice
+
+    def get_discount_invoice_line(self, description, amount, taxes=None):
+        Config = Pool().get('account.configuration')
+        config = Config(1)
+        Line = Pool().get('account.invoice.line')
+        line = Line()
+        line.invoice_type = 'in'
+        line.party = self.party
+        line.type = 'line'
+        line.description = description
+        line.quantity = 1
+        line.unit_price = amount
+        line.gross_unit_price = amount
+        line.account = config.default_product_account_expense
+        line.taxes = taxes
+        return line
 
     @classmethod
     @ModelView.button
     def create_invoices(cls, edi_invoices):
         pool = Pool()
         Invoice = pool.get('account.invoice')
+        Line = pool.get('account.invoice.line')
         invoices = []
         to_save = []
         for edi_invoice in edi_invoices:
@@ -558,6 +598,26 @@ class InvoiceEdi(ModelSQL, ModelView):
             for eline in edi_invoice.lines:
                 line = eline.get_line()
                 invoice.lines += (line,)
+            for discount in edi_invoice.discounts:
+                if discount.percent:
+                    continue
+                line = edi_invoice.get_discount_invoice_line(discount.discount,
+                    discount.amount)
+                invoice.lines += (line,)
+
+            invoice.on_change_lines()
+
+            discounts = set((x.type_, x.discount, x.percent) for x in edi_invoice.discounts
+                if x.percent)
+            for type_, discount, percent in discounts:
+                for tax in invoice.taxes:
+                    amount = (tax.base*percent*Decimal('0.01')).quantize(Decimal('.01'))
+                    if type_ == 'A':
+                        amount = amount*-1
+                    line = edi_invoice.get_discount_invoice_line(discount, amount,
+                        [tax.tax])
+                    invoice.lines += (line,)
+
             invoice.on_change_lines()
             invoice.on_change_type()
             invoice.use_edi = True
@@ -600,6 +660,7 @@ class InvoiceEdiTax(ModelSQL, ModelView):
     tax_amount = fields.Numeric('Tax Amount', digits=(16,2))
     line = fields.Many2One('invoice.edi.line', 'Line', ondelete='CASCADE')
     edi_invoice = fields.Many2One('invoice.edi', 'Invoice', ondelete='CASCADE')
+    comment = fields.Text('Comment')
 
     def search_tax(self):
         # TODO: Not implementd, now use product tax
@@ -623,8 +684,8 @@ class InvoiceEdiLine(ModelSQL, ModelView):
     national_code = fields.Char('National Code')
     hibc_code = fields.Char('Healh Industry Bar Code')
     description = fields.Char('Description')
-    characteristic = fields.Selection([(None, ''), ('M', 'Goods')],
-        'Characteristic')
+    characteristic = fields.Selection([(None, ''), ('M', 'Goods'),
+        ('C', 'C')], 'Characteristic')
     qualifier = fields.Selection([(None, ''), ('F','Free Description')],
         'Qualifier  ')
     quantities = fields.One2Many('invoice.edi.line.quantity', 'line',
@@ -632,15 +693,15 @@ class InvoiceEdiLine(ModelSQL, ModelView):
     delivery_date = fields.Char('Delivery Date')
     base_amount = fields.Numeric('Base Amount', digits=(16,2))
     total_amount = fields.Numeric('Total Amount', digits=(16,2))
-    unit_price = fields.Numeric('Unit Price', digits=(16,2))
-    gross_price = fields.Numeric('Gross Price', digits=(16,2))
+    unit_price = fields.Numeric('Unit Price', digits=(16,4))
+    gross_price = fields.Numeric('Gross Price', digits=(16,4))
     references = fields.One2Many('invoice.edi.reference',
         'edi_invoice_line', 'References')
     taxes = fields.One2Many('invoice.edi.tax', 'line', 'Taxes')
     discounts = fields.One2Many('invoice.edi.discount',
         'invoice_edi_line', 'Discounts')
     product = fields.Many2One('product.product', 'Product')
-    quantity = fields.Function(fields.Numeric('Quantity', digits=(16,2)),
+    quantity = fields.Function(fields.Numeric('Quantity', digits=(16,4)),
         'invoiced_quantity')
 
     def search_related(self, edi_invoice):
@@ -658,11 +719,8 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         self.product = product
 
         purchases = [x.origin for x in edi_invoice.references if
-            x.type_ == 'ON']
-
-
+            x.type_ == 'ON' and x.origin]
         self.references = []
-
         for purchase in purchases:
             for move in purchase.moves:
                 if move.state != 'done':
@@ -684,7 +742,15 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         line.type = 'line'
         line.on_change_product()
         line.on_change_account()
+        line.gross_unit_price = self.gross_price or self.unit_price
         line.unit_price = self.unit_price
+        if self.unit_price and self.gross_price:
+            line.discount = Decimal(str(1 -
+                self.unit_price/self.gross_price)).quantize(Decimal('.01'))
+        else:
+            line.unit_price = Decimal(self.base_amount / self.quantity).quantize(
+                Decimal('0.0001'))
+
         line.stock_moves = [x.origin.id for x in self.references if x.origin
             and x.type_ == 'move']
         return line
@@ -772,7 +838,8 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         tax = Tax()
         tax.type_ = message.pop(0)
         tax.percent = to_decimal(message.pop(0))
-        tax.tax_amount = to_decimal(message.pop(0))
+        if message:
+            tax.tax_amount = to_decimal(message.pop(0))
         if not getattr(self, 'taxes', False):
             self.taxes = []
         self.taxes += (tax,)
