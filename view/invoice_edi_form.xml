@@ -1,4 +1,4 @@
-<form string="Edi Invoice" col="6">
+<form string="Edi Invoice" col="8">
     <label name="company"/>
     <field name="company"/>
     <label name="invoice"/>
@@ -8,14 +8,12 @@
     <label name="manual_party"/>
     <field name="manual_party"/>
     <newline/>
-    <group id="numbers" col="8" colspan="6">
-      <label name="number"/>
-      <field name="number"/>
-      <label name="type_"/>
-      <field name="type_"/>
-      <label name="function_"/>
-      <field name="function_"/>
-    </group>
+    <label name="number"/>
+    <field name="number"/>
+    <label name="type_"/>
+    <field name="type_"/>
+    <label name="function_"/>
+    <field name="function_"/>
     <newline/>
     <label name="invoice_date"/>
     <field name="invoice_date"/>
@@ -25,7 +23,6 @@
     <field name="start_period_date"/>
     <label name="end_period_date"/>
     <field name="end_period_date"/>
-
     <label name="payment_type_value"/>
     <field name="payment_type_value"/>
     <label name="payment_type"/>
@@ -38,12 +35,23 @@
     <label name="currency"/>
     <field name="currency"/>
     <newline/>
-    <field name="references" colspan="2"/>
-    <field name="suppliers" colspan="2"/>
-    <field name="discounts" colspan="2"/>
-    <field name="lines" colspan="6"/>
-    <field name="maturity_dates" colspan="3"/>
-    <field name="taxes" colspan="3"/>
+<notebook colspan="8">
+    <page id="references" string="Parties">
+      <field name="references" colspan="2"/>
+      <field name="suppliers" colspan="2"/>
+    </page>
+    <page id="lines" string="Lines">
+      <field name="lines" colspan="6"/>
+    </page>
+
+    <page id="other" string="Information">
+      <field name="discounts" colspan="2"/>
+      <field name="maturity_dates" colspan="3"/>
+      <field name="taxes" colspan="3"/>
+    </page>
+
+
+</notebook>
     <label name="net_amount"/>
     <field name="net_amount"/>
     <label name="gross_amount"/>

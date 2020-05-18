@@ -2,6 +2,7 @@
   <label name="product"/>
   <field name="product" colspan="3"/>
   <newline/>
+
   <label name="code"/>
   <field name="code"/>
   <label name="code_type"/>
