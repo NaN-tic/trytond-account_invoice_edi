@@ -3,7 +3,7 @@
   <field name="product" colspan="3"/>
   <newline/>
 
-  <notebook id="edi_line">
+  <notebook>
     <page name="code">
       <label name="code"/>
       <field name="code"/>
