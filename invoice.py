@@ -350,7 +350,7 @@ class InvoiceEdi(ModelSQL, ModelView):
             return self.manual_party.id
         for s in self.suppliers:
             if s.type_ == 'NADSU':
-                return s.party.id
+                return s.party and s.party.id
 
     def read_INV(self, message):
         self.number = message.pop(0)
