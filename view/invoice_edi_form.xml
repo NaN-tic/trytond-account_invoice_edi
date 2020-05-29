@@ -45,7 +45,7 @@
     </page>
 
     <page id="other" string="Information">
-      <field name="discounts" colspan="2"/>
+      <field name="discounts" colspan="3"/>
       <field name="maturity_dates" colspan="3"/>
       <field name="taxes" colspan="3"/>
     </page>

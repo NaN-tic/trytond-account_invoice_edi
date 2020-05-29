@@ -7,8 +7,4 @@
     <field name="line_number"/>
     <label name="origin"/>
     <field name="origin"/>
-    <label name="edi_invoice"/>
-    <field name="edi_invoice"/>
-    <label name="edi_invoice_line"/>
-    <field name="edi_invoice_line"/>
 </form>

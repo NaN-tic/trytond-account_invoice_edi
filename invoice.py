@@ -284,7 +284,7 @@ class InvoiceEdi(ModelSQL, ModelView):
     base_amount = fields.Numeric('Base Amount', digits=(16,2), readonly=True)
     total_amount = fields.Numeric('Total Amount', digits=(16,2), readonly=True)
     tax_amount = fields.Numeric('Tax Amount', digits=(16,2), readonly=True)
-    discount_amount =fields.Numeric('Discount Amount', digits=(16,2),
+    discount_amount = fields.Numeric('Discount Amount', digits=(16,2),
         readonly=True)
     charge_amount = fields.Numeric('Charge Amount', digits=(16,2),
         readonly=True)
@@ -304,7 +304,7 @@ class InvoiceEdi(ModelSQL, ModelView):
     difference_amount =fields.Function(fields.Numeric('Differences',
         digits=(16,2)), 'get_difference_amount')
     party = fields.Function(fields.Many2One('party.party', 'Invoice Party'),
-        'get_party')
+        'get_party', searcher='search_party')
     manual_party = fields.Many2One('party.party', 'Manual Party')
 
     @classmethod
@@ -344,6 +344,11 @@ class InvoiceEdi(ModelSQL, ModelView):
         if not self.invoice:
             return
         return self.total_amount - self.invoice.total_amount
+
+    @classmethod
+    def search_party(cls, name, clause):
+        return ['OR', ('manual_party', ) + tuple(clause[1:]),
+                [('suppliers.type_', '=', 'NADSU'), ('suppliers.party', ) + tuple(clause[1:])]]
 
     def get_party(self, name):
         if self.manual_party:
