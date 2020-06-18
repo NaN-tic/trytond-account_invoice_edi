@@ -1,0 +1,967 @@
+#
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:account.invoice:"
+msgid ""
+"You try to post invoices \"%(invoices)s\" with diferences with  recived edi "
+"invoices"
+msgstr ""
+"Quiere confirmar las facturas \"%(invoices)s\" con diferencias respecot a "
+"las facturas Edi?"
+
+msgctxt "field:account.invoice,edi_invoices:"
+msgid "Edi Invoices"
+msgstr "Factura edi"
+
+msgctxt "field:account.invoice,use_edi:"
+msgid "Use EDI"
+msgstr "Utiliza EDI"
+
+msgctxt "field:invoice.edi,base_amount:"
+msgid "Base Amount"
+msgstr "Importe base"
+
+msgctxt "field:invoice.edi,charge_amount:"
+msgid "Charge Amount"
+msgstr "Importe del cargo"
+
+msgctxt "field:invoice.edi,company:"
+msgid "Company"
+msgstr "Empresa"
+
+msgctxt "field:invoice.edi,create_date:"
+msgid "Create Date"
+msgstr "Fecha de creación"
+
+msgctxt "field:invoice.edi,create_uid:"
+msgid "Create User"
+msgstr "Usuario de creación"
+
+msgctxt "field:invoice.edi,currency:"
+msgid "Currency"
+msgstr "Moneda"
+
+msgctxt "field:invoice.edi,currency_code:"
+msgid "Currency Code"
+msgstr "Código de moneda"
+
+msgctxt "field:invoice.edi,difference_amount:"
+msgid "Differences"
+msgstr "Diferencias"
+
+msgctxt "field:invoice.edi,differences_state:"
+msgid "Difference State"
+msgstr "Estado de diferencia"
+
+msgctxt "field:invoice.edi,discount_amount:"
+msgid "Discount Amount"
+msgstr "Importe del descuento"
+
+msgctxt "field:invoice.edi,discounts:"
+msgid "Discounts"
+msgstr "Descuentos"
+
+msgctxt "field:invoice.edi,end_period_date:"
+msgid "End Period"
+msgstr "Período final"
+
+msgctxt "field:invoice.edi,factoring:"
+msgid "Factoring"
+msgstr "Factoring"
+
+msgctxt "field:invoice.edi,function_:"
+msgid "Message Function"
+msgstr "Función del mensaje"
+
+msgctxt "field:invoice.edi,gross_amount:"
+msgid "Gross Amount"
+msgstr "Importe bruto"
+
+msgctxt "field:invoice.edi,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:invoice.edi,invoice:"
+msgid "Invoice"
+msgstr "Factura"
+
+msgctxt "field:invoice.edi,invoice_date:"
+msgid "Invoice Date"
+msgstr "Fecha factura"
+
+msgctxt "field:invoice.edi,lines:"
+msgid "Lines"
+msgstr "Líneas"
+
+msgctxt "field:invoice.edi,manual_party:"
+msgid "Manual Party"
+msgstr "Tercero (Manual)"
+
+msgctxt "field:invoice.edi,maturity_dates:"
+msgid "Maturity Dates"
+msgstr "Fechas de vencimiento"
+
+msgctxt "field:invoice.edi,net_amount:"
+msgid "Net Amount"
+msgstr "Importe neto"
+
+msgctxt "field:invoice.edi,number:"
+msgid "Number"
+msgstr "Número"
+
+msgctxt "field:invoice.edi,party:"
+msgid "Invoice Party"
+msgstr "Tercero"
+
+msgctxt "field:invoice.edi,payment_type:"
+msgid "Payment Type"
+msgstr "Tipo de pago"
+
+msgctxt "field:invoice.edi,payment_type_value:"
+msgid "Payment Type Value"
+msgstr "Tipo de pago"
+
+msgctxt "field:invoice.edi,rec_name:"
+msgid "Name"
+msgstr "Nombre del registro"
+
+msgctxt "field:invoice.edi,references:"
+msgid "References"
+msgstr "Referencias"
+
+msgctxt "field:invoice.edi,service_date:"
+msgid "Service Date"
+msgstr "Fecha servicio"
+
+msgctxt "field:invoice.edi,start_period_date:"
+msgid "Start Period"
+msgstr "Período inicial"
+
+msgctxt "field:invoice.edi,state:"
+msgid "State"
+msgstr "Estado"
+
+msgctxt "field:invoice.edi,suppliers:"
+msgid "Supplier"
+msgstr "Proveedor"
+
+msgctxt "field:invoice.edi,tax_amount:"
+msgid "Tax Amount"
+msgstr "Impuesto"
+
+msgctxt "field:invoice.edi,taxes:"
+msgid "Taxes"
+msgstr "Impuestos"
+
+msgctxt "field:invoice.edi,total_amount:"
+msgid "Total Amount"
+msgstr "Total"
+
+msgctxt "field:invoice.edi,type_:"
+msgid "Document Type"
+msgstr "Tipo de documento"
+
+msgctxt "field:invoice.edi,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:invoice.edi,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "field:invoice.edi.configuration,create_date:"
+msgid "Create Date"
+msgstr "Fecha de creación"
+
+msgctxt "field:invoice.edi.configuration,create_uid:"
+msgid "Create User"
+msgstr "Usuario de creación"
+
+msgctxt "field:invoice.edi.configuration,edi_files_path:"
+msgid "Invoice File Path"
+msgstr "Ruta ficheros Facturas edi"
+
+msgctxt "field:invoice.edi.configuration,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:invoice.edi.configuration,rec_name:"
+msgid "Name"
+msgstr "Nombre del registro"
+
+msgctxt "field:invoice.edi.configuration,separator:"
+msgid "Separator"
+msgstr "Separador"
+
+msgctxt "field:invoice.edi.configuration,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:invoice.edi.configuration,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "field:invoice.edi.discount,amount:"
+msgid "Amount"
+msgstr "Importe"
+
+msgctxt "field:invoice.edi.discount,create_date:"
+msgid "Create Date"
+msgstr "Fecha de creación"
+
+msgctxt "field:invoice.edi.discount,create_uid:"
+msgid "Create User"
+msgstr "Usuario de creación"
+
+msgctxt "field:invoice.edi.discount,discount:"
+msgid "Discount Type"
+msgstr "Tipo de descuento"
+
+msgctxt "field:invoice.edi.discount,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:invoice.edi.discount,invoice_edi:"
+msgid "Edi Invoice"
+msgstr "Factura edi"
+
+msgctxt "field:invoice.edi.discount,invoice_edi_line:"
+msgid "Edi Invoice Line"
+msgstr "Línea factura edi"
+
+msgctxt "field:invoice.edi.discount,percent:"
+msgid "Percent"
+msgstr "Porcentaje"
+
+msgctxt "field:invoice.edi.discount,rec_name:"
+msgid "Name"
+msgstr "Nombre del registro"
+
+msgctxt "field:invoice.edi.discount,sequence:"
+msgid "sequence"
+msgstr "Secuencia"
+
+msgctxt "field:invoice.edi.discount,type_:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:invoice.edi.discount,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:invoice.edi.discount,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "field:invoice.edi.line,base_amount:"
+msgid "Base Amount"
+msgstr "Importe base"
+
+msgctxt "field:invoice.edi.line,characteristic:"
+msgid "Characteristic"
+msgstr "Característica"
+
+msgctxt "field:invoice.edi.line,code:"
+msgid "Code"
+msgstr "Código"
+
+msgctxt "field:invoice.edi.line,code_type:"
+msgid "Code Type"
+msgstr "Tipo de código"
+
+msgctxt "field:invoice.edi.line,create_date:"
+msgid "Create Date"
+msgstr "Fecha de creación"
+
+msgctxt "field:invoice.edi.line,create_uid:"
+msgid "Create User"
+msgstr "Usuario de creación"
+
+msgctxt "field:invoice.edi.line,customer_code:"
+msgid "Customer Code"
+msgstr "Código cliente"
+
+msgctxt "field:invoice.edi.line,delivery_date:"
+msgid "Delivery Date"
+msgstr "Fecha de entrega"
+
+msgctxt "field:invoice.edi.line,description:"
+msgid "Description"
+msgstr "Descripción"
+
+msgctxt "field:invoice.edi.line,discounts:"
+msgid "Discounts"
+msgstr "Descuentos"
+
+msgctxt "field:invoice.edi.line,edi_invoice:"
+msgid "Invoice"
+msgstr "Factura"
+
+msgctxt "field:invoice.edi.line,gross_price:"
+msgid "Gross Price"
+msgstr "Precio bruto"
+
+msgctxt "field:invoice.edi.line,hibc_code:"
+msgid "Healh Industry Bar Code"
+msgstr "Código industria salud"
+
+msgctxt "field:invoice.edi.line,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:invoice.edi.line,lot_number:"
+msgid "Lot Number"
+msgstr "Número de lote"
+
+msgctxt "field:invoice.edi.line,national_code:"
+msgid "National Code"
+msgstr "Código nacional"
+
+msgctxt "field:invoice.edi.line,producer_code:"
+msgid "Producer Code"
+msgstr "Código productor"
+
+msgctxt "field:invoice.edi.line,product:"
+msgid "Product"
+msgstr "Productos"
+
+msgctxt "field:invoice.edi.line,purchaser_code:"
+msgid "Purchaser Code"
+msgstr "Código comprador"
+
+msgctxt "field:invoice.edi.line,qualifier:"
+msgid "Qualifier  "
+msgstr "Calificatorio"
+
+msgctxt "field:invoice.edi.line,quantities:"
+msgid "Quantities"
+msgstr "Cantidades"
+
+msgctxt "field:invoice.edi.line,quantity:"
+msgid "Quantity"
+msgstr "Importe"
+
+msgctxt "field:invoice.edi.line,rec_name:"
+msgid "Name"
+msgstr "Nombre del registro"
+
+msgctxt "field:invoice.edi.line,references:"
+msgid "References"
+msgstr "Referencias"
+
+msgctxt "field:invoice.edi.line,sequence:"
+msgid "Sequence"
+msgstr "Secuencia"
+
+msgctxt "field:invoice.edi.line,serial_number:"
+msgid "Serial Number"
+msgstr "Número serie"
+
+msgctxt "field:invoice.edi.line,supplier_code:"
+msgid "Supplier Code"
+msgstr "Codigo proveedor"
+
+msgctxt "field:invoice.edi.line,taxes:"
+msgid "Taxes"
+msgstr "Impuestos"
+
+msgctxt "field:invoice.edi.line,total_amount:"
+msgid "Total Amount"
+msgstr "Total"
+
+msgctxt "field:invoice.edi.line,unit_price:"
+msgid "Unit Price"
+msgstr "Precio unitario"
+
+msgctxt "field:invoice.edi.line,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:invoice.edi.line,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "field:invoice.edi.line.quantity,create_date:"
+msgid "Create Date"
+msgstr "Fecha de creación"
+
+msgctxt "field:invoice.edi.line.quantity,create_uid:"
+msgid "Create User"
+msgstr "Usuario de creación"
+
+msgctxt "field:invoice.edi.line.quantity,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:invoice.edi.line.quantity,line:"
+msgid "Line"
+msgstr "Línea"
+
+msgctxt "field:invoice.edi.line.quantity,quantity:"
+msgid "Quantity"
+msgstr "Importe"
+
+msgctxt "field:invoice.edi.line.quantity,rec_name:"
+msgid "Name"
+msgstr "Nombre del registro"
+
+msgctxt "field:invoice.edi.line.quantity,type_:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:invoice.edi.line.quantity,uom_char:"
+msgid "Uom"
+msgstr "UdM"
+
+msgctxt "field:invoice.edi.line.quantity,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:invoice.edi.line.quantity,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "field:invoice.edi.maturity_date,amount:"
+msgid "Amount"
+msgstr "Importe"
+
+msgctxt "field:invoice.edi.maturity_date,create_date:"
+msgid "Create Date"
+msgstr "Fecha de creación"
+
+msgctxt "field:invoice.edi.maturity_date,create_uid:"
+msgid "Create User"
+msgstr "Usuario de creación"
+
+msgctxt "field:invoice.edi.maturity_date,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:invoice.edi.maturity_date,invoice_edi:"
+msgid "Edi Invoice"
+msgstr "Factura edi"
+
+msgctxt "field:invoice.edi.maturity_date,maturity_date:"
+msgid "Maturity Date"
+msgstr "Fecha vencimiento"
+
+msgctxt "field:invoice.edi.maturity_date,rec_name:"
+msgid "Name"
+msgstr "Nombre del registro"
+
+msgctxt "field:invoice.edi.maturity_date,type_:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:invoice.edi.maturity_date,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:invoice.edi.maturity_date,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "field:invoice.edi.reference,create_date:"
+msgid "Create Date"
+msgstr "Fecha de creación"
+
+msgctxt "field:invoice.edi.reference,create_uid:"
+msgid "Create User"
+msgstr "Usuario de creación"
+
+msgctxt "field:invoice.edi.reference,edi_invoice:"
+msgid "Edi Invoice"
+msgstr "Factura edi"
+
+msgctxt "field:invoice.edi.reference,edi_invoice_line:"
+msgid "Edi Invoice Line"
+msgstr "Línea factura edi"
+
+msgctxt "field:invoice.edi.reference,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:invoice.edi.reference,line_number:"
+msgid "Line Number"
+msgstr "Número línea"
+
+msgctxt "field:invoice.edi.reference,origin:"
+msgid "Reference"
+msgstr "Referencia"
+
+msgctxt "field:invoice.edi.reference,rec_name:"
+msgid "Name"
+msgstr "Nombre del registro"
+
+msgctxt "field:invoice.edi.reference,type_:"
+msgid "Reference Code"
+msgstr "Código referencia"
+
+msgctxt "field:invoice.edi.reference,value:"
+msgid "Reference"
+msgstr "Referencia"
+
+msgctxt "field:invoice.edi.reference,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:invoice.edi.reference,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "field:invoice.edi.supplier,account_bank:"
+msgid "Account Bank"
+msgstr "Cuenta bancaria"
+
+msgctxt "field:invoice.edi.supplier,city:"
+msgid "City"
+msgstr "Ciudad"
+
+msgctxt "field:invoice.edi.supplier,commercial_register:"
+msgid "Comercial Register"
+msgstr "Registro comercial"
+
+msgctxt "field:invoice.edi.supplier,country_code:"
+msgid "Country_code"
+msgstr "Código país"
+
+msgctxt "field:invoice.edi.supplier,create_date:"
+msgid "Create Date"
+msgstr "Fecha de creación"
+
+msgctxt "field:invoice.edi.supplier,create_uid:"
+msgid "Create User"
+msgstr "Usuario de creación"
+
+msgctxt "field:invoice.edi.supplier,edi_code:"
+msgid "Edi Code"
+msgstr "Código edi"
+
+msgctxt "field:invoice.edi.supplier,edi_invoice:"
+msgid "Edi Invoice"
+msgstr "Factura edi"
+
+msgctxt "field:invoice.edi.supplier,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:invoice.edi.supplier,name:"
+msgid "Name"
+msgstr "Nombre del registro"
+
+msgctxt "field:invoice.edi.supplier,party:"
+msgid "Party"
+msgstr "Terceros"
+
+msgctxt "field:invoice.edi.supplier,rec_name:"
+msgid "Name"
+msgstr "Nombre del registro"
+
+msgctxt "field:invoice.edi.supplier,street:"
+msgid "Street"
+msgstr "Calle"
+
+msgctxt "field:invoice.edi.supplier,type_:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:invoice.edi.supplier,vat:"
+msgid "Vat"
+msgstr "Vat"
+
+msgctxt "field:invoice.edi.supplier,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:invoice.edi.supplier,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "field:invoice.edi.supplier,zip:"
+msgid "zip"
+msgstr "Código postal"
+
+msgctxt "field:invoice.edi.tax,comment:"
+msgid "Comment"
+msgstr "Observaciones"
+
+msgctxt "field:invoice.edi.tax,create_date:"
+msgid "Create Date"
+msgstr "Fecha de creación"
+
+msgctxt "field:invoice.edi.tax,create_uid:"
+msgid "Create User"
+msgstr "Usuario de creación"
+
+msgctxt "field:invoice.edi.tax,edi_invoice:"
+msgid "Invoice"
+msgstr "Factura"
+
+msgctxt "field:invoice.edi.tax,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:invoice.edi.tax,line:"
+msgid "Line"
+msgstr "Línea"
+
+msgctxt "field:invoice.edi.tax,percent:"
+msgid "Percent"
+msgstr "Porcentaje"
+
+msgctxt "field:invoice.edi.tax,rec_name:"
+msgid "Name"
+msgstr "Nombre del registro"
+
+msgctxt "field:invoice.edi.tax,tax_amount:"
+msgid "Tax Amount"
+msgstr "Impuesto"
+
+msgctxt "field:invoice.edi.tax,type_:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:invoice.edi.tax,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:invoice.edi.tax,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "help:account.invoice,use_edi:"
+msgid "Use EDI protocol for this purchase"
+msgstr "Usa el protocolo EDI para esta compra"
+
+msgctxt "model:invoice.edi,name:"
+msgid "Account Invoice Edi Reception Header"
+msgstr "Cabecera factura edi"
+
+msgctxt "model:invoice.edi.configuration,name:"
+msgid "Invoice Edi Configuration"
+msgstr "Configuración facturas edi"
+
+msgctxt "model:invoice.edi.discount,name:"
+msgid "Edi discount"
+msgstr "Descuento edi"
+
+msgctxt "model:invoice.edi.line,name:"
+msgid "Invoice Edi Line"
+msgstr "Línea factura edi"
+
+msgctxt "model:invoice.edi.line.quantity,name:"
+msgid "Invoice Edi Line Qty"
+msgstr "Cantidad factura"
+
+msgctxt "model:invoice.edi.maturity_date,name:"
+msgid "Edi Maturity Dates"
+msgstr "Fechas de vencimiento edi"
+
+msgctxt "model:invoice.edi.reference,name:"
+msgid "Account Invoice Reference"
+msgstr "Referéncia factura"
+
+msgctxt "model:invoice.edi.supplier,name:"
+msgid "Supplier Edi"
+msgstr "Proveedor edi"
+
+msgctxt "model:invoice.edi.tax,name:"
+msgid "Invoice Edi Line Qty"
+msgstr "Cantidad Factura edi"
+
+msgctxt "model:ir.action,name:act_configuration_form"
+msgid "Invoice Edi Configuration"
+msgstr "Configuración factura edi"
+
+msgctxt "model:ir.action,name:act_edi_invoice_form"
+msgid "Edi Invoices"
+msgstr "Facturas edi"
+
+msgctxt "model:ir.ui.menu,name:menu_edi_invoice_form"
+msgid "Edi Invoices"
+msgstr "Facturas edi"
+
+msgctxt "model:ir.ui.menu,name:menu_edi_invoices"
+msgid "Edi Invoices"
+msgstr "Facturas edi"
+
+msgctxt "model:ir.ui.menu,name:menuitem_account_configuration"
+msgid "Invoice Edi Configuration"
+msgstr "Configuración factura edi"
+
+msgctxt "selection:invoice.edi,differences_state:"
+msgid "Difference"
+msgstr "Diferencia"
+
+msgctxt "selection:invoice.edi,differences_state:"
+msgid "Ok"
+msgstr "Aceptar"
+
+msgctxt "selection:invoice.edi,function_:"
+msgid "Copy"
+msgstr "Copia"
+
+msgctxt "selection:invoice.edi,function_:"
+msgid "Original"
+msgstr "Original"
+
+msgctxt "selection:invoice.edi,payment_type_value:"
+msgid "Account Bank"
+msgstr "Cuenta bancaria"
+
+msgctxt "selection:invoice.edi,payment_type_value:"
+msgid "Bank Draft"
+msgstr "Giro bancario"
+
+msgctxt "selection:invoice.edi,payment_type_value:"
+msgid "Bank Note"
+msgstr "Nota bancaria"
+
+msgctxt "selection:invoice.edi,payment_type_value:"
+msgid "cash"
+msgstr "Efectivo"
+
+msgctxt "selection:invoice.edi,payment_type_value:"
+msgid "check"
+msgstr "Cheque"
+
+msgctxt "selection:invoice.edi,state:"
+msgid "Confirmed"
+msgstr "Confirmat"
+
+msgctxt "selection:invoice.edi,state:"
+msgid "Draft"
+msgstr "Borrador"
+
+msgctxt "selection:invoice.edi,type_:"
+msgid "Charge Note"
+msgstr "Nota de carga"
+
+msgctxt "selection:invoice.edi,type_:"
+msgid "Credit"
+msgstr "Haber"
+
+msgctxt "selection:invoice.edi,type_:"
+msgid "Invoice"
+msgstr "Factura"
+
+msgctxt "selection:invoice.edi.discount,discount:"
+msgid "Charge Container"
+msgstr "Contenedor de carga"
+
+msgctxt "selection:invoice.edi.discount,discount:"
+msgid "Commercial"
+msgstr "Comercial"
+
+msgctxt "selection:invoice.edi.discount,discount:"
+msgid "Container"
+msgstr "Contenedor"
+
+msgctxt "selection:invoice.edi.discount,discount:"
+msgid "Finance"
+msgstr "Fianza"
+
+msgctxt "selection:invoice.edi.discount,discount:"
+msgid "Freight"
+msgstr "Mercaderia"
+
+msgctxt "selection:invoice.edi.discount,discount:"
+msgid "Grren Dot"
+msgstr "Punto verde"
+
+msgctxt "selection:invoice.edi.discount,discount:"
+msgid "INSURANCE"
+msgstr "Asegurado"
+
+msgctxt "selection:invoice.edi.discount,discount:"
+msgid "Mounting"
+msgstr "Montador"
+
+msgctxt "selection:invoice.edi.discount,discount:"
+msgid "Packaging"
+msgstr "Envalage"
+
+msgctxt "selection:invoice.edi.discount,discount:"
+msgid "Prompt Payment"
+msgstr "Protno pago"
+
+msgctxt "selection:invoice.edi.discount,discount:"
+msgid "Royal decree"
+msgstr "Real decreto"
+
+msgctxt "selection:invoice.edi.discount,discount:"
+msgid "Volume or Abseling"
+msgstr "Volumen"
+
+msgctxt "selection:invoice.edi.discount,type_:"
+msgid "Charge"
+msgstr "Cargo"
+
+msgctxt "selection:invoice.edi.discount,type_:"
+msgid "Discount"
+msgstr "Descuento"
+
+msgctxt "selection:invoice.edi.line,characteristic:"
+msgid "C"
+msgstr ""
+
+msgctxt "selection:invoice.edi.line,characteristic:"
+msgid "Goods"
+msgstr "Bienes"
+
+msgctxt "selection:invoice.edi.line,code_type:"
+msgid "DUN14"
+msgstr "DUN14"
+
+msgctxt "selection:invoice.edi.line,code_type:"
+msgid "EAN13"
+msgstr "EAN13"
+
+msgctxt "selection:invoice.edi.line,code_type:"
+msgid "EAN14"
+msgstr "EAN14"
+
+msgctxt "selection:invoice.edi.line,code_type:"
+msgid "EAN8"
+msgstr "EAN8"
+
+msgctxt "selection:invoice.edi.line,qualifier:"
+msgid "Free Description"
+msgstr "Descripción libre"
+
+msgctxt "selection:invoice.edi.line.quantity,type_:"
+msgid "Delivered"
+msgstr "Entregado"
+
+msgctxt "selection:invoice.edi.line.quantity,type_:"
+msgid "Invoiced"
+msgstr "Facturado"
+
+msgctxt "selection:invoice.edi.line.quantity,type_:"
+msgid "Returned"
+msgstr "Devuelto"
+
+msgctxt "selection:invoice.edi.line.quantity,type_:"
+msgid "Without Charge"
+msgstr "Sin cargo"
+
+msgctxt "selection:invoice.edi.maturity_date,type_:"
+msgid "Unique Payment"
+msgstr "Pago único"
+
+msgctxt "selection:invoice.edi.maturity_date,type_:"
+msgid "Various Payments"
+msgstr "Varios pagos"
+
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Confirmed Reception"
+msgstr "Confirmada recepción"
+
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Contract"
+msgstr "Contratos"
+
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Expedition"
+msgstr "Expedicion"
+
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Invoice"
+msgstr "Factura"
+
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Line Number"
+msgstr "Número linia"
+
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Medical Record"
+msgstr "Historial médico"
+
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Move"
+msgstr "Movimiento"
+
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Purchase"
+msgstr "Compras"
+
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Shipment"
+msgstr "Albarán"
+
+msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "Endorser"
+msgstr "Avalador"
+
+msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "Invoice Issuer"
+msgstr "Emisor factura"
+
+msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "Invoice Receiver"
+msgstr "Receptor factura"
+
+msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "Legal Purchaser"
+msgstr "Comprador legal"
+
+msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "Legal Supplier"
+msgstr "Proveedor legal"
+
+msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "NAD"
+msgstr ""
+
+msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "NADPE"
+msgstr ""
+
+msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "NADPW"
+msgstr ""
+
+msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "Payment Issuer"
+msgstr "Emisor de pago"
+
+msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "Purchaser"
+msgstr "Comprador"
+
+msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "Stock Receiver"
+msgstr "Receptor de estoc"
+
+msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "Supplier"
+msgstr "Proveedor"
+
+msgctxt "selection:invoice.edi.tax,type_:"
+msgid "Alcohol Tax"
+msgstr "Tasa alcoholica"
+
+msgctxt "selection:invoice.edi.tax,type_:"
+msgid "Equivalence Surcharge"
+msgstr "Recargo de equivalencia"
+
+msgctxt "selection:invoice.edi.tax,type_:"
+msgid "Exempt"
+msgstr "Exempto"
+
+msgctxt "selection:invoice.edi.tax,type_:"
+msgid "Gree Dot"
+msgstr "Punto verde"
+
+msgctxt "selection:invoice.edi.tax,type_:"
+msgid "IGIC"
+msgstr "IGIC"
+
+msgctxt "selection:invoice.edi.tax,type_:"
+msgid "IRPF"
+msgstr "IRPF"
+
+msgctxt "selection:invoice.edi.tax,type_:"
+msgid "VAT"
+msgstr "NIF"
