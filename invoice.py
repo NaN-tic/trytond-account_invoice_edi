@@ -549,9 +549,9 @@ class InvoiceEdi(ModelSQL, ModelView):
             for invoice, (data, basename) in attachments.items():
                 invoice.add_attachment(data, basename)
 
-        # if files_to_delete:
-        #     for file in files_to_delete:
-        #         os.remove(file)
+        if files_to_delete:
+            for file in files_to_delete:
+                os.remove(file)
 
 
     def get_invoice(self):
