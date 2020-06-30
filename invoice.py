@@ -25,10 +25,10 @@ def to_date(value):
         return None
     return datetime.strptime(value, DATE_FORMAT)
 
-def to_decimal(value):
+def to_decimal(value, digits=2):
     if value is None or value == '':
         return None
-    return Decimal(value)
+    return Decimal(value).quantize(Decimal('10')**-digits)
 
 
 class InvoiceEdiConfiguration(ModelSingleton, ModelSQL, ModelView):
@@ -53,7 +53,7 @@ class SupplierEdi(ModelSQL, ModelView):
         ('NADIV', 'Invoice Receiver'), ('NADDP', 'Stock Receiver'),
         ('NADPW', 'NADPW'),('NADPE', 'NADPE'),
         ('NADPR', 'Payment Issuer'), ('NADDL', 'Endorser'),
-        ('NAD', 'NAD')], 'Type')
+        ('NAD', 'NAD'),('NADMR', 'NADMR')], 'Type')
 
     edi_code = fields.Char('Edi Code')
     name = fields.Char('Name')
@@ -89,6 +89,14 @@ class SupplierEdi(ModelSQL, ModelView):
         self.vat = message.pop(0)
         if message:
             self.country_code = message.pop(0)
+
+    def read_NADMR(self, message):
+        self.type_ = 'NADMR'
+        self.edi_code = message.pop(0)
+        self.name = message.pop(0)
+        self.street = message.pop(0)
+        self.city = message.pop(0)
+        self.zip = message.pop(0)
 
     def read_NADDL(self, message):
         self.type_ = 'NADDL'
@@ -368,9 +376,10 @@ class InvoiceEdi(ModelSQL, ModelView):
         self.comment = message.pop(0)
 
     def read_DTM(self, message):
-        self.invoice_date = to_date(message.pop(0))
+        print(message)
+        self.invoice_date = to_date(message.pop(0)[0:8])
         if message:
-            self.service_date = to_date(message.pop(0))
+            self.service_date = to_date(message.pop(0)[0:8])
         if message:
             period = message.pop(0)
             self.start_period_date = to_date(period[0:8])
@@ -470,6 +479,7 @@ class InvoiceEdi(ModelSQL, ModelView):
         document_type = data.pop(0)
         if document_type == 'INVOIC_D_93A_UN_EAN007':
             return
+        print document_type
         for line in data:
             line = line.replace('\n','').replace('\r','')
             line = line.split(separator)
@@ -488,13 +498,16 @@ class InvoiceEdi(ModelSQL, ModelView):
             elif 'LIN' in msg_id:
                 getattr(invoice_line, 'read_%s' %msg_id)(line)
             elif msg_id in ('NADSCO', 'NADBCO','NADSU', 'NADBY', 'NADII',
-                'NADIV', 'NADDP', 'NADPR', 'NADDL', 'NAD', 'NADPE', 'NADPW'):
+                    'NADIV', 'NADDP', 'NADPR', 'NADDL', 'NAD', 'NADPE', 'NADPW',
+                    'NADMR'):
                 supplier = SupplierEdi()
                 getattr(supplier, 'read_%s' %msg_id)(line)
                 supplier.search_party()
                 if not getattr(invoice, 'suppliers', False):
                     invoice.suppliers = []
                 invoice.suppliers += (supplier,)
+            elif 'NAD' in msg_id:
+                continue
             else:
                 getattr(invoice, 'read_%s' %msg_id)(line)
 
@@ -802,7 +815,7 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         QTY = Pool().get('invoice.edi.line.quantity')
         qty = QTY()
         qty.type_ = message.pop(0)
-        qty.quantity = to_decimal(message.pop(0))
+        qty.quantity = to_decimal(message.pop(0), 4)
         if qty.type_ == '47':
             self.quantity = qty.quantity
         if message:
@@ -822,9 +835,9 @@ class InvoiceEdiLine(ModelSQL, ModelView):
     def read_PRILIN(self, message):
         type_ = message.pop(0)
         if type_  == 'AAA':
-            self.unit_price = to_decimal(message.pop(0))
+            self.unit_price = to_decimal(message.pop(0), 4)
         elif type_ == 'AAB':
-            self.gross_price = to_decimal(message.pop(0))
+            self.gross_price = to_decimal(message.pop(0), 4)
 
     def read_RFFLIN(self, message):
         REF = Pool().get('invoice.edi.reference')
