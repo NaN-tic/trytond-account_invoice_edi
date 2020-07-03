@@ -266,7 +266,7 @@ class InvoiceEdi(ModelSQL, ModelView):
 
     company = fields.Many2One('company.company', 'Company', readonly=True)
     number = fields.Char('Number', readonly=True)
-    invoice = fields.Many2One('account.invoice', 'Invoice', readonly=True)
+    invoice = fields.Many2One('account.invoice', 'Invoice')
     type_ = fields.Selection([('380', 'Invoice'),('381', 'Credit'),
         ('383', 'Charge Note'),], 'Document Type', readonly=True)
     function_ = fields.Selection([(None, ''),('9', 'Original'), ('31', 'Copy')],
@@ -339,7 +339,7 @@ class InvoiceEdi(ModelSQL, ModelView):
     def search_state(cls, name, clause):
         if clause[-1] == 'draft':
             return [('invoice', clause[1], None)]
-        return [('invoice', clause[1], None)]
+        return [('invoice', '!=' , None)]
 
     def get_differences_state(self, name):
         if not self.invoice:
@@ -624,7 +624,6 @@ class InvoiceEdi(ModelSQL, ModelView):
                 invoice.lines += (line,)
 
             invoice.on_change_lines()
-
             discounts = set((x.type_, x.discount, x.percent) for x in edi_invoice.discounts
                 if x.percent)
             for type_, discount, percent in discounts:
@@ -639,6 +638,7 @@ class InvoiceEdi(ModelSQL, ModelView):
             invoice.on_change_lines()
             invoice.on_change_type()
             invoice.use_edi = True
+            print invoice._save_values
             edi_invoice.invoice = invoice
             invoices.append(invoice)
             to_save.append(edi_invoice)
@@ -721,6 +721,16 @@ class InvoiceEdiLine(ModelSQL, ModelView):
     product = fields.Many2One('product.product', 'Product')
     quantity = fields.Function(fields.Numeric('Quantity', digits=(16,4)),
         'invoiced_quantity')
+    invoice_line = fields.Many2One('account.invoice.line', 'Invoice Line')
+
+    @classmethod
+    def __setup__(cls):
+        super(InvoiceEdiLine, cls).__setup__()
+        cls._error_messages.update({
+            'confirm_invoice_with_reference': ('You try to create invoice but line "%(line)s" has not move associated'),
+            'confirm_invoice_with_invoice': (
+                'You try to create invoice but line "%(line)s" has not invoice line associated')
+        })
 
     def search_related(self, edi_invoice):
         pool = Pool()
@@ -749,13 +759,50 @@ class InvoiceEdiLine(ModelSQL, ModelView):
                     ref.origin = 'stock.move,%s'%str(move.id)
                     self.references += (ref,)
 
-
     def get_line(self):
+        if self.edi_invoice.type_ == '381': # CREDIT:
+            return self.get_line_credit()
+
+        if not self.references or len(self.references) != 1:
+            self.raise_user_warning(
+                'confirm_invoice_without_reference_%s' % (self.id),
+                'confirm_invoice_without_reference', {
+                    'line': self.description})
+
+        move, = self.references
+        invoice_lines = [x for x in move.origin.invoice_lines if not x.invoice]
+        if not invoice_lines or len(invoice_lines) != 1:
+            self.raise_user_warning(
+                'confirm_invoice_without_invoice_%s' % (self.id),
+                'confirm_invoice_without_invoice', {
+                    'line': self.description})
+
+        invoice_line, = invoice_lines
+
+        invoice_line.gross_unit_price = self.gross_price or self.unit_price
+        invoice_line.unit_price = self.unit_price
+        if self.unit_price and self.gross_price:
+            invoice_line.discount = Decimal(str(1 -
+                self.unit_price/self.gross_price)).quantize(Decimal('.01'))
+        else:
+            invoice_line.unit_price = Decimal(self.base_amount / self.quantity).quantize(
+                Decimal('0.0001'))
+
+        self.invoice_line = invoice_line
+        return invoice_line
+
+    def get_line_credit(self):
+        move = self.references and self.references[0]
+        invoice_lines = [x for x in move and move.origin.invoice_lines or [] if not x.invoice]
+        invoice_line = invoice_lines and invoice_lines[0]
+
         Line = Pool().get('account.invoice.line')
         line = Line()
         line.product = self.product
         line.invoice_type = 'in'
         line.quantity = self.quantity
+        if self.base_amount < 0:
+            line.quantity = -self.quantity
         line.party = self.edi_invoice.party
         line.type = 'line'
         line.on_change_product()
@@ -768,9 +815,9 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         else:
             line.unit_price = Decimal(self.base_amount / self.quantity).quantize(
                 Decimal('0.0001'))
-
-        line.stock_moves = [x.origin.id for x in self.references if x.origin
-            and x.type_ == 'move']
+        if invoice_line:
+            line.origin = str(invoice_line)
+        self.invoice_line = line
         return line
 
     def invoiced_quantity(self, name):

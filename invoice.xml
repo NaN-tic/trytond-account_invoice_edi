@@ -23,6 +23,9 @@
           <field name="view" ref="configuration_view_form"/>
           <field name="act_window" ref="act_configuration_form"/>
       </record>
+
+
+
       <menuitem parent="menu_edi_invoices"
           action="act_configuration_form"
           id="menuitem_account_configuration"
@@ -151,6 +154,19 @@
           <field name="act_window" ref="act_edi_invoice_form"/>
       </record>
 
+        <record model="ir.action.act_window.domain" id="act_invoice_edi_domain_draft">
+        <field name="name">Draft</field>
+        <field name="sequence" eval="10"/>
+        <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
+        <field name="act_window" ref="act_edi_invoice_form"/>
+      </record>
+
+      <record model="ir.action.act_window.domain" id="act_invoice_edi_domain_confirmed">
+        <field name="name">Confirmed</field>
+        <field name="sequence" eval="10"/>
+        <field name="domain" eval="[('state', '=', 'confirmed')]" pyson="1"/>
+        <field name="act_window" ref="act_edi_invoice_form"/>
+      </record>
 
       <record model="ir.ui.view" id="aeat_sii_invoice_form_view">
           <field name="model">account.invoice</field>

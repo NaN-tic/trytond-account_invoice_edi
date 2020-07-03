@@ -10,6 +10,20 @@ msgstr ""
 "Quiere confirmar las facturas \"%(invoices)s\" con diferencias respecot a "
 "las facturas Edi?"
 
+msgctxt "error:invoice.edi.line:"
+msgid ""
+"You try to create invoice but line \"%(line)s\" has not invoice line "
+"associated"
+msgstr ""
+"La línea \"%(line)s\" no tinen ninguna linea de factura asociada o tiene mas"
+" de una. Comprueba que sea correcto."
+
+msgctxt "error:invoice.edi.line:"
+msgid "You try to create invoice but line \"%(line)s\" has not move associated"
+msgstr ""
+"La línea \"%(line)s\" no tinen ningún movimento de estoc asociado, o tiene "
+"mas de uno. Comprueba que sea correcto."
+
 msgctxt "field:account.invoice,edi_invoices:"
 msgid "Edi Invoices"
 msgstr "Factura edi"
@@ -309,6 +323,11 @@ msgstr "Código industria salud"
 msgctxt "field:invoice.edi.line,id:"
 msgid "ID"
 msgstr "Identificador"
+
+#, fuzzy
+msgctxt "field:invoice.edi.line,invoice_line:"
+msgid "Invoice Line"
+msgstr "Línea de factura"
 
 msgctxt "field:invoice.edi.line,lot_number:"
 msgid "Lot Number"
@@ -678,6 +697,17 @@ msgctxt "model:ir.action,name:act_edi_invoice_form"
 msgid "Edi Invoices"
 msgstr "Facturas edi"
 
+#, fuzzy
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_invoice_edi_domain_confirmed"
+msgid "Confirmed"
+msgstr "Confirmat"
+
+#, fuzzy
+msgctxt "model:ir.action.act_window.domain,name:act_invoice_edi_domain_draft"
+msgid "Draft"
+msgstr "Esborrany"
+
 msgctxt "model:ir.ui.menu,name:menu_edi_invoice_form"
 msgid "Edi Invoices"
 msgstr "Facturas edi"
@@ -912,6 +942,10 @@ msgstr "Proveedor legal"
 
 msgctxt "selection:invoice.edi.supplier,type_:"
 msgid "NAD"
+msgstr ""
+
+msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "NADMR"
 msgstr ""
 
 msgctxt "selection:invoice.edi.supplier,type_:"
