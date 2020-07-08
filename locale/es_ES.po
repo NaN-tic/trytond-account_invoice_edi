@@ -324,7 +324,6 @@ msgctxt "field:invoice.edi.line,id:"
 msgid "ID"
 msgstr "Identificador"
 
-#, fuzzy
 msgctxt "field:invoice.edi.line,invoice_line:"
 msgid "Invoice Line"
 msgstr "Línea de factura"
@@ -697,13 +696,11 @@ msgctxt "model:ir.action,name:act_edi_invoice_form"
 msgid "Edi Invoices"
 msgstr "Facturas edi"
 
-#, fuzzy
 msgctxt ""
 "model:ir.action.act_window.domain,name:act_invoice_edi_domain_confirmed"
 msgid "Confirmed"
 msgstr "Confirmat"
 
-#, fuzzy
 msgctxt "model:ir.action.act_window.domain,name:act_invoice_edi_domain_draft"
 msgid "Draft"
 msgstr "Esborrany"

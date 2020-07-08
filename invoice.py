@@ -616,29 +616,30 @@ class InvoiceEdi(ModelSQL, ModelView):
             for eline in edi_invoice.lines:
                 line = eline.get_line()
                 invoice.lines += (line,)
-            for discount in edi_invoice.discounts:
-                if discount.percent:
-                    continue
-                line = edi_invoice.get_discount_invoice_line(discount.discount,
-                    discount.amount)
-                invoice.lines += (line,)
+            # DO NOT create discount lines.
+            # for discount in edi_invoice.discounts:
+            #     if discount.percent:
+            #         continue
+            #     line = edi_invoice.get_discount_invoice_line(discount.discount,
+            #         discount.amount)
+            #     invoice.lines += (line,)
 
             invoice.on_change_lines()
-            discounts = set((x.type_, x.discount, x.percent) for x in edi_invoice.discounts
-                if x.percent)
-            for type_, discount, percent in discounts:
-                for tax in invoice.taxes:
-                    amount = (tax.base*percent*Decimal('0.01')).quantize(Decimal('.01'))
-                    if type_ == 'A':
-                        amount = amount*-1
-                    line = edi_invoice.get_discount_invoice_line(discount, amount,
-                        [tax.tax])
-                    invoice.lines += (line,)
+            # DO NOT create discount lines.
+            # discounts = set((x.type_, x.discount, x.percent) for x in edi_invoice.discounts
+            #     if x.percent)
+            # for type_, discount, percent in discounts:
+            #     for tax in invoice.taxes:
+            #         amount = (tax.base*percent*Decimal('0.01')).quantize(Decimal('.01'))
+            #         if type_ == 'A':
+            #             amount = amount*-1
+            #         line = edi_invoice.get_discount_invoice_line(discount, amount,
+            #             [tax.tax])
+            #         invoice.lines += (line,)
 
             invoice.on_change_lines()
             invoice.on_change_type()
             invoice.use_edi = True
-            print invoice._save_values
             edi_invoice.invoice = invoice
             invoices.append(invoice)
             to_save.append(edi_invoice)
@@ -762,31 +763,30 @@ class InvoiceEdiLine(ModelSQL, ModelView):
     def get_line(self):
         if self.edi_invoice.type_ == '381': # CREDIT:
             return self.get_line_credit()
-
-        if not self.references or len(self.references) != 1:
-            self.raise_user_warning(
-                'confirm_invoice_without_reference_%s' % (self.id),
-                'confirm_invoice_without_reference', {
+        if self.references == None or len(self.references) != 1:
+            self.raise_user_error(
+                'confirm_invoice_with_reference', {
                     'line': self.description})
+
 
         move, = self.references
         invoice_lines = [x for x in move.origin.invoice_lines if not x.invoice]
         if not invoice_lines or len(invoice_lines) != 1:
-            self.raise_user_warning(
-                'confirm_invoice_without_invoice_%s' % (self.id),
-                'confirm_invoice_without_invoice', {
+            self.raise_user_error(
+                'confirm_invoice_with_invoice', {
                     'line': self.description})
 
         invoice_line, = invoice_lines
 
-        invoice_line.gross_unit_price = self.gross_price or self.unit_price
-        invoice_line.unit_price = self.unit_price
-        if self.unit_price and self.gross_price:
-            invoice_line.discount = Decimal(str(1 -
-                self.unit_price/self.gross_price)).quantize(Decimal('.01'))
-        else:
-            invoice_line.unit_price = Decimal(self.base_amount / self.quantity).quantize(
-                Decimal('0.0001'))
+        # JUst invoice wat system expect to see differences.
+        # invoice_line.gross_unit_price = self.gross_price or self.unit_price
+        # invoice_line.unit_price = self.unit_price
+        # if self.unit_price and self.gross_price:
+        #     invoice_line.discount = Decimal(str(1 -
+        #         self.unit_price/self.gross_price)).quantize(Decimal('.01'))
+        # else:
+        #     invoice_line.unit_price = Decimal(self.base_amount / self.quantity).quantize(
+        #         Decimal('0.0001'))
 
         self.invoice_line = invoice_line
         return invoice_line

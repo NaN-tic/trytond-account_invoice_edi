@@ -15,7 +15,7 @@ msgid ""
 "You try to create invoice but line \"%(line)s\" has not invoice line "
 "associated"
 msgstr ""
-"La linia \"%(line)s\"  no té cap i en té mes d'una línia de factura "
+"La linia \"%(line)s\"  no té cap o en té mes d'una línia de factura "
 "associada. Verifica que tot estigui correcte."
 
 msgctxt "error:invoice.edi.line:"
@@ -324,7 +324,6 @@ msgctxt "field:invoice.edi.line,id:"
 msgid "ID"
 msgstr "Identificador"
 
-#, fuzzy
 msgctxt "field:invoice.edi.line,invoice_line:"
 msgid "Invoice Line"
 msgstr "Línia de factura"
@@ -697,13 +696,11 @@ msgctxt "model:ir.action,name:act_edi_invoice_form"
 msgid "Edi Invoices"
 msgstr "Edi Factures"
 
-#, fuzzy
 msgctxt ""
 "model:ir.action.act_window.domain,name:act_invoice_edi_domain_confirmed"
 msgid "Confirmed"
 msgstr "Confirmats"
 
-#, fuzzy
 msgctxt "model:ir.action.act_window.domain,name:act_invoice_edi_domain_draft"
 msgid "Draft"
 msgstr "Esborrany"
@@ -775,7 +772,6 @@ msgctxt "selection:invoice.edi,state:"
 msgid "Confirmed"
 msgstr "Confirmats"
 
-#, fuzzy
 msgctxt "selection:invoice.edi,state:"
 msgid "Draft"
 msgstr "Esborrany"
@@ -784,7 +780,6 @@ msgctxt "selection:invoice.edi,type_:"
 msgid "Charge Note"
 msgstr "Nota de càrrec"
 
-#, fuzzy
 msgctxt "selection:invoice.edi,type_:"
 msgid "Credit"
 msgstr "Haver"
@@ -940,7 +935,6 @@ msgctxt "selection:invoice.edi.reference,type_:"
 msgid "Medical Record"
 msgstr "Historial mèdic"
 
-#, fuzzy
 msgctxt "selection:invoice.edi.reference,type_:"
 msgid "Move"
 msgstr "Moviment"
@@ -1029,7 +1023,6 @@ msgctxt "selection:invoice.edi.tax,type_:"
 msgid "IRPF"
 msgstr "IRPF"
 
-#, fuzzy
 msgctxt "selection:invoice.edi.tax,type_:"
 msgid "VAT"
 msgstr "NIF"
