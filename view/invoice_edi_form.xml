@@ -71,4 +71,5 @@
     <field name="differences_state"/>
     <field name="difference_amount"/>
     <button string="Create Invoice" name="create_invoices"/>
+    <button string="Search Related" name="search_references"/>
 </form>

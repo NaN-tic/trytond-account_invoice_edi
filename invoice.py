@@ -71,11 +71,16 @@ class SupplierEdi(ModelSQL, ModelView):
         self.type_ = 'NADSCO'
         self.edi_code = message.pop(0)
         self.name = message.pop(0)
-        self.commercial_register = message.pop(0)
-        self.street = message.pop(0)
-        self.city = message.pop(0)
-        self.zip = message.pop(0)
-        self.vat = message.pop(0)
+        if message:
+            self.commercial_register = message.pop(0)
+        if message:
+            self.street = message.pop(0)
+        if message:
+            self.city = message.pop(0)
+        if message:
+            self.zip = message.pop(0)
+        if message:
+            self.vat = message.pop(0)
         if message:
             self.account_bank = message.pop(0)
 
@@ -83,10 +88,13 @@ class SupplierEdi(ModelSQL, ModelView):
         self.type_ = 'NADBCO'
         self.edi_code = message.pop(0)
         self.name = message.pop(0)
-        self.street = message.pop(0)
+        if message:
+            self.street = message.pop(0)
         self.city = message.pop(0)
-        self.zip = message.pop(0)
-        self.vat = message.pop(0)
+        if message:
+            self.zip = message.pop(0)
+        if message:
+            self.vat = message.pop(0)
         if message:
             self.country_code = message.pop(0)
 
@@ -94,18 +102,25 @@ class SupplierEdi(ModelSQL, ModelView):
         self.type_ = 'NADMR'
         self.edi_code = message.pop(0)
         self.name = message.pop(0)
-        self.street = message.pop(0)
-        self.city = message.pop(0)
-        self.zip = message.pop(0)
+        if message:
+            self.street = message.pop(0)
+        if message:
+            self.city = message.pop(0)
+        if message:
+            self.zip = message.pop(0)
 
     def read_NADDL(self, message):
         self.type_ = 'NADDL'
         self.edi_code = message.pop(0)
         self.name = message.pop(0)
-        self.street = message.pop(0)
-        self.city = message.pop(0)
-        self.zip = message.pop(0)
-        self.vat = message.pop(0)
+        if message:
+            self.street = message.pop(0)
+        if message:
+            self.city = message.pop(0)
+        if message:
+            self.zip = message.pop(0)
+        if message:
+            self.vat = message.pop(0)
 
     def read_NAD(self, message):
         self.type_ = 'NAD'
@@ -319,7 +334,8 @@ class InvoiceEdi(ModelSQL, ModelView):
     def __setup__(cls):
         super(InvoiceEdi, cls).__setup__()
         cls._buttons.update({
-            'create_invoices': {}
+            'create_invoices': {},
+            'search_references': {}
         })
 
     @staticmethod
@@ -488,8 +504,8 @@ class InvoiceEdi(ModelSQL, ModelView):
                 invoice = Invoice()
                 invoice.read_INV(line)
             elif msg_id == 'LIN':
-                if invoice_line:
-                    invoice_line.search_related(invoice)
+                # if invoice_line:
+                #     invoice_line.search_related(invoice)
                 invoice_line = InvoiceLine()
                 invoice_line.read_LIN(line)
                 if not getattr(invoice, 'lines', False):
@@ -511,7 +527,7 @@ class InvoiceEdi(ModelSQL, ModelView):
             else:
                 getattr(invoice, 'read_%s' %msg_id)(line)
 
-        invoice_line.search_related(invoice)
+        # invoice_line.search_related(invoice)
         return invoice
 
     def add_attachment(self, attachment, filename=None):
@@ -566,6 +582,8 @@ class InvoiceEdi(ModelSQL, ModelView):
             for file in files_to_delete:
                 os.remove(file)
 
+        cls.search_references(to_save)
+
 
     def get_invoice(self):
         pool = Pool()
@@ -602,6 +620,23 @@ class InvoiceEdi(ModelSQL, ModelView):
 
     @classmethod
     @ModelView.button
+    def search_references(cls, edi_invoices):
+        pool = Pool()
+        Invoice = pool.get('account.invoice')
+        Line = pool.get('account.invoice.line')
+        invoices = []
+        to_save = []
+        for edi_invoice in edi_invoices:
+            if edi_invoice.invoice:
+                continue
+            invoice = edi_invoice.get_invoice()
+            invoice.lines = []
+            for eline in edi_invoice.lines:
+                eline.search_related(edi_invoice)
+                eline.save()
+
+    @classmethod
+    @ModelView.button
     def create_invoices(cls, edi_invoices):
         pool = Pool()
         Invoice = pool.get('account.invoice')
@@ -616,27 +651,7 @@ class InvoiceEdi(ModelSQL, ModelView):
             for eline in edi_invoice.lines:
                 line = eline.get_line()
                 invoice.lines += (line,)
-            # DO NOT create discount lines.
-            # for discount in edi_invoice.discounts:
-            #     if discount.percent:
-            #         continue
-            #     line = edi_invoice.get_discount_invoice_line(discount.discount,
-            #         discount.amount)
-            #     invoice.lines += (line,)
-
             invoice.on_change_lines()
-            # DO NOT create discount lines.
-            # discounts = set((x.type_, x.discount, x.percent) for x in edi_invoice.discounts
-            #     if x.percent)
-            # for type_, discount, percent in discounts:
-            #     for tax in invoice.taxes:
-            #         amount = (tax.base*percent*Decimal('0.01')).quantize(Decimal('.01'))
-            #         if type_ == 'A':
-            #             amount = amount*-1
-            #         line = edi_invoice.get_discount_invoice_line(discount, amount,
-            #             [tax.tax])
-            #         invoice.lines += (line,)
-
             invoice.on_change_lines()
             invoice.on_change_type()
             invoice.use_edi = True
@@ -648,9 +663,6 @@ class InvoiceEdi(ModelSQL, ModelView):
         Invoice.validate(invoices)
         Invoice.draft(invoices)
         cls.save(to_save)
-
-
-
 
 
 class InvoiceEdiLineQty(ModelSQL, ModelView):

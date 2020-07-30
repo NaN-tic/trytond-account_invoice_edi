@@ -194,6 +194,15 @@
           <field name="group" ref="account.group_account"/>
       </record>
 
+        <record model="ir.model.button" id="search_related_button">
+          <field name="name">search_references</field>
+          <field name="model" search="[('model', '=', 'invoice.edi')]"/>
+      </record>
+      <record model="ir.model.button-res.group"
+          id="search_related_button_group_account">
+          <field name="button" ref="search_related_button"/>
+          <field name="group" ref="account.group_account"/>
+      </record>
 
 </data>
 </tryton>
