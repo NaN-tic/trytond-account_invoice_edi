@@ -1,4 +1,4 @@
-<tree string="Edi Invoice Discount">
+<tree>
     <field name="type_"/>
     <field name="sequence"/>
     <field name="discount"/>

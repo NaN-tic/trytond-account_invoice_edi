@@ -1,4 +1,4 @@
-<form string="Edi Invoice Discount">
+<form>
     <label name="type_"/>
     <field name="type_"/>
     <label name="sequence"/>

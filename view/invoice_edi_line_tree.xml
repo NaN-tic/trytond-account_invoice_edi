@@ -1,4 +1,4 @@
-<tree string="Edi Invoice Line">
+<tree>
   <!-- <field name="sequence"/> -->
   <field name="product"/>
   <field name="code"/>

@@ -1,4 +1,4 @@
-<tree string="Edi Invoice Maturity Date">
+<tree>
   <field name="type_"/>
   <field name="maturity_date"/>
   <field name="amount"/>

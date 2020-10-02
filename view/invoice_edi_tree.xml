@@ -1,4 +1,4 @@
-<tree string="Edi Invoice">
+<tree>
     <field name="number"/>
     <field name="type_"/>
     <field name="function_"/>

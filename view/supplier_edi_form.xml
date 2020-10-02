@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- The COPYRIGHT file at the top level of
 this repository contains the full copyright notices and license terms. -->
-<form string="Supplier Edi" col="4">
+<form col="4">
   <label name="edi_code"/>
   <field name="edi_code"/>
   <label name="vat"/>

@@ -5,6 +5,8 @@ from trytond.model import fields, ModelSQL, ModelView, ModelSingleton
 from trytond.pool import PoolMeta, Pool
 from trytond.pyson import Eval, Bool, Or
 from trytond.transaction import Transaction
+from trytond.exceptions import UserError, UserWarning
+
 import os
 from glob import glob
 from unidecode import unidecode
@@ -12,6 +14,10 @@ from datetime import datetime
 from trytond import backend
 from decimal import Decimal
 import codecs
+
+__all__ = ['InvoiceEdiConfiguration','InvoiceEdi','InvoiceEdiLine',
+    'SupplierEdi','InvoiceEdiReference','InvoiceEdiMaturityDates',
+    'InvoiceEdiDiscount','InvoiceEdiLineQty','InvoiceEdiTax']
 
 DEFAULT_FILES_LOCATION = '/tmp/invoice'
 
@@ -192,7 +198,6 @@ class SupplierEdi(ModelSQL, ModelView):
                 self.party = identifier[0].party
 
 
-
 class InvoiceEdiReference(ModelSQL, ModelView):
     'Account Invoice Reference'
     __name__ = 'invoice.edi.reference'
@@ -242,7 +247,7 @@ class InvoiceEdiReference(ModelSQL, ModelView):
         res = Model.search([('number', '=', self.value)], limit=1)
         self.origin = None
         if res != []:
-            self.origin = str(res[0])
+            self.origin = res[0]
 
 class InvoiceEdiMaturityDates(ModelSQL, ModelView):
     'Edi Maturity Dates'
@@ -401,7 +406,6 @@ class InvoiceEdi(ModelSQL, ModelView):
             self.start_period_date = to_date(period[0:8])
             self.end_period_date = to_date(priod[8:])
 
-
     def read_PAI(self, message):
         payment_type = message.pop(0)
         self.payment_type_value = payment_type
@@ -478,7 +482,6 @@ class InvoiceEdi(ModelSQL, ModelView):
     def read_CNTRES(self, message):
         pass
 
-
     @classmethod
     def import_edi_file(self, data):
         pool = Pool()
@@ -488,14 +491,14 @@ class InvoiceEdi(ModelSQL, ModelView):
         Configuration = pool.get('invoice.edi.configuration')
 
         config = Configuration(1)
-        separator = str(config.separator)
+        separator = config.separator
 
         invoice = None
         invoice_line = None
         document_type = data.pop(0)
         if document_type == 'INVOIC_D_93A_UN_EAN007':
             return
-        print document_type
+        print(document_type)
         for line in data:
             line = line.replace('\n','').replace('\r','')
             line = line.split(separator)
@@ -539,11 +542,9 @@ class InvoiceEdi(ModelSQL, ModelView):
         attach = Attachment(
             name=filename,
             type='data',
-            data=attachment.decode('latin-1').encode('utf8'),
-            resource=str(self))
+            data=attachment.decode('utf8'),
+            resource=self)
         attach.save()
-
-
 
     @classmethod
     def import_edi_files(cls, invoices=None):
@@ -583,7 +584,6 @@ class InvoiceEdi(ModelSQL, ModelView):
                 os.remove(file)
 
         cls.search_references(to_save)
-
 
     def get_invoice(self):
         pool = Pool()
@@ -675,10 +675,10 @@ class InvoiceEdiLineQty(ModelSQL, ModelView):
     uom_char = fields.Char('Uom')
     line = fields.Many2One('invoice.edi.line', 'Line', ondelete='CASCADE')
 
-
     def search_uom(self):
         # TODO: Not implemented, now use product uom.
         pass
+
 
 class InvoiceEdiTax(ModelSQL, ModelView):
     'Invoice Edi Line Qty'
@@ -696,6 +696,7 @@ class InvoiceEdiTax(ModelSQL, ModelView):
     def search_tax(self):
         # TODO: Not implementd, now use product tax
         pass
+
 
 class InvoiceEdiLine(ModelSQL, ModelView):
     'Invoice Edi Line'
@@ -739,11 +740,6 @@ class InvoiceEdiLine(ModelSQL, ModelView):
     @classmethod
     def __setup__(cls):
         super(InvoiceEdiLine, cls).__setup__()
-        cls._error_messages.update({
-            'confirm_invoice_with_reference': ('You try to create invoice but line "%(line)s" has not move associated'),
-            'confirm_invoice_with_invoice': (
-                'You try to create invoice but line "%(line)s" has not invoice line associated')
-        })
 
     def search_related(self, edi_invoice):
         pool = Pool()
@@ -769,24 +765,23 @@ class InvoiceEdiLine(ModelSQL, ModelView):
                 if move.product == product: #TODO: check for quantity?
                     ref = REF()
                     ref.type_ = 'move'
-                    ref.origin = 'stock.move,%s'%str(move.id)
+                    ref.origin = 'stock.move,%s'%move.id
                     self.references += (ref,)
 
     def get_line(self):
         if self.edi_invoice.type_ == '381': # CREDIT:
             return self.get_line_credit()
         if self.references == None or len(self.references) != 1:
-            self.raise_user_error(
-                'confirm_invoice_with_reference', {
-                    'line': self.description})
-
+            raise UserError(gettext(
+                'account_invoice_edi.confirm_invoice_with_reference',
+                line=self.description))
 
         move, = self.references
         invoice_lines = [x for x in move.origin.invoice_lines if not x.invoice]
         if not invoice_lines or len(invoice_lines) != 1:
-            self.raise_user_error(
-                'confirm_invoice_with_invoice', {
-                    'line': self.description})
+            raise UserError(gettext(
+                'account_invoice_edi.confirm_invoice_with_invoice',
+                line=self.description))
 
         invoice_line, = invoice_lines
 
@@ -794,8 +789,8 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         # invoice_line.gross_unit_price = self.gross_price or self.unit_price
         # invoice_line.unit_price = self.unit_price
         # if self.unit_price and self.gross_price:
-        #     invoice_line.discount = Decimal(str(1 -
-        #         self.unit_price/self.gross_price)).quantize(Decimal('.01'))
+        #     invoice_line.discount = Decimal(1 -
+        #         self.unit_price/self.gross_price).quantize(Decimal('.01'))
         # else:
         #     invoice_line.unit_price = Decimal(self.base_amount / self.quantity).quantize(
         #         Decimal('0.0001'))
@@ -822,13 +817,13 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         line.gross_unit_price = self.gross_price or self.unit_price
         line.unit_price = self.unit_price
         if self.unit_price and self.gross_price:
-            line.discount = Decimal(str(1 -
-                self.unit_price/self.gross_price)).quantize(Decimal('.01'))
+            line.discount = Decimal(1 -
+                self.unit_price/self.gross_price).quantize(Decimal('.01'))
         else:
             line.unit_price = Decimal(self.base_amount / self.quantity).quantize(
                 Decimal('0.0001'))
         if invoice_line:
-            line.origin = str(invoice_line)
+            line.origin = invoice_line
         self.invoice_line = line
         return line
 
@@ -846,7 +841,6 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         if message:
             self.sequence = int(message.pop(0))
 
-
     def read_PIALIN(self, message):
         self.supplier_code = message.pop(0)
         if message:
@@ -863,7 +857,6 @@ class InvoiceEdiLine(ModelSQL, ModelView):
             self.national_code = message.pop(0)
         if message:
             self.hibc_code = message.pop(0)
-
 
     def read_IMDLIN(self, message):
         self.description = message.pop(0)
@@ -921,7 +914,6 @@ class InvoiceEdiLine(ModelSQL, ModelView):
             self.taxes = []
         self.taxes += (tax,)
 
-
     def read_ALCLIN(self, message):
         Discount =  Pool().get('invoice.edi.discount')
         discount = Discount()
@@ -935,8 +927,7 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         self.discounts += (discount,)
 
 
-class Invoice:
-    __metaclass__ = PoolMeta
+class Invoice(metaclass=PoolMeta):
     __name__ = 'account.invoice'
 
     use_edi = fields.Boolean('Use EDI',
@@ -948,11 +939,6 @@ class Invoice:
     @classmethod
     def __setup__(cls):
         super(Invoice, cls).__setup__()
-        cls._error_messages.update({
-            'confirm_invoice_with_difference': (
-                'You try to post invoices "%(invoices)s" with diferences with '
-                ' recived edi invoices')
-        })
 
     @classmethod
     def post(cls, invoices):
@@ -968,9 +954,9 @@ class Invoice:
                 differences.append(invoice)
 
         if differences:
-            cls.raise_user_warning(
-                'confirm_invoice_with_difference_%s' % (
-                    "_".join([str(x.id) for x in differences])),
-                'confirm_invoice_with_difference', {
-                    'invoices': ",".join([x.reference for x in differences])
-                })
+            key = 'confirm_invoice_with_difference_%s' % (
+                    "_".join([x.id for x in differences])) 
+            if Warning.check(key):
+                raise UserWarning(key,gettext(
+                        'account_invoice_edi.confirm_invoice_with_difference',
+                        invoices=",".join([x.referemce for x in differences])))

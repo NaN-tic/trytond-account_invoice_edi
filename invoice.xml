@@ -204,5 +204,5 @@
           <field name="group" ref="account.group_account"/>
       </record>
 
-</data>
+    </data>
 </tryton>

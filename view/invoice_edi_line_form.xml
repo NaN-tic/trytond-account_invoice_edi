@@ -1,4 +1,4 @@
-<form string="Edi Invoice Line">
+<form>
   <label name="product"/>
   <field name="product" colspan="3"/>
   <newline/>

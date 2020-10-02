@@ -1,4 +1,4 @@
-<tree string="Invoice Edi Tax">
+<tree>
     <field name="type_"/>
     <field name="percent"/>
     <field name="tax_amount"/>
