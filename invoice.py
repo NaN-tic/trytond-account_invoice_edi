@@ -6,6 +6,7 @@ from trytond.pool import PoolMeta, Pool
 from trytond.pyson import Eval, Bool, Or
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError, UserWarning
+from trytond.i18n import gettext
 
 import os
 from glob import glob
