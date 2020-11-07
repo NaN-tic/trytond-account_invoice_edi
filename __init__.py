@@ -5,6 +5,7 @@ from . import invoice
 
 def register():
     Pool.register(
+        invoice.Cron,
         invoice.InvoiceEdiConfiguration,
         invoice.InvoiceEdi,
         invoice.InvoiceEdiLine,
