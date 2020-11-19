@@ -733,11 +733,6 @@ msgctxt "selection:invoice.edi,function_:"
 msgid "Original"
 msgstr "Original"
 
-#, fuzzy
-msgctxt "selection:invoice.edi,payment_type_value:"
-msgid ""
-msgstr "PAIN GONE"
-
 msgctxt "selection:invoice.edi,payment_type_value:"
 msgid "Account Bank"
 msgstr "Compte bancari"
@@ -757,6 +752,10 @@ msgstr "Metàllic"
 msgctxt "selection:invoice.edi,payment_type_value:"
 msgid "check"
 msgstr "Xèc"
+
+msgctxt "selection:invoice.edi,payment_type_value:"
+msgid "Credit Transfer"
+msgstr "Transferència de Crèdit"
 
 msgctxt "selection:invoice.edi,state:"
 msgid "Confirmed"

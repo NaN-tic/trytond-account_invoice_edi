@@ -743,6 +743,10 @@ msgctxt "selection:invoice.edi,payment_type_value:"
 msgid "check"
 msgstr "Cheque"
 
+msgctxt "selection:invoice.edi,payment_type_value:"
+msgid "Credit Transfer"
+msgstr "Transferencia de Crèdito"
+
 msgctxt "selection:invoice.edi,state:"
 msgid "Confirmed"
 msgstr "Confirmat"
