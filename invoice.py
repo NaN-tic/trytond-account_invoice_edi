@@ -288,17 +288,29 @@ class InvoiceEdi(ModelSQL, ModelView):
     company = fields.Many2One('company.company', 'Company', readonly=True)
     number = fields.Char('Number', readonly=True)
     invoice = fields.Many2One('account.invoice', 'Invoice')
-    type_ = fields.Selection([('380', 'Invoice'),('381', 'Credit'),
-        ('383', 'Charge Note'),], 'Document Type', readonly=True)
-    function_ = fields.Selection([(None, ''),('9', 'Original'), ('31', 'Copy')],
+    type_ = fields.Selection([
+            ('380', 'Invoice'),
+            ('381', 'Credit'),
+            ('383', 'Charge Note')],
+        'Document Type', readonly=True)
+    function_ = fields.Selection([
+            (None, ''),
+            ('9', 'Original'),
+            ('31', 'Copy')],
         'Message Function', readonly=True)
     invoice_date = fields.Date('Invoice Date', readonly=True)
     service_date = fields.Date('Service Date', readonly=True)
     start_period_date = fields.Date('Start Period', readonly=True)
     end_period_date = fields.Date('End Period', readonly=True)
-    payment_type_value = fields.Selection([(None, ''), ('42', 'Account Bank'),
-        ('10', 'cash'), ('20', 'check'), ('60', 'Bank Note'),
-        ('14E', 'Bank Draft')], 'Payment Type Value', readonly=True)
+    payment_type_value = fields.Selection([
+            (None, ''),
+            ('42', 'Account Bank'),
+            ('10', 'cash'),
+            ('20', 'check'),
+            ('60', 'Bank Note'),
+            ('14E', 'Bank Draft'),
+            ('30', 'Credit Transfer')],
+        'Payment Type Value', readonly=True)
     payment_type = fields.Many2One('account.payment.type', 'Payment Type',
         readonly=True)
     factoring = fields.Boolean('Factoring', readonly=True)
@@ -594,13 +606,13 @@ class InvoiceEdi(ModelSQL, ModelView):
         invoice.currency = Invoice.default_currency()
         invoice.company = self.company
         invoice.party = self.party
+        invoice.on_change_party()
         invoice.reference = self.number
         invoice.invoice_date = self.invoice_date
         invoice.type = 'in'
-        invoice.party = self.party
-        invoice.state = 'draft'
         invoice.on_change_type()
-        invoice.on_change_party()
+        invoice.account = invoice.on_change_with_account()
+        invoice.state = 'draft'
         return invoice
 
     def get_discount_invoice_line(self, description, amount, taxes=None):
@@ -705,8 +717,13 @@ class InvoiceEdiLine(ModelSQL, ModelView):
 
     edi_invoice = fields.Many2One('invoice.edi', 'Invoice', ondelete='CASCADE')
     code  = fields.Char('Code')
-    code_type = fields.Selection([('EAN8', 'EAN8'), ('EAN13', 'EAN13'),
-        ('EAN14', 'EAN14'), ('DUN14', 'DUN14')], 'Code Type')
+    code_type = fields.Selection([
+            ('', ''),
+            ('EAN8', 'EAN8'),
+            ('EAN13', 'EAN13'),
+            ('EAN14', 'EAN14'),
+            ('DUN14', 'DUN14')],
+        'Code Type')
     sequence = fields.Integer('Sequence')
     supplier_code = fields.Char('Supplier Code')
     purchaser_code = fields.Char('Purchaser Code')
