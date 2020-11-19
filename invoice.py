@@ -18,7 +18,7 @@ import codecs
 
 __all__ = ['InvoiceEdiConfiguration','InvoiceEdi','InvoiceEdiLine',
     'SupplierEdi','InvoiceEdiReference','InvoiceEdiMaturityDates',
-    'InvoiceEdiDiscount','InvoiceEdiLineQty','InvoiceEdiTax']
+    'InvoiceEdiDiscount','InvoiceEdiLineQty','InvoiceEdiTax', 'Cron']
 
 DEFAULT_FILES_LOCATION = '/tmp/invoice'
 
@@ -36,6 +36,17 @@ def to_decimal(value, digits=2):
     if value is None or value == '':
         return None
     return Decimal(value).quantize(Decimal('10')**-digits)
+
+
+class Cron(metaclass=PoolMeta):
+    __name__ = 'ir.cron'
+
+    @classmethod
+    def __setup__(cls):
+        super(Cron, cls).__setup__()
+        cls.method.selection.extend([
+            ('invoice.edi|import_edi_files', 'Import Edi Invoices'),
+        ])
 
 
 class InvoiceEdiConfiguration(ModelSingleton, ModelSQL, ModelView):
@@ -347,6 +358,7 @@ class InvoiceEdi(ModelSQL, ModelView):
     party = fields.Function(fields.Many2One('party.party', 'Invoice Party'),
         'get_party', searcher='search_party')
     manual_party = fields.Many2One('party.party', 'Manual Party')
+    comment = fields.Text('Comment')
 
     @classmethod
     def __setup__(cls):
@@ -485,6 +497,7 @@ class InvoiceEdi(ModelSQL, ModelView):
         tax.type_ = message.pop(0)
         tax.percent = to_decimal(message.pop(0))
         tax.tax_amount = to_decimal(message.pop(0))
+        print(message)
         if message:
             tax.base_amount = to_decimal(message.pop(0))
         tax.search_tax()
@@ -702,6 +715,7 @@ class InvoiceEdiTax(ModelSQL, ModelView):
         ('ACT', 'Alcohol Tax'), ('ENV', 'Gree Dot'), ('IGIC', 'IGIC')], 'Type')
     percent = fields.Numeric('Percent', digits=(16,2))
     tax_amount = fields.Numeric('Tax Amount', digits=(16,2))
+    base_amount = fields.Numeric('Base Amount', digits=(16,2))
     line = fields.Many2One('invoice.edi.line', 'Line', ondelete='CASCADE')
     edi_invoice = fields.Many2One('invoice.edi', 'Invoice', ondelete='CASCADE')
     comment = fields.Text('Comment')
@@ -889,7 +903,7 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         if qty.type_ == '47':
             self.quantity = qty.quantity
         if message:
-            qty.uom = message.pop(0)
+            qty.uom_char = message.pop(0)
         if not getattr(self, 'quantities', False):
             self.quantities = []
         self.quantities += (qty,)
@@ -973,7 +987,7 @@ class Invoice(metaclass=PoolMeta):
 
         if differences:
             key = 'confirm_invoice_with_difference_%s' % (
-                    "_".join([x.id for x in differences])) 
+                    "_".join([x.id for x in differences]))
             if Warning.check(key):
                 raise UserWarning(key,gettext(
                         'account_invoice_edi.confirm_invoice_with_difference',
