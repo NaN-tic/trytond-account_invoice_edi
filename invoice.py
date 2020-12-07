@@ -9,10 +9,7 @@ from trytond.exceptions import UserError, UserWarning
 from trytond.i18n import gettext
 
 import os
-from glob import glob
-from unidecode import unidecode
 from datetime import datetime
-from trytond import backend
 from decimal import Decimal
 import codecs
 
@@ -235,7 +232,7 @@ class InvoiceEdiReference(ModelSQL, ModelView):
             ('stock.move', 'Move')]
 
     def read_message(self, message):
-        messsage_id = message.pop(0)
+        message.pop(0)
         type_ = message.pop(0)
         value = message.pop(0)
         self.type_ = type_
@@ -429,7 +426,7 @@ class InvoiceEdi(ModelSQL, ModelView):
         if message:
             period = message.pop(0)
             self.start_period_date = to_date(period[0:8])
-            self.end_period_date = to_date(priod[8:])
+            self.end_period_date = to_date(period[8:])
 
     def read_PAI(self, message):
         payment_type = message.pop(0)
@@ -453,7 +450,7 @@ class InvoiceEdi(ModelSQL, ModelView):
         self.references += (ref,)
 
     def read_CUX(self, message):
-        message_id = message.pop(0)
+        message.pop(0)
         self.currency_code = message.pop(0)
 
     def read_PAT(self, message):
@@ -647,11 +644,6 @@ class InvoiceEdi(ModelSQL, ModelView):
     @classmethod
     @ModelView.button
     def search_references(cls, edi_invoices):
-        pool = Pool()
-        Invoice = pool.get('account.invoice')
-        Line = pool.get('account.invoice.line')
-        invoices = []
-        to_save = []
         for edi_invoice in edi_invoices:
             if edi_invoice.invoice:
                 continue
@@ -666,7 +658,6 @@ class InvoiceEdi(ModelSQL, ModelView):
     def create_invoices(cls, edi_invoices):
         pool = Pool()
         Invoice = pool.get('account.invoice')
-        Line = pool.get('account.invoice.line')
         invoices = []
         to_save = []
         for edi_invoice in edi_invoices:
@@ -776,7 +767,6 @@ class InvoiceEdiLine(ModelSQL, ModelView):
     def search_related(self, edi_invoice):
         pool = Pool()
         Barcode = pool.get('product.code')
-        Move = pool.get('stock.move')
         REF = Pool().get('invoice.edi.reference')
         # ('barcode', '=', self.code_type) Remove this from domain after some
         # received
