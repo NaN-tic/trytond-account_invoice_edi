@@ -56,5 +56,8 @@
     <page name="discounts">
       <field name="discounts"/>
     </page>
+    <page name="note">
+      <field name="note"/>
+    </page>
   </notebook>
 </form>
