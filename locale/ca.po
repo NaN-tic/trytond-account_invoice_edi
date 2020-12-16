@@ -390,6 +390,10 @@ msgctxt "field:invoice.edi.line,write_uid:"
 msgid "Write User"
 msgstr "Usuario de modificación"
 
+msgctxt "field:invoice.edi.line,note:"
+msgid "Note"
+msgstr "Nota"
+
 msgctxt "field:invoice.edi.line.quantity,create_date:"
 msgid "Create Date"
 msgstr "Fecha de creación"

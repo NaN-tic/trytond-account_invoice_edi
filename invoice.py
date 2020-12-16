@@ -759,6 +759,7 @@ class InvoiceEdiLine(ModelSQL, ModelView):
     quantity = fields.Function(fields.Numeric('Quantity', digits=(16,4)),
         'invoiced_quantity')
     invoice_line = fields.Many2One('account.invoice.line', 'Invoice Line')
+    note = fields.Text('Note')
 
     @classmethod
     def __setup__(cls):
@@ -935,6 +936,9 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         if not getattr(self, 'taxes', False):
             self.taxes = []
         self.taxes += (tax,)
+
+    def read_TXTLIN(self, message):
+        self.note = message.pop(0)
 
     def read_ALCLIN(self, message):
         Discount =  Pool().get('invoice.edi.discount')
