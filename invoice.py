@@ -13,9 +13,9 @@ from datetime import datetime
 from decimal import Decimal
 import codecs
 
-__all__ = ['InvoiceEdiConfiguration','InvoiceEdi','InvoiceEdiLine',
-    'SupplierEdi','InvoiceEdiReference','InvoiceEdiMaturityDates',
-    'InvoiceEdiDiscount','InvoiceEdiLineQty','InvoiceEdiTax', 'Cron']
+__all__ = ['InvoiceEdiConfiguration', 'InvoiceEdi', 'InvoiceEdiLine',
+    'SupplierEdi', 'InvoiceEdiReference', 'InvoiceEdiMaturityDates',
+    'InvoiceEdiDiscount', 'InvoiceEdiLineQty', 'InvoiceEdiTax', 'Cron']
 
 DEFAULT_FILES_LOCATION = '/tmp/invoice'
 
@@ -58,17 +58,19 @@ class InvoiceEdiConfiguration(ModelSingleton, ModelSQL, ModelView):
         return '|'
 
 
-class SupplierEdi(ModelSQL, ModelView):
-    'Supplier Edi'
-    __name__ = 'invoice.edi.supplier'
+SUPPLIER_TYPE = [('NADSCO', 'Legal Supplier'),
+    ('NADBCO', 'Legal Purchaser'), ('NADSU', 'Supplier'),
+    ('NADBY', 'Purchaser'), ('NADII', 'Invoice Issuer'),
+    ('NADIV', 'Invoice Receiver'), ('NADDP', 'Stock Receiver'),
+    ('NADPW', 'NADPW'), ('NADPE', 'NADPE'),
+    ('NADPR', 'Payment Issuer'), ('NADDL', 'Endorser'),
+    ('NAD', 'NAD'), ('NADMR', 'NADMR'),
+    ('NADUC', 'Final Receiver'), ('NADSH', 'Sender'),
+    ]
 
-    type_ = fields.Selection([('NADSCO','Legal Supplier'),
-        ('NADBCO', 'Legal Purchaser'), ('NADSU', 'Supplier'),
-        ('NADBY', 'Purchaser'), ('NADII', 'Invoice Issuer'),
-        ('NADIV', 'Invoice Receiver'), ('NADDP', 'Stock Receiver'),
-        ('NADPW', 'NADPW'),('NADPE', 'NADPE'),
-        ('NADPR', 'Payment Issuer'), ('NADDL', 'Endorser'),
-        ('NAD', 'NAD'),('NADMR', 'NADMR')], 'Type')
+class SupplierEdiMixin(ModelSQL, ModelView):
+
+    type_ = fields.Selection(SUPPLIER_TYPE, 'Type')
 
     edi_code = fields.Char('Edi Code')
     name = fields.Char('Name')
@@ -79,7 +81,6 @@ class SupplierEdi(ModelSQL, ModelView):
     vat = fields.Char('Vat')
     country_code = fields.Char('Country_code')
     account_bank = fields.Char('Account Bank')
-    edi_invoice = fields.Many2One('invoice.edi', 'Edi Invoice')
     party = fields.Many2One('party.party', 'Party')
 
     def read_NADSCO(self, message):
@@ -189,6 +190,14 @@ class SupplierEdi(ModelSQL, ModelView):
         self.type_ = 'NADPW'
         self.edi_code = message.pop(0)
 
+    def read_NADSH(self, message):
+        self.type_ = 'NADSH'
+        self.edi_code = message.pop(0)
+
+    def read_NADUC(self, message):
+        self.type_ = 'NADUC'
+        self.edi_code = message.pop(0)
+
     def search_party(self):
         PartyId = Pool().get('party.identifier')
         domain = []
@@ -206,6 +215,11 @@ class SupplierEdi(ModelSQL, ModelView):
             if identifier:
                 self.party = identifier[0].party
 
+class SupplierEdi(SupplierEdiMixin, ModelSQL, ModelView):
+    'Supplier Edi'
+    __name__ = 'invoice.edi.supplier'
+
+    edi_invoice = fields.Many2One('invoice.edi', 'Edi Invoice')
 
 class InvoiceEdiReference(ModelSQL, ModelView):
     'Account Invoice Reference'
@@ -213,7 +227,7 @@ class InvoiceEdiReference(ModelSQL, ModelView):
 
     type_ = fields.Selection([('DQ', 'Shipment'), ('ON', 'Purchase'),
         ('CT', 'Contract'), ('IV', 'Invoice'), ('AAK', 'Expedition'),
-        ('ALO', 'Confirmed Reception'),('move', 'Move'),
+        ('ALO', 'Confirmed Reception'), ('move', 'Move'),
         ('LI', 'Line Number'), ('SNR', 'Medical Record')], 'Reference Code')
 
     value = fields.Char('Reference')
@@ -265,7 +279,7 @@ class InvoiceEdiMaturityDates(ModelSQL, ModelView):
     type_ = fields.Selection([('35', 'Unique Payment'),
         ('21', 'Various Payments')], 'Type')
     maturity_date = fields.Date('Maturity Date')
-    amount = fields.Numeric('Amount', digits=(16,2))
+    amount = fields.Numeric('Amount', digits=(16, 2))
     invoice_edi = fields.Many2One('invoice.edi', 'Edi Invoice',
         ondelete='CASCADE')
 
@@ -274,15 +288,15 @@ class InvoiceEdiDiscount(ModelSQL, ModelView):
     'Edi discount'
     __name__ = 'invoice.edi.discount'
 
-    type_ = fields.Selection([('A', 'Discount'),('C', 'Charge')], 'Type')
+    type_ = fields.Selection([('A', 'Discount'), ('C', 'Charge')], 'Type')
     sequence = fields.Integer('sequence')
-    discount = fields.Selection([(None, ''),('EAB', 'Prompt Payment'),
+    discount = fields.Selection([(None, ''), ('EAB', 'Prompt Payment'),
         ('ABH', 'Volume or Abseling'), ('TD', 'Commercial'), ('FC', 'Freight'),
         ('PC', 'Packaging'), ('SH', 'Mounting'), ('IN', 'INSURANCE'),
         ('CW', 'Container'), ('RAD', 'Charge Container'), ('FI', 'Finance'),
-        ('VEJ', 'Grren Dot'), ('X40','Royal decree')], 'Discount Type')
-    percent = fields.Numeric('Percent', digits=(16,2))
-    amount = fields.Numeric('Amount', digits=(16,2))
+        ('VEJ', 'Grren Dot'), ('X40', 'Royal decree')], 'Discount Type')
+    percent = fields.Numeric('Percent', digits=(16, 2))
+    amount = fields.Numeric('Amount', digits=(16, 2))
     invoice_edi = fields.Many2One('invoice.edi', 'Edi Invoice',
         ondelete='CASCADE')
     invoice_edi_line = fields.Many2One('invoice.edi.line',
@@ -328,14 +342,14 @@ class InvoiceEdi(ModelSQL, ModelView):
         'invoice_edi', 'Maturity Dates', readonly=True)
     discounts = fields.One2Many('invoice.edi.discount',
             'invoice_edi', 'Discounts', readonly=True)
-    net_amount = fields.Numeric('Net Amount', digits=(16,2), readonly=True)
-    gross_amount = fields.Numeric('Gross Amount', digits=(16,2),readonly=True)
-    base_amount = fields.Numeric('Base Amount', digits=(16,2), readonly=True)
-    total_amount = fields.Numeric('Total Amount', digits=(16,2), readonly=True)
-    tax_amount = fields.Numeric('Tax Amount', digits=(16,2), readonly=True)
-    discount_amount = fields.Numeric('Discount Amount', digits=(16,2),
+    net_amount = fields.Numeric('Net Amount', digits=(16, 2), readonly=True)
+    gross_amount = fields.Numeric('Gross Amount', digits=(16, 2), readonly=True)
+    base_amount = fields.Numeric('Base Amount', digits=(16, 2), readonly=True)
+    total_amount = fields.Numeric('Total Amount', digits=(16, 2), readonly=True)
+    tax_amount = fields.Numeric('Tax Amount', digits=(16, 2), readonly=True)
+    discount_amount = fields.Numeric('Discount Amount', digits=(16, 2),
         readonly=True)
-    charge_amount = fields.Numeric('Charge Amount', digits=(16,2),
+    charge_amount = fields.Numeric('Charge Amount', digits=(16, 2),
         readonly=True)
     taxes = fields.One2Many('invoice.edi.tax', 'edi_invoice', 'Taxes',
         readonly=True)
@@ -350,8 +364,8 @@ class InvoiceEdi(ModelSQL, ModelView):
     differences_state = fields.Function(fields.Selection([
         (None, ''), ('ok', 'Ok'), ('difference', 'Difference')],
         'Difference State'), 'get_differences_state')
-    difference_amount =fields.Function(fields.Numeric('Differences',
-        digits=(16,2)), 'get_difference_amount')
+    difference_amount = fields.Function(fields.Numeric('Differences',
+        digits=(16, 2)), 'get_difference_amount')
     party = fields.Function(fields.Many2One('party.party', 'Invoice Party'),
         'get_party', searcher='search_party')
     manual_party = fields.Many2One('party.party', 'Manual Party')
@@ -382,7 +396,7 @@ class InvoiceEdi(ModelSQL, ModelView):
     def search_state(cls, name, clause):
         if clause[-1] == 'draft':
             return [('invoice', clause[1], None)]
-        return [('invoice', '!=' , None)]
+        return [('invoice', '!=', None)]
 
     def get_differences_state(self, name):
         if not self.invoice:
@@ -399,7 +413,8 @@ class InvoiceEdi(ModelSQL, ModelView):
     @classmethod
     def search_party(cls, name, clause):
         return ['OR', ('manual_party', ) + tuple(clause[1:]),
-                [('suppliers.type_', '=', 'NADSU'), ('suppliers.party', ) + tuple(clause[1:])]]
+                [('suppliers.type_', '=', 'NADSU'),
+                    ('suppliers.party', ) + tuple(clause[1:])]]
 
     def get_party(self, name):
         if self.manual_party:
@@ -419,7 +434,6 @@ class InvoiceEdi(ModelSQL, ModelView):
         self.comment = message.pop(0)
 
     def read_DTM(self, message):
-        print(message)
         self.invoice_date = to_date(message.pop(0)[0:8])
         if message:
             self.service_date = to_date(message.pop(0)[0:8])
@@ -465,7 +479,7 @@ class InvoiceEdi(ModelSQL, ModelView):
         self.maturity_dates += (line,)
 
     def read_ALC(self, message):
-        Discount =  Pool().get('invoice.edi.discount')
+        Discount = Pool().get('invoice.edi.discount')
         discount = Discount()
         discount.type_ = message.pop(0)
         sequence = message.pop(0)
@@ -505,7 +519,6 @@ class InvoiceEdi(ModelSQL, ModelView):
     def read_CNTRES(self, message):
         pass
 
-    @classmethod
     def import_edi_file(self, data):
         pool = Pool()
         Invoice = pool.get('invoice.edi')
@@ -521,9 +534,8 @@ class InvoiceEdi(ModelSQL, ModelView):
         document_type = data.pop(0)
         if document_type == 'INVOIC_D_93A_UN_EAN007':
             return
-        print(document_type)
         for line in data:
-            line = line.replace('\n','').replace('\r','')
+            line = line.replace('\n', '').replace('\r', '')
             line = line.split(separator)
             msg_id = line.pop(0)
             if msg_id == 'INV':
@@ -538,12 +550,10 @@ class InvoiceEdi(ModelSQL, ModelView):
                     invoice.lines = []
                 invoice.lines += (invoice_line,)
             elif 'LIN' in msg_id:
-                getattr(invoice_line, 'read_%s' %msg_id)(line)
-            elif msg_id in ('NADSCO', 'NADBCO','NADSU', 'NADBY', 'NADII',
-                    'NADIV', 'NADDP', 'NADPR', 'NADDL', 'NAD', 'NADPE', 'NADPW',
-                    'NADMR'):
+                getattr(invoice_line, 'read_%s' % msg_id)(line)
+            elif msg_id in [x[0] for x in SUPPLIER_TYPE]:
                 supplier = SupplierEdi()
-                getattr(supplier, 'read_%s' %msg_id)(line)
+                getattr(supplier, 'read_%s' % msg_id)(line)
                 supplier.search_party()
                 if not getattr(invoice, 'suppliers', False):
                     invoice.suppliers = []
@@ -551,13 +561,12 @@ class InvoiceEdi(ModelSQL, ModelView):
             elif 'NAD' in msg_id:
                 continue
             else:
-                getattr(invoice, 'read_%s' %msg_id)(line)
+                getattr(invoice, 'read_%s' % msg_id)(line)
 
         # invoice_line.search_related(invoice)
         return invoice
 
     def add_attachment(self, attachment, filename=None):
-        return
         pool = Pool()
         Attachment = pool.get('ir.attachment')
         if not filename:
@@ -688,7 +697,7 @@ class InvoiceEdiLineQty(ModelSQL, ModelView):
 
     type_ = fields.Selection([('47', 'Invoiced'), ('46', 'Delivered'),
         ('61', 'Returned'), ('15E', 'Without Charge')], 'Type')
-    quantity = fields.Numeric('Quantity', digits=(16,2))
+    quantity = fields.Numeric('Quantity', digits=(16, 2))
     uom_char = fields.Char('Uom')
     line = fields.Many2One('invoice.edi.line', 'Line', ondelete='CASCADE')
 
@@ -704,9 +713,9 @@ class InvoiceEdiTax(ModelSQL, ModelView):
     type_ = fields.Selection([('VAT', 'VAT'), ('EXT', 'Exempt'),
         ('RET', 'IRPF'), ('RE', 'Equivalence Surcharge'),
         ('ACT', 'Alcohol Tax'), ('ENV', 'Gree Dot'), ('IGIC', 'IGIC')], 'Type')
-    percent = fields.Numeric('Percent', digits=(16,2))
-    tax_amount = fields.Numeric('Tax Amount', digits=(16,2))
-    base_amount = fields.Numeric('Base Amount', digits=(16,2))
+    percent = fields.Numeric('Percent', digits=(16, 2))
+    tax_amount = fields.Numeric('Tax Amount', digits=(16, 2))
+    base_amount = fields.Numeric('Base Amount', digits=(16, 2))
     line = fields.Many2One('invoice.edi.line', 'Line', ondelete='CASCADE')
     edi_invoice = fields.Many2One('invoice.edi', 'Invoice', ondelete='CASCADE')
     comment = fields.Text('Comment')
@@ -721,7 +730,7 @@ class InvoiceEdiLine(ModelSQL, ModelView):
     __name__ = 'invoice.edi.line'
 
     edi_invoice = fields.Many2One('invoice.edi', 'Invoice', ondelete='CASCADE')
-    code  = fields.Char('Code')
+    code = fields.Char('Code')
     code_type = fields.Selection([
             ('', ''),
             ('EAN8', 'EAN8'),
@@ -741,22 +750,22 @@ class InvoiceEdiLine(ModelSQL, ModelView):
     description = fields.Char('Description')
     characteristic = fields.Selection([(None, ''), ('M', 'Goods'),
         ('C', 'C')], 'Characteristic')
-    qualifier = fields.Selection([(None, ''), ('F','Free Description')],
+    qualifier = fields.Selection([(None, ''), ('F', 'Free Description')],
         'Qualifier  ')
     quantities = fields.One2Many('invoice.edi.line.quantity', 'line',
         'Quantities')
     delivery_date = fields.Char('Delivery Date')
-    base_amount = fields.Numeric('Base Amount', digits=(16,2))
-    total_amount = fields.Numeric('Total Amount', digits=(16,2))
-    unit_price = fields.Numeric('Unit Price', digits=(16,4))
-    gross_price = fields.Numeric('Gross Price', digits=(16,4))
+    base_amount = fields.Numeric('Base Amount', digits=(16, 2))
+    total_amount = fields.Numeric('Total Amount', digits=(16, 2))
+    unit_price = fields.Numeric('Unit Price', digits=(16, 4))
+    gross_price = fields.Numeric('Gross Price', digits=(16, 4))
     references = fields.One2Many('invoice.edi.reference',
         'edi_invoice_line', 'References')
     taxes = fields.One2Many('invoice.edi.tax', 'line', 'Taxes')
     discounts = fields.One2Many('invoice.edi.discount',
         'invoice_edi_line', 'Discounts')
     product = fields.Many2One('product.product', 'Product')
-    quantity = fields.Function(fields.Numeric('Quantity', digits=(16,4)),
+    quantity = fields.Function(fields.Numeric('Quantity', digits=(16, 4)),
         'invoiced_quantity')
     invoice_line = fields.Many2One('account.invoice.line', 'Invoice Line')
     note = fields.Text('Note')
