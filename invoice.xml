@@ -24,8 +24,6 @@
           <field name="act_window" ref="act_configuration_form"/>
       </record>
 
-
-
       <menuitem parent="menu_edi_invoices"
           action="act_configuration_form"
           id="menuitem_account_configuration"
@@ -49,7 +47,6 @@
           <field name="perm_create" eval="True"/>
           <field name="perm_delete" eval="True"/>
       </record>
-
 
       <record model="ir.ui.view" id="supplier_edi_view_form">
           <field name="model">invoice.edi.supplier</field>
@@ -137,7 +134,6 @@
           <field name="name">invoice_edi_line_tree</field>
       </record>
 
-
       <record model="ir.action.act_window" id="act_edi_invoice_form">
           <field name="name">Edi Invoices</field>
           <field name="res_model">invoice.edi</field>
@@ -194,10 +190,8 @@
           <field name="method">invoice.edi|import_edi_files</field>
       </record>
 
-
       <menuitem parent="menu_edi_invoices" action="act_edi_invoice_form"
           id="menu_edi_invoice_form" sequence="10"/>
-
 
       <record model="ir.ui.menu-res.group" id="menu_edi_invoice_group_account">
           <field name="menu" ref="menu_edi_invoice_form"/>
@@ -223,6 +217,5 @@
           <field name="button" ref="search_related_button"/>
           <field name="group" ref="account.group_account"/>
       </record>
-
     </data>
 </tryton>
