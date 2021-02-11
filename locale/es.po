@@ -500,7 +500,7 @@ msgstr "Número línea"
 
 msgctxt "field:invoice.edi.reference,origin:"
 msgid "Reference"
-msgstr "Referencia"
+msgstr "Origen"
 
 msgctxt "field:invoice.edi.reference,rec_name:"
 msgid "Name"
