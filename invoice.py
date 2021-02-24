@@ -575,7 +575,7 @@ class InvoiceEdi(ModelSQL, ModelView):
         attach = Attachment(
             name=filename,
             type='data',
-            data=attachment.decode('utf8'),
+            data=attachment.encode('utf8'),
             resource=self)
         attach.save()
 
