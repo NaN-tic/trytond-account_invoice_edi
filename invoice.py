@@ -519,7 +519,8 @@ class InvoiceEdi(ModelSQL, ModelView):
     def read_CNTRES(self, message):
         pass
 
-    def import_edi_file(self, data):
+    @classmethod
+    def import_edi_file(cls, data):
         pool = Pool()
         Invoice = pool.get('invoice.edi')
         InvoiceLine = pool.get('invoice.edi.line')
