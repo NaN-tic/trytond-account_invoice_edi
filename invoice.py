@@ -991,8 +991,8 @@ class Invoice(metaclass=PoolMeta):
 
         if differences:
             key = 'confirm_invoice_with_difference_%s' % (
-                    "_".join([x.id for x in differences]))
+                    "_".join([str(x.id) for x in differences]))
             if Warning.check(key):
-                raise UserWarning(key,gettext(
+                raise UserWarning(key, gettext(
                         'account_invoice_edi.confirm_invoice_with_difference',
                         invoices=",".join([x.referemce for x in differences])))
