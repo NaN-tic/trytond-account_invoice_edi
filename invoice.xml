@@ -70,17 +70,6 @@
           <field name="name">invoice_edi_reference_tree</field>
       </record>
 
-      <record model="ir.ui.view" id="invoice_edit_maturity_date_view_form">
-          <field name="model">invoice.edi.maturity_date</field>
-          <field name="type">form</field>
-          <field name="name">invoice_edit_maturity_date_form</field>
-      </record>
-      <record model="ir.ui.view" id="invoice_edit_maturity_date_view_tree">
-          <field name="model">invoice.edi.maturity_date</field>
-          <field name="type">tree</field>
-          <field name="name">invoice_edi_maturity_date_tree</field>
-      </record>
-
       <record model="ir.ui.view" id="invoice_edi_discount_view_form">
           <field name="model">invoice.edi.discount</field>
           <field name="type">form</field>
