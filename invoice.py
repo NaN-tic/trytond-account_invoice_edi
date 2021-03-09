@@ -886,9 +886,8 @@ class InvoiceEdiLine(ModelSQL, ModelView):
             if len(code) == 14:
                 return 'EAN14'
             # TODO DUN14
-
-        self.code = message.pop(0)
-        code_type = message.pop(0)
+        self.code = message.pop(0) if message else ''
+        code_type = message.pop(0) if message else ''
         if code_type == 'EN':
             self.code_type = _get_code_type(self.code)
         if message:
