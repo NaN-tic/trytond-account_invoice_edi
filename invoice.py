@@ -12,6 +12,7 @@ import os
 from datetime import datetime
 from decimal import Decimal
 import codecs
+import barcodenumber
 
 __all__ = ['InvoiceEdiConfiguration', 'InvoiceEdi', 'InvoiceEdiLine',
     'SupplierEdi', 'InvoiceEdiReference', 'InvoiceEdiMaturityDates',
@@ -215,11 +216,13 @@ class SupplierEdiMixin(ModelSQL, ModelView):
             if identifier:
                 self.party = identifier[0].party
 
+
 class SupplierEdi(SupplierEdiMixin, ModelSQL, ModelView):
     'Supplier Edi'
     __name__ = 'invoice.edi.supplier'
 
     edi_invoice = fields.Many2One('invoice.edi', 'Edi Invoice')
+
 
 class InvoiceEdiReference(ModelSQL, ModelView):
     'Account Invoice Reference'
@@ -375,6 +378,10 @@ class InvoiceEdi(ModelSQL, ModelView):
     @classmethod
     def __setup__(cls):
         super(InvoiceEdi, cls).__setup__()
+        cls._order = [
+            ('invoice_date', 'DESC'),
+            ('id', 'DESC'),
+            ]
         cls._buttons.update({
             'create_invoices': {},
             'search_references': {}
@@ -554,10 +561,12 @@ class InvoiceEdi(ModelSQL, ModelView):
                     invoice.lines = []
                 invoice.lines += (invoice_line,)
             elif 'LIN' in msg_id:
-                getattr(invoice_line, 'read_%s' % msg_id)(line)
+                if hasattr(invoice_line, 'read_%s' % msg_id):
+                    getattr(invoice_line, 'read_%s' % msg_id)(line)
             elif msg_id in [x[0] for x in SUPPLIER_TYPE]:
                 supplier = SupplierEdi()
-                getattr(supplier, 'read_%s' % msg_id)(line)
+                if hasattr(supplier, 'read_%s' % msg_id):
+                    getattr(supplier, 'read_%s' % msg_id)(line)
                 supplier.search_party()
                 if not getattr(invoice, 'suppliers', False):
                     invoice.suppliers = []
@@ -565,7 +574,8 @@ class InvoiceEdi(ModelSQL, ModelView):
             elif 'NAD' in msg_id:
                 continue
             else:
-                getattr(invoice, 'read_%s' % msg_id)(line)
+                if hasattr(invoice, 'read_%s' % msg_id):
+                    getattr(invoice, 'read_%s' % msg_id)(line)
 
         # invoice_line.search_related(invoice)
         return invoice
@@ -736,12 +746,13 @@ class InvoiceEdiLine(ModelSQL, ModelView):
     edi_invoice = fields.Many2One('invoice.edi', 'Invoice', ondelete='CASCADE')
     code = fields.Char('Code')
     code_type = fields.Selection([
-            ('', ''),
+            (None, ''),
+            ('EAN', 'EAN'),
             ('EAN8', 'EAN8'),
             ('EAN13', 'EAN13'),
             ('EAN14', 'EAN14'),
-            ('DUN14', 'DUN14')],
-        'Code Type')
+            ('DUN14', 'DUN14'),
+        ], 'Code Type')
     sequence = fields.Integer('Sequence')
     supplier_code = fields.Char('Supplier Code')
     purchaser_code = fields.Char('Purchaser Code')
@@ -870,10 +881,19 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         return Decimal('0')
 
     def read_LIN(self, message):
+        def _get_code_type(code):
+            for code_type in ('EAN8', 'EAN13', 'EAN'):
+                check_code_ean = 'check_code_' + code_type.lower()
+                if getattr(barcodenumber, check_code_ean)(code):
+                    return code_type
+            if len(code) == 14:
+                return 'EAN14'
+            # TODO DUN14
+
         self.code = message.pop(0) if message else ''
-        self.code_type = message.pop(0) if message else ''
-        if self.code_type == 'EN':
-            self.code_type = 'EAN8'
+        code_type = message.pop(0) if message else ''
+        if code_type == 'EN':
+            self.code_type = _get_code_type(self.code)
         if message:
             self.sequence = int(message.pop(0))
 
