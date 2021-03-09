@@ -85,8 +85,8 @@ class SupplierEdiMixin(ModelSQL, ModelView):
 
     def read_NADSCO(self, message):
         self.type_ = 'NADSCO'
-        self.edi_code = message.pop(0)
-        self.name = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
+        self.name = message.pop(0) if message else ''
         if message:
             self.commercial_register = message.pop(0)
         if message:
@@ -102,8 +102,8 @@ class SupplierEdiMixin(ModelSQL, ModelView):
 
     def read_NADBCO(self, message):
         self.type_ = 'NADBCO'
-        self.edi_code = message.pop(0)
-        self.name = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
+        self.name = message.pop(0) if message else ''
         if message:
             self.street = message.pop(0)
         self.city = message.pop(0)
@@ -116,8 +116,8 @@ class SupplierEdiMixin(ModelSQL, ModelView):
 
     def read_NADMR(self, message):
         self.type_ = 'NADMR'
-        self.edi_code = message.pop(0)
-        self.name = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
+        self.name = message.pop(0) if message else ''
         if message:
             self.street = message.pop(0)
         if message:
@@ -127,8 +127,8 @@ class SupplierEdiMixin(ModelSQL, ModelView):
 
     def read_NADDL(self, message):
         self.type_ = 'NADDL'
-        self.edi_code = message.pop(0)
-        self.name = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
+        self.name = message.pop(0) if message else ''
         if message:
             self.street = message.pop(0)
         if message:
@@ -140,19 +140,19 @@ class SupplierEdiMixin(ModelSQL, ModelView):
 
     def read_NAD(self, message):
         self.type_ = 'NAD'
-        self.edi_code = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
         if message:
             self.vat = message.pop(0)
 
     def read_NADIV(self, message):
         self.type_ = 'NADIV'
-        self.edi_code = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
         if message:
             self.vat = message.pop(0)
 
     def read_NADPE(self, message):
         self.type_ = 'NADPE'
-        self.edi_code = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
         if message:
             self.vat = message.pop(0)
 
@@ -164,39 +164,39 @@ class SupplierEdiMixin(ModelSQL, ModelView):
 
     def read_NADBY(self, message):
         self.type_ = 'NADBY'
-        self.edi_code = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
         if message:
             self.vat = message.pop(0)
 
     def read_NADBIV(self, message):
         self.type_ = 'NADBIV'
-        self.edi_code = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
         if message:
             self.vat = message.pop(0)
 
     def read_NADPR(self, message):
         self.type_ = 'NADPR'
-        self.edi_code = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
 
     def read_NADII(self, message):
         self.type_ = 'NADII'
-        self.edi_code = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
 
     def read_NADDP(self, message):
         self.type_ = 'NADDP'
-        self.edi_code = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
 
     def read_NADPW(self, message):
         self.type_ = 'NADPW'
-        self.edi_code = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
 
     def read_NADSH(self, message):
         self.type_ = 'NADSH'
-        self.edi_code = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
 
     def read_NADUC(self, message):
         self.type_ = 'NADUC'
-        self.edi_code = message.pop(0)
+        self.edi_code = message.pop(0) if message else ''
 
     def search_party(self):
         PartyId = Pool().get('party.identifier')
@@ -246,9 +246,10 @@ class InvoiceEdiReference(ModelSQL, ModelView):
             ('stock.move', 'Move')]
 
     def read_message(self, message):
-        message.pop(0)
-        type_ = message.pop(0)
-        value = message.pop(0)
+        if message:
+            message.pop(0)
+        type_ = message.pop(0) if message else ''
+        value = message.pop(0) if message else ''
         self.type_ = type_
         self.value = value
 
@@ -424,17 +425,17 @@ class InvoiceEdi(ModelSQL, ModelView):
                 return s.party and s.party.id
 
     def read_INV(self, message):
-        self.number = message.pop(0)
-        self.type_ = message.pop(0)
+        self.number = message.pop(0) if message else ''
+        self.type_ = message.pop(0) if message else ''
         self.function_ = '9'
         if message:
             self.function_ = message.pop(0)
 
     def read_TXT(self, message):
-        self.comment = message.pop(0)
+        self.comment = message.pop(0) if message else ''
 
     def read_DTM(self, message):
-        self.invoice_date = to_date(message.pop(0)[0:8])
+        self.invoice_date = to_date(message.pop(0)[0:8]) if message else None
         if message:
             self.service_date = to_date(message.pop(0)[0:8])
         if message:
@@ -443,7 +444,7 @@ class InvoiceEdi(ModelSQL, ModelView):
             self.end_period_date = to_date(period[8:])
 
     def read_PAI(self, message):
-        payment_type = message.pop(0)
+        payment_type = message.pop(0) if message else ''
         self.payment_type_value = payment_type
         factoring = False
         if message:
@@ -454,8 +455,8 @@ class InvoiceEdi(ModelSQL, ModelView):
     def read_RFF(self, message):
         REF = Pool().get('invoice.edi.reference')
         ref = REF()
-        ref.type_ = message.pop(0)
-        ref.value = message.pop(0)
+        ref.type_ = message.pop(0) if message else ''
+        ref.value = message.pop(0) if message else ''
         if message:
             ref.line_number = message.pop(0)
         ref.search_reference()
@@ -465,13 +466,13 @@ class InvoiceEdi(ModelSQL, ModelView):
 
     def read_CUX(self, message):
         message.pop(0)
-        self.currency_code = message.pop(0)
+        self.currency_code = message.pop(0) if message else ''
 
     def read_PAT(self, message):
         MaturityDate = Pool().get('invoice.edi.maturity_date')
         line = MaturityDate()
-        line.type_ = message.pop(0)
-        line.maturity_date = to_date(message.pop(0))
+        line.type_ = message.pop(0) if message else ''
+        line.maturity_date = to_date(message.pop(0)) if message else None
         if message:
             line.amount = to_decimal(message.pop(0))
         if not getattr(self, 'maturity_dates', False):
@@ -481,22 +482,24 @@ class InvoiceEdi(ModelSQL, ModelView):
     def read_ALC(self, message):
         Discount = Pool().get('invoice.edi.discount')
         discount = Discount()
-        discount.type_ = message.pop(0)
-        sequence = message.pop(0)
+        discount.type_ = message.pop(0) if message else ''
+        sequence = message.pop(0) if message else ''
         discount.sequence = int(sequence) or None
-        discount.discount = message.pop(0)
-        discount.percent = to_decimal(message.pop(0))
-        discount.amount = to_decimal(message.pop(0))
+        discount.discount = message.pop(0) if message else ''
+        discount.percent = to_decimal(message.pop(0)) if message else Decimal(0)
+        discount.amount = to_decimal(message.pop(0)) if message else Decimal(0)
         if not getattr(self, 'discounts', False):
             self.discounts = []
         self.discounts += (discount,)
 
     def read_MOARES(self, message):
-        self.net_amount = to_decimal(message.pop(0))
-        self.gross_amount = to_decimal(message.pop(0))
-        self.base_amount = to_decimal(message.pop(0))
-        self.total_amount = to_decimal(message.pop(0))
-        self.tax_amount = to_decimal(message.pop(0))
+        self.net_amount = to_decimal(message.pop(0)) if message else Decimal(0)
+        self.gross_amount = to_decimal(message.pop(0)
+            ) if message else Decimal(0)
+        self.base_amount = to_decimal(message.pop(0)) if message else Decimal(0)
+        self.total_amount = to_decimal(message.pop(0)
+            ) if message else decimal(0)
+        self.tax_amount = to_decimal(message.pop(0)) if message else Decimal(0)
         if message:
             self.discount_amount = to_decimal(message.pop(0))
         if message:
@@ -506,8 +509,8 @@ class InvoiceEdi(ModelSQL, ModelView):
         Tax = Pool().get('invoice.edi.tax')
         tax = Tax()
         tax.type_ = message.pop(0)
-        tax.percent = to_decimal(message.pop(0))
-        tax.tax_amount = to_decimal(message.pop(0))
+        tax.percent = to_decimal(message.pop(0)) if message else Decimal(0)
+        tax.tax_amount = to_decimal(message.pop(0)) if message else Decimal(0)
         print(message)
         if message:
             tax.base_amount = to_decimal(message.pop(0))
@@ -867,15 +870,15 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         return Decimal('0')
 
     def read_LIN(self, message):
-        self.code = message.pop(0)
-        self.code_type = message.pop(0)
+        self.code = message.pop(0) if message else ''
+        self.code_type = message.pop(0) if message else ''
         if self.code_type == 'EN':
             self.code_type = 'EAN8'
         if message:
             self.sequence = int(message.pop(0))
 
     def read_PIALIN(self, message):
-        self.supplier_code = message.pop(0)
+        self.supplier_code = message.pop(0) if message else ''
         if message:
             self.purchaser_code = message.pop(0)
         if message:
@@ -892,15 +895,15 @@ class InvoiceEdiLine(ModelSQL, ModelView):
             self.hibc_code = message.pop(0)
 
     def read_IMDLIN(self, message):
-        self.description = message.pop(0)
-        self.characteristic = message.pop(0)
-        self.qualifier = message.pop(0)
+        self.description = message.pop(0) if message else ''
+        self.characteristic = message.pop(0) if message else ''
+        self.qualifier = message.pop(0) if message else ''
 
     def read_QTYLIN(self, message):
         QTY = Pool().get('invoice.edi.line.quantity')
         qty = QTY()
-        qty.type_ = message.pop(0)
-        qty.quantity = to_decimal(message.pop(0), 4)
+        qty.type_ = message.pop(0) if message else ''
+        qty.quantity = to_decimal(message.pop(0), 4) if message else Decimla(0)
         if qty.type_ == '47':
             self.quantity = qty.quantity
         if message:
@@ -910,28 +913,30 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         self.quantities += (qty,)
 
     def read_DTMLINE(self, message):
-        self.delivery_date = to_date(message.pop(0))
+        self.delivery_date = to_date(message.pop(0)) if message else None
 
     def read_MOALIN(self, message):
-        self.base_amount = to_decimal(message.pop(0))
+        self.base_amount = to_decimal(message.pop(0)) if message else Decimal(0)
         if message:
             self.total_amount = to_decimal(message.pop(0))
 
     def read_PRILIN(self, message):
         type_ = message.pop(0)
         if type_  == 'AAA':
-            self.unit_price = to_decimal(message.pop(0), 4)
+            self.unit_price = to_decimal(message.pop(0), 4
+                ) if message else Decimal(0)
         elif type_ == 'AAB':
-            self.gross_price = to_decimal(message.pop(0), 4)
+            self.gross_price = to_decimal(message.pop(0), 4
+                ) if message else Decimal(0)
 
     def read_RFFLIN(self, message):
         REF = Pool().get('invoice.edi.reference')
         ref = REF()
-        ref.type_ = message.pop(0)
-        ref.value = message.pop(0)
+        ref.type_ = message.pop(0) if message else ''
+        ref.value = message.pop(0) if message else ''
         ref.search_reference()
         if message:
-            ref.line_number = message.pop(0)
+            ref.line_number = message.pop(0) if message else ''
         if not getattr(self, 'references', False):
             self.references = []
         self.references += (ref,)
@@ -939,8 +944,8 @@ class InvoiceEdiLine(ModelSQL, ModelView):
     def read_TAXLIN(self, message):
         Tax = Pool().get('invoice.edi.tax')
         tax = Tax()
-        tax.type_ = message.pop(0)
-        tax.percent = to_decimal(message.pop(0))
+        tax.type_ = message.pop(0) if message else ''
+        tax.percent = to_decimal(message.pop(0)) if message else Decimal(0)
         if message:
             tax.tax_amount = to_decimal(message.pop(0))
         if not getattr(self, 'taxes', False):
@@ -948,16 +953,16 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         self.taxes += (tax,)
 
     def read_TXTLIN(self, message):
-        self.note = message.pop(0)
+        self.note = message.pop(0) if message else ''
 
     def read_ALCLIN(self, message):
         Discount =  Pool().get('invoice.edi.discount')
         discount = Discount()
-        discount.type_ = message.pop(0)
-        discount.sequence = int(message.pop(0) or 0)
-        discount.discount = message.pop(0)
-        discount.percent = to_decimal(message.pop(0))
-        discount.amount = to_decimal(message.pop(0))
+        discount.type_ = message.pop(0) if message else ''
+        discount.sequence = int(message.pop(0) or 0) if message else 0
+        discount.discount = message.pop(0) if message else ''
+        discount.percent = to_decimal(message.pop(0)) if message else Decimal(0)
+        discount.amount = to_decimal(message.pop(0)) if message else Decimal(0)
         if not getattr(self, 'discounts', False):
             self.discounts = []
         self.discounts += (discount,)
