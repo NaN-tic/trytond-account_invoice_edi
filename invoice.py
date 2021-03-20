@@ -505,7 +505,7 @@ class InvoiceEdi(ModelSQL, ModelView):
             ) if message else Decimal(0)
         self.base_amount = to_decimal(message.pop(0)) if message else Decimal(0)
         self.total_amount = to_decimal(message.pop(0)
-            ) if message else decimal(0)
+            ) if message else Decimal(0)
         self.tax_amount = to_decimal(message.pop(0)) if message else Decimal(0)
         if message:
             self.discount_amount = to_decimal(message.pop(0))
@@ -923,7 +923,7 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         QTY = Pool().get('invoice.edi.line.quantity')
         qty = QTY()
         qty.type_ = message.pop(0) if message else ''
-        qty.quantity = to_decimal(message.pop(0), 4) if message else Decimla(0)
+        qty.quantity = to_decimal(message.pop(0), 4) if message else Decimal(0)
         if qty.type_ == '47':
             self.quantity = qty.quantity
         if message:
