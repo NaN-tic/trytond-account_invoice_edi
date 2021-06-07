@@ -159,6 +159,12 @@
           <field name="name">account_invoice_form</field>
       </record>
 
+      <record model="ir.model.button" id="generate_edi_file">
+          <field name="name">generate_edi_file</field>
+          <field name="string">Generate EDI</field>
+          <field name="model" search="[('model', '=', 'account.invoice')]"/>
+      </record>
+
       <!-- EDI Invoice User -->
       <record model="res.user" id="user_edi_invoice">
           <field name="login">user_edi_invoices</field>
