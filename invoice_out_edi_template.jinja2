@@ -1,0 +1,38 @@
+INVOIC_D_93A_UN_EAN007
+INV|{{invoice.number}}|380
+DTM|{{invoice.invoice_date|replace('-','')}}
+PAI|14E
+{% for sale in invoice.sales -%}
+RFF|ON|{{sale.number}}
+{% endfor -%}
+{% for shipment in invoice.shipments -%}
+RFF|DQ|{{shipment.number}}
+{% endfor -%}
+NADBCO|{{invoice.party.edi_operational_point}}|{{invoice.party.name}}|{{invoice.party.addresses[0].street|replace('\n', '')}}|{{invoice.party.addresses[0].city}}|{{invoice.party.addresses[0].zip}}|{{invoice.party.identifier_code}}
+NADSU|{{invoice.company.party.edi_operational_point}}|{{invoice.company.party.name}}|registre_mercantil|{{invoice.company.party.addresses[0].street|replace('\n', '')}}|{{invoice.company.party.addresses[0].city}}|{{invoice.company.party.addresses[0].zip}}|{{invoice.company.party.identifier_code}}
+NADBY|{{invoice.party.edi_operational_point}}|{{invoice.party.name}}|{{invoice.party.addresses[0].street|replace('\n', '')}}|{{invoice.party.addresses[0].city}}|{{invoice.party.addresses[0].zip}}|{{invoice.party.identifier_code}}
+NADII|{{invoice.company.party.edi_operational_point}}|{{invoice.company.party.name}}
+NADIV|{{invoice.party.edi_operational_point}}|{{invoice.party.name}}|{{invoice.party.addresses[0].street|replace('\n', '')}}|{{invoice.party.addresses[0].city}}|{{invoice.party.addresses[0].zip}}|{{invoice.party.identifier_code}}
+NADPR|{{invoice.party.edi_operational_point}}|{{invoice.party.name}}|{{invoice.party.addresses[0].street|replace('\n', '')}}|{{invoice.party.addresses[0].city}}|{{invoice.party.addresses[0].zip}}|{{invoice.party.identifier_code}}
+NADPE|{{invoice.company.party.edi_operational_point}}|{{invoice.company.party.name}}
+CUX|EUR|4
+PAT|35|{{invoice.invoice_date|replace('-','')}}|{{invoice.total_amount}}
+{% for line in invoice.lines -%}
+LIN|{{line.product.code_ean13}}|EN|{{loop.index}}
+PIALIN|{{line.product.code}}
+IMDLIN|{{line.product.name}}|M|F
+QTYLIN|47|{{line.quantity|int}}
+MOALIN|{{line.amount}}
+PRILIN|AAA|0
+PRILIN|AAB|{{line.unit_price}}
+{% if invoice.shipments|length > 1 -%}
+RFFLIN|ON|{{line.sale.number}}
+RFFLIN|DQ|{{line.shipment_number}}
+{% endif -%}
+{% if line.discount -%}
+ALCLIN|A|1|TD|{{(line.discount * 100)}}
+{% endif -%}
+{% for tax in line.taxes -%}
+TAXLIN|VAT|{{(tax.rate * 100)|int}}|{{(line.amount * tax.rate)|round(2)}}
+{% endfor -%}
+{% endfor -%}

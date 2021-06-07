@@ -6,4 +6,6 @@ this repository contains the full copyright notices and license terms. -->
     <field name="edi_files_path"/>
     <label name="separator"/>
     <field name="separator"/>
+    <label name="outbox_path_edi"/>
+    <field name="outbox_path_edi"/>
 </form>

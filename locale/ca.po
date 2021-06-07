@@ -2,18 +2,6 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "model:ir.message,text:confirm_invoice_with_reference"
-msgid "You try to create invoice but line \"%(line)s\" has not invoice line associated"
-msgstr "La linia \"%(line)s\"  no té cap o en té mes d'una línia de factura associada. Verifica que tot estigui correcte."
-
-msgctxt "model:ir.message,text:confirm_invoice_with_invoice"
-msgid "You try to create invoice but line \"%(line)s\" has not invoice line associated"
-msgstr "La línia \"%(line)s\" no té cap o en té mes d'un,  moviment d'estoc associat. Verifica que sigui correcte."
-
-msgctxt "model:ir.message,text:confirm_invoice_with_difference"
-msgid "You try to post invoices \"%(invoices)s\" with diferences with recived edi invoices"
-msgstr "Vols confirmar les facture \"%(invoices)s\" amb diferencies respecte le factures edi?"
-
 msgctxt "field:account.invoice,edi_invoices:"
 msgid "Edi Invoices"
 msgstr "Edi Factures"
@@ -33,14 +21,6 @@ msgstr "Import càrrec"
 msgctxt "field:invoice.edi,company:"
 msgid "Company"
 msgstr "Empresa"
-
-msgctxt "field:invoice.edi,create_date:"
-msgid "Create Date"
-msgstr "Fecha de creación"
-
-msgctxt "field:invoice.edi,create_uid:"
-msgid "Create User"
-msgstr "Usuario de creación"
 
 msgctxt "field:invoice.edi,currency:"
 msgid "Currency"
@@ -82,10 +62,6 @@ msgctxt "field:invoice.edi,gross_amount:"
 msgid "Gross Amount"
 msgstr "Import brut"
 
-msgctxt "field:invoice.edi,id:"
-msgid "ID"
-msgstr "Identificador"
-
 msgctxt "field:invoice.edi,invoice:"
 msgid "Invoice"
 msgstr "Factura"
@@ -126,10 +102,6 @@ msgctxt "field:invoice.edi,payment_type_value:"
 msgid "Payment Type Value"
 msgstr "Tipus pagament"
 
-msgctxt "field:invoice.edi,rec_name:"
-msgid "Name"
-msgstr "Nom del registre"
-
 msgctxt "field:invoice.edi,references:"
 msgid "References"
 msgstr "Referències"
@@ -166,65 +138,25 @@ msgctxt "field:invoice.edi,type_:"
 msgid "Document Type"
 msgstr "Tipus de document"
 
-msgctxt "field:invoice.edi,write_date:"
-msgid "Write Date"
-msgstr "Usuari creació"
-
-msgctxt "field:invoice.edi,write_uid:"
-msgid "Write User"
-msgstr "Usuario de modificación"
-
-msgctxt "field:invoice.edi.configuration,create_date:"
-msgid "Create Date"
-msgstr "Fecha de creación"
-
-msgctxt "field:invoice.edi.configuration,create_uid:"
-msgid "Create User"
-msgstr "Usuario de creación"
-
 msgctxt "field:invoice.edi.configuration,edi_files_path:"
 msgid "Invoice File Path"
 msgstr "Ruta factures Edi"
 
-msgctxt "field:invoice.edi.configuration,id:"
-msgid "ID"
-msgstr "Identificador"
-
-msgctxt "field:invoice.edi.configuration,rec_name:"
-msgid "Name"
-msgstr "Nom del registre"
+msgctxt "field:invoice.edi.configuration,outbox_path_edi:"
+msgid "Invoice Outbox Path EDI"
+msgstr "Path sortida factura EDI"
 
 msgctxt "field:invoice.edi.configuration,separator:"
 msgid "Separator"
 msgstr "Separador"
 
-msgctxt "field:invoice.edi.configuration,write_date:"
-msgid "Write Date"
-msgstr "Usuari creació"
-
-msgctxt "field:invoice.edi.configuration,write_uid:"
-msgid "Write User"
-msgstr "Usuario de modificación"
-
 msgctxt "field:invoice.edi.discount,amount:"
 msgid "Amount"
 msgstr "Import"
 
-msgctxt "field:invoice.edi.discount,create_date:"
-msgid "Create Date"
-msgstr "Fecha de creación"
-
-msgctxt "field:invoice.edi.discount,create_uid:"
-msgid "Create User"
-msgstr "Usuario de creación"
-
 msgctxt "field:invoice.edi.discount,discount:"
 msgid "Discount Type"
 msgstr "Tipus descompte"
-
-msgctxt "field:invoice.edi.discount,id:"
-msgid "ID"
-msgstr "Identificador"
 
 msgctxt "field:invoice.edi.discount,invoice_edi:"
 msgid "Edi Invoice"
@@ -238,10 +170,6 @@ msgctxt "field:invoice.edi.discount,percent:"
 msgid "Percent"
 msgstr "Percentatge"
 
-msgctxt "field:invoice.edi.discount,rec_name:"
-msgid "Name"
-msgstr "Nom del registre"
-
 msgctxt "field:invoice.edi.discount,sequence:"
 msgid "sequence"
 msgstr "Seqüència"
@@ -249,14 +177,6 @@ msgstr "Seqüència"
 msgctxt "field:invoice.edi.discount,type_:"
 msgid "Type"
 msgstr "Tipus"
-
-msgctxt "field:invoice.edi.discount,write_date:"
-msgid "Write Date"
-msgstr "Usuari creació"
-
-msgctxt "field:invoice.edi.discount,write_uid:"
-msgid "Write User"
-msgstr "Usuario de modificación"
 
 msgctxt "field:invoice.edi.line,base_amount:"
 msgid "Base Amount"
@@ -273,14 +193,6 @@ msgstr "Codi"
 msgctxt "field:invoice.edi.line,code_type:"
 msgid "Code Type"
 msgstr "Tipus codi"
-
-msgctxt "field:invoice.edi.line,create_date:"
-msgid "Create Date"
-msgstr "Fecha de creación"
-
-msgctxt "field:invoice.edi.line,create_uid:"
-msgid "Create User"
-msgstr "Usuario de creación"
 
 msgctxt "field:invoice.edi.line,customer_code:"
 msgid "Customer Code"
@@ -310,10 +222,6 @@ msgctxt "field:invoice.edi.line,hibc_code:"
 msgid "Healh Industry Bar Code"
 msgstr "Codi de barres industria salut"
 
-msgctxt "field:invoice.edi.line,id:"
-msgid "ID"
-msgstr "Identificador"
-
 msgctxt "field:invoice.edi.line,invoice_line:"
 msgid "Invoice Line"
 msgstr "Línia de factura"
@@ -325,6 +233,10 @@ msgstr "Número de lot"
 msgctxt "field:invoice.edi.line,national_code:"
 msgid "National Code"
 msgstr "Codi nacional"
+
+msgctxt "field:invoice.edi.line,note:"
+msgid "Note"
+msgstr "Nota"
 
 msgctxt "field:invoice.edi.line,producer_code:"
 msgid "Producer Code"
@@ -349,10 +261,6 @@ msgstr "Quantitats"
 msgctxt "field:invoice.edi.line,quantity:"
 msgid "Quantity"
 msgstr "Quantitat"
-
-msgctxt "field:invoice.edi.line,rec_name:"
-msgid "Name"
-msgstr "Nom del registre"
 
 msgctxt "field:invoice.edi.line,references:"
 msgid "References"
@@ -382,30 +290,6 @@ msgctxt "field:invoice.edi.line,unit_price:"
 msgid "Unit Price"
 msgstr "Preu unitat"
 
-msgctxt "field:invoice.edi.line,write_date:"
-msgid "Write Date"
-msgstr "Usuari creació"
-
-msgctxt "field:invoice.edi.line,write_uid:"
-msgid "Write User"
-msgstr "Usuario de modificación"
-
-msgctxt "field:invoice.edi.line,note:"
-msgid "Note"
-msgstr "Nota"
-
-msgctxt "field:invoice.edi.line.quantity,create_date:"
-msgid "Create Date"
-msgstr "Fecha de creación"
-
-msgctxt "field:invoice.edi.line.quantity,create_uid:"
-msgid "Create User"
-msgstr "Usuario de creación"
-
-msgctxt "field:invoice.edi.line.quantity,id:"
-msgid "ID"
-msgstr "Identificador"
-
 msgctxt "field:invoice.edi.line.quantity,line:"
 msgid "Line"
 msgstr "Línia"
@@ -413,10 +297,6 @@ msgstr "Línia"
 msgctxt "field:invoice.edi.line.quantity,quantity:"
 msgid "Quantity"
 msgstr "Quantitat"
-
-msgctxt "field:invoice.edi.line.quantity,rec_name:"
-msgid "Name"
-msgstr "Nom del registre"
 
 msgctxt "field:invoice.edi.line.quantity,type_:"
 msgid "Type"
@@ -426,29 +306,9 @@ msgctxt "field:invoice.edi.line.quantity,uom_char:"
 msgid "Uom"
 msgstr "UdM"
 
-msgctxt "field:invoice.edi.line.quantity,write_date:"
-msgid "Write Date"
-msgstr "Usuari creació"
-
-msgctxt "field:invoice.edi.line.quantity,write_uid:"
-msgid "Write User"
-msgstr "Usuario de modificación"
-
 msgctxt "field:invoice.edi.maturity_date,amount:"
 msgid "Amount"
 msgstr "Importe"
-
-msgctxt "field:invoice.edi.maturity_date,create_date:"
-msgid "Create Date"
-msgstr "Fecha de creación"
-
-msgctxt "field:invoice.edi.maturity_date,create_uid:"
-msgid "Create User"
-msgstr "Usuario de creación"
-
-msgctxt "field:invoice.edi.maturity_date,id:"
-msgid "ID"
-msgstr "Identificador"
 
 msgctxt "field:invoice.edi.maturity_date,invoice_edi:"
 msgid "Edi Invoice"
@@ -458,29 +318,9 @@ msgctxt "field:invoice.edi.maturity_date,maturity_date:"
 msgid "Maturity Date"
 msgstr "Data de venciment"
 
-msgctxt "field:invoice.edi.maturity_date,rec_name:"
-msgid "Name"
-msgstr "Nom del registre"
-
 msgctxt "field:invoice.edi.maturity_date,type_:"
 msgid "Type"
 msgstr "Tipus"
-
-msgctxt "field:invoice.edi.maturity_date,write_date:"
-msgid "Write Date"
-msgstr "Usuari creació"
-
-msgctxt "field:invoice.edi.maturity_date,write_uid:"
-msgid "Write User"
-msgstr "Usuario de modificación"
-
-msgctxt "field:invoice.edi.reference,create_date:"
-msgid "Create Date"
-msgstr "Fecha de creación"
-
-msgctxt "field:invoice.edi.reference,create_uid:"
-msgid "Create User"
-msgstr "Usuario de creación"
 
 msgctxt "field:invoice.edi.reference,edi_invoice:"
 msgid "Edi Invoice"
@@ -490,10 +330,6 @@ msgctxt "field:invoice.edi.reference,edi_invoice_line:"
 msgid "Edi Invoice Line"
 msgstr "Línia Edifactura"
 
-msgctxt "field:invoice.edi.reference,id:"
-msgid "ID"
-msgstr "Identificador"
-
 msgctxt "field:invoice.edi.reference,line_number:"
 msgid "Line Number"
 msgstr "Número línia"
@@ -502,10 +338,6 @@ msgctxt "field:invoice.edi.reference,origin:"
 msgid "Reference"
 msgstr "Orígen"
 
-msgctxt "field:invoice.edi.reference,rec_name:"
-msgid "Name"
-msgstr "Nom del registre"
-
 msgctxt "field:invoice.edi.reference,type_:"
 msgid "Reference Code"
 msgstr "Codi referència"
@@ -513,14 +345,6 @@ msgstr "Codi referència"
 msgctxt "field:invoice.edi.reference,value:"
 msgid "Reference"
 msgstr "Referència"
-
-msgctxt "field:invoice.edi.reference,write_date:"
-msgid "Write Date"
-msgstr "Usuari creació"
-
-msgctxt "field:invoice.edi.reference,write_uid:"
-msgid "Write User"
-msgstr "Usuario de modificación"
 
 msgctxt "field:invoice.edi.supplier,account_bank:"
 msgid "Account Bank"
@@ -538,14 +362,6 @@ msgctxt "field:invoice.edi.supplier,country_code:"
 msgid "Country_code"
 msgstr "Codi País"
 
-msgctxt "field:invoice.edi.supplier,create_date:"
-msgid "Create Date"
-msgstr "Fecha de creación"
-
-msgctxt "field:invoice.edi.supplier,create_uid:"
-msgid "Create User"
-msgstr "Usuario de creación"
-
 msgctxt "field:invoice.edi.supplier,edi_code:"
 msgid "Edi Code"
 msgstr "Codi Edi"
@@ -554,10 +370,6 @@ msgctxt "field:invoice.edi.supplier,edi_invoice:"
 msgid "Edi Invoice"
 msgstr "Factura Edi"
 
-msgctxt "field:invoice.edi.supplier,id:"
-msgid "ID"
-msgstr "Identificador"
-
 msgctxt "field:invoice.edi.supplier,name:"
 msgid "Name"
 msgstr "Nom del registre"
@@ -565,10 +377,6 @@ msgstr "Nom del registre"
 msgctxt "field:invoice.edi.supplier,party:"
 msgid "Party"
 msgstr "Tercers"
-
-msgctxt "field:invoice.edi.supplier,rec_name:"
-msgid "Name"
-msgstr "Nom del registre"
 
 msgctxt "field:invoice.edi.supplier,street:"
 msgid "Street"
@@ -582,14 +390,6 @@ msgctxt "field:invoice.edi.supplier,vat:"
 msgid "Vat"
 msgstr "Vat"
 
-msgctxt "field:invoice.edi.supplier,write_date:"
-msgid "Write Date"
-msgstr "Usuari creació"
-
-msgctxt "field:invoice.edi.supplier,write_uid:"
-msgid "Write User"
-msgstr "Usuario de modificación"
-
 msgctxt "field:invoice.edi.supplier,zip:"
 msgid "zip"
 msgstr "Codi postal"
@@ -598,21 +398,9 @@ msgctxt "field:invoice.edi.tax,comment:"
 msgid "Comment"
 msgstr "Observacions"
 
-msgctxt "field:invoice.edi.tax,create_date:"
-msgid "Create Date"
-msgstr "Fecha de creación"
-
-msgctxt "field:invoice.edi.tax,create_uid:"
-msgid "Create User"
-msgstr "Usuario de creación"
-
 msgctxt "field:invoice.edi.tax,edi_invoice:"
 msgid "Invoice"
 msgstr "Factura"
-
-msgctxt "field:invoice.edi.tax,id:"
-msgid "ID"
-msgstr "Identificador"
 
 msgctxt "field:invoice.edi.tax,line:"
 msgid "Line"
@@ -622,10 +410,6 @@ msgctxt "field:invoice.edi.tax,percent:"
 msgid "Percent"
 msgstr "Percentatge"
 
-msgctxt "field:invoice.edi.tax,rec_name:"
-msgid "Name"
-msgstr "Nom del registre"
-
 msgctxt "field:invoice.edi.tax,tax_amount:"
 msgid "Tax Amount"
 msgstr "Impostos"
@@ -633,14 +417,6 @@ msgstr "Impostos"
 msgctxt "field:invoice.edi.tax,type_:"
 msgid "Type"
 msgstr "Tipus"
-
-msgctxt "field:invoice.edi.tax,write_date:"
-msgid "Write Date"
-msgstr "Usuari creació"
-
-msgctxt "field:invoice.edi.tax,write_uid:"
-msgid "Write User"
-msgstr "Usuario de modificación"
 
 msgctxt "help:account.invoice,use_edi:"
 msgid "Use EDI protocol for this purchase"
@@ -699,6 +475,36 @@ msgctxt "model:ir.action.act_window.domain,name:act_invoice_edi_domain_draft"
 msgid "Draft"
 msgstr "Esborrany"
 
+msgctxt "model:ir.message,text:confirm_invoice_with_difference"
+msgid ""
+"You try to post invoices \"%(invoices)s\" with diferences with recived edi "
+"invoices"
+msgstr ""
+"Vols confirmar les facture \"%(invoices)s\" amb diferencies respecte le "
+"factures edi?"
+
+msgctxt "model:ir.message,text:confirm_invoice_with_invoice"
+msgid ""
+"You try to create invoice but line \"%(line)s\" has not invoice line "
+"associated"
+msgstr ""
+"La línia \"%(line)s\" no té cap o en té mes d'un,  moviment d'estoc "
+"associat. Verifica que sigui correcte."
+
+msgctxt "model:ir.message,text:confirm_invoice_with_reference"
+msgid "You try to create invoice but line \"%(line)s\" has not move associated"
+msgstr ""
+"La linia \"%(line)s\"  no té cap o en té mes d'una línia de factura "
+"associada. Verifica que tot estigui correcte."
+
+msgctxt "model:ir.message,text:msg_no_unique_edi"
+msgid "Invoice \"%(number)s\" from EDI sale cannot have more that 1 origin."
+msgstr "La factura \"%(number)s\" amb origen EDI no pot tenir més d'un origen"
+
+msgctxt "model:ir.model.button,string:generate_edi_file"
+msgid "Generate EDI"
+msgstr "Generar EDI"
+
 msgctxt "model:ir.ui.menu,name:menu_edi_invoice_form"
 msgid "Edi Invoices"
 msgstr "Factures edi"
@@ -750,16 +556,16 @@ msgid "Bank Note"
 msgstr "Billet Bancari"
 
 msgctxt "selection:invoice.edi,payment_type_value:"
+msgid "Credit Transfer"
+msgstr "Transferència de Crèdit"
+
+msgctxt "selection:invoice.edi,payment_type_value:"
 msgid "cash"
 msgstr "Metàllic"
 
 msgctxt "selection:invoice.edi,payment_type_value:"
 msgid "check"
 msgstr "Xèc"
-
-msgctxt "selection:invoice.edi,payment_type_value:"
-msgid "Credit Transfer"
-msgstr "Transferència de Crèdit"
 
 msgctxt "selection:invoice.edi,state:"
 msgid "Confirmed"
@@ -860,6 +666,10 @@ msgid "DUN14"
 msgstr "DUN14"
 
 msgctxt "selection:invoice.edi.line,code_type:"
+msgid "EAN"
+msgstr "EAN"
+
+msgctxt "selection:invoice.edi.line,code_type:"
 msgid "EAN13"
 msgstr "EAN13"
 
@@ -945,6 +755,10 @@ msgid "Endorser"
 msgstr "Avalador"
 
 msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "Final Receiver"
+msgstr "Revedor final"
+
+msgctxt "selection:invoice.edi.supplier,type_:"
 msgid "Invoice Issuer"
 msgstr "Emissor de la factura"
 
@@ -985,6 +799,10 @@ msgid "Purchaser"
 msgstr "Comprador"
 
 msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "Sender"
+msgstr "Remitent"
+
+msgctxt "selection:invoice.edi.supplier,type_:"
 msgid "Stock Receiver"
 msgstr "Receptor d'estoc"
 
@@ -1019,3 +837,31 @@ msgstr "IRPF"
 msgctxt "selection:invoice.edi.tax,type_:"
 msgid "VAT"
 msgstr "NIF"
+
+msgctxt "selection:ir.cron,method:"
+msgid "Import Edi Invoices"
+msgstr "Importar factures Edi"
+
+msgctxt "view:account.invoice:"
+msgid "Edi"
+msgstr "Edi"
+
+msgctxt "view:invoice.edi:"
+msgid "Create Invoice"
+msgstr "Crear factura"
+
+msgctxt "view:invoice.edi:"
+msgid "Information"
+msgstr "Informació"
+
+msgctxt "view:invoice.edi:"
+msgid "Lines"
+msgstr "Línies"
+
+msgctxt "view:invoice.edi:"
+msgid "Parties"
+msgstr "Tercers"
+
+msgctxt "view:invoice.edi:"
+msgid "Search Related"
+msgstr ""
