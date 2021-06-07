@@ -3,7 +3,7 @@
 # copyright notices and license terms.
 from trytond.model import fields, ModelSQL, ModelView, ModelSingleton
 from trytond.pool import PoolMeta, Pool
-from trytond.pyson import Eval, Bool, Or
+from trytond.pyson import Eval, Bool, Not, Or, Not
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError, UserWarning
 from trytond.i18n import gettext
@@ -13,6 +13,7 @@ from datetime import datetime
 from decimal import Decimal
 import codecs
 import barcodenumber
+from jinja2 import Template
 
 __all__ = ['InvoiceEdiConfiguration', 'InvoiceEdi', 'InvoiceEdiLine',
     'SupplierEdi', 'InvoiceEdiReference', 'InvoiceEdiMaturityDates',
@@ -52,6 +53,7 @@ class InvoiceEdiConfiguration(ModelSingleton, ModelSQL, ModelView):
     __name__ = 'invoice.edi.configuration'
 
     edi_files_path = fields.Char('Invoice File Path')
+    outbox_path_edi = fields.Char('Invoice Outbox Path EDI')
     separator = fields.Char('Separator')
 
     @classmethod
@@ -275,6 +277,7 @@ class InvoiceEdiReference(ModelSQL, ModelView):
         self.origin = None
         if res != []:
             self.origin = res[0]
+
 
 class InvoiceEdiMaturityDates(ModelSQL, ModelView):
     'Edi Maturity Dates'
@@ -1000,6 +1003,47 @@ class Invoice(metaclass=PoolMeta):
     @classmethod
     def __setup__(cls):
         super(Invoice, cls).__setup__()
+        cls._buttons.update({
+                'generate_edi_file': {'invisible': (
+                        (Eval('type') != 'out') |
+                        Not(Eval('state').in_(['posted', 'paid']))
+                        )
+                    },
+                })
+
+    @classmethod
+    @ModelView.button
+    def generate_edi_file(cls, invoices):
+        for invoice in invoices:
+            invoice.generate_edi()
+
+    def generate_edi(self):
+        pool = Pool()
+        InvoiceConfiguration = pool.get('invoice.edi.configuration')
+        config = InvoiceConfiguration(1)
+        Sale = pool.get('sale.sale')
+        template_name = 'invoice_out_edi_template.jinja2'
+        result_name = 'invoice_{}.PLA'.format(self.number)
+        template_path = os.path.join(MODULE_PATH, template_name)
+        result_path = os.path.join(config.outbox_path_edi, result_name)
+        origins = self.origins.split(', ')
+        sales = Sale.search(['number', 'in', origins])
+
+        if len(sales) > 1:
+            for sale in sales:
+                if sale.edi:
+                    raise UserError(gettext(
+                        'account_invoice_edi.msg_no_unique_edi',
+                        number=self.number))
+        elif len(sales) == 1:
+            if sales[0].edi:
+                with open(template_path) as file_:
+                    template = Template(file_.read())
+                edi_file = template.render({'invoice': self})
+                if os.path.exists(result_path):
+                    with open(result_path, 'w') as f:
+                        f.write(edi_file)
+
 
     @classmethod
     def post(cls, invoices):
@@ -1021,3 +1065,4 @@ class Invoice(metaclass=PoolMeta):
                 raise UserWarning(key, gettext(
                         'account_invoice_edi.confirm_invoice_with_difference',
                         invoices=",".join([x.referemce for x in differences])))
+        cls.generate_edi_file(invoices)

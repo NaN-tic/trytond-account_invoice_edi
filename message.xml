@@ -12,5 +12,8 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.message" id="confirm_invoice_with_difference">
             <field name="text">You try to post invoices "%(invoices)s" with diferences with recived edi invoices</field>
         </record>
+         <record model="ir.message" id="msg_no_unique_edi">
+        <field name="text">Invoice "%(number)s" from EDI sale cannot have more that 1 origin.</field>
+      </record>
     </data>
 </tryton>
