@@ -18,6 +18,11 @@ msgctxt "field:invoice.edi,charge_amount:"
 msgid "Charge Amount"
 msgstr "Import càrrec"
 
+#, fuzzy
+msgctxt "field:invoice.edi,comment:"
+msgid "Comment"
+msgstr "Observacions"
+
 msgctxt "field:invoice.edi,company:"
 msgid "Company"
 msgstr "Empresa"
@@ -312,7 +317,7 @@ msgstr "Importe"
 
 msgctxt "field:invoice.edi.maturity_date,invoice_edi:"
 msgid "Edi Invoice"
-msgstr "Edi Factures"
+msgstr "EDI Factures"
 
 msgctxt "field:invoice.edi.maturity_date,maturity_date:"
 msgid "Maturity Date"
@@ -368,7 +373,7 @@ msgstr "Codi Edi"
 
 msgctxt "field:invoice.edi.supplier,edi_invoice:"
 msgid "Edi Invoice"
-msgstr "Factura Edi"
+msgstr "Factura EDI"
 
 msgctxt "field:invoice.edi.supplier,name:"
 msgid "Name"
@@ -393,6 +398,11 @@ msgstr "Vat"
 msgctxt "field:invoice.edi.supplier,zip:"
 msgid "zip"
 msgstr "Codi postal"
+
+#, fuzzy
+msgctxt "field:invoice.edi.tax,base_amount:"
+msgid "Base Amount"
+msgstr "Import Base"
 
 msgctxt "field:invoice.edi.tax,comment:"
 msgid "Comment"
@@ -459,12 +469,12 @@ msgid "Invoice Edi Line Qty"
 msgstr "Quantity línia edi"
 
 msgctxt "model:ir.action,name:act_configuration_form"
-msgid "Invoice Edi Configuration"
-msgstr "Configuració Edi factures"
+msgid "EDI Invoice Configuration"
+msgstr "EDI Configuració factures"
 
 msgctxt "model:ir.action,name:act_edi_invoice_form"
-msgid "Edi Invoices"
-msgstr "Edi Factures"
+msgid "EDI Supplier Invoices"
+msgstr "EDI Factures Proveïdor"
 
 msgctxt ""
 "model:ir.action.act_window.domain,name:act_invoice_edi_domain_confirmed"
@@ -506,16 +516,16 @@ msgid "Generate EDI"
 msgstr "Generar EDI"
 
 msgctxt "model:ir.ui.menu,name:menu_edi_invoice_form"
-msgid "Edi Invoices"
-msgstr "Factures edi"
+msgid "EDI Supplier Invoices"
+msgstr "EDI Factures Proveïdor"
 
 msgctxt "model:ir.ui.menu,name:menu_edi_invoices"
-msgid "Edi Invoices"
-msgstr "Edi Factures"
+msgid "EDI Invoices"
+msgstr "EDI Factures"
 
 msgctxt "model:ir.ui.menu,name:menuitem_account_configuration"
-msgid "Invoice Edi Configuration"
-msgstr "Configuració factures edi"
+msgid "EDI Invoice Configuration"
+msgstr "EDI Configuració factures"
 
 #, fuzzy
 msgctxt "selection:invoice.edi,differences_state:"

@@ -468,12 +468,12 @@ msgid "Invoice Edi Line Qty"
 msgstr "Cantidad Factura edi"
 
 msgctxt "model:ir.action,name:act_configuration_form"
-msgid "Invoice Edi Configuration"
-msgstr "Configuración factura edi"
+msgid "EDI Invoice Configuration"
+msgstr "EDI Configuración Factura"
 
 msgctxt "model:ir.action,name:act_edi_invoice_form"
-msgid "Edi Invoices"
-msgstr "Facturas edi"
+msgid "EDI Supplier Invoices"
+msgstr "EDI Facturas Proveedor"
 
 msgctxt ""
 "model:ir.action.act_window.domain,name:act_invoice_edi_domain_confirmed"
@@ -517,16 +517,16 @@ msgid "Generate EDI"
 msgstr "Generar EDI"
 
 msgctxt "model:ir.ui.menu,name:menu_edi_invoice_form"
-msgid "Edi Invoices"
-msgstr "Facturas edi"
+msgid "EDI Supplier Invoices"
+msgstr "EDI Facturas Proveedor"
 
 msgctxt "model:ir.ui.menu,name:menu_edi_invoices"
-msgid "Edi Invoices"
-msgstr "Facturas edi"
+msgid "EDI Invoices"
+msgstr "EDI Facturas"
 
 msgctxt "model:ir.ui.menu,name:menuitem_account_configuration"
-msgid "Invoice Edi Configuration"
-msgstr "Configuración factura edi"
+msgid "EDI Invoice Configuration"
+msgstr "EDI Configuración factura"
 
 #, fuzzy
 msgctxt "selection:invoice.edi,differences_state:"
