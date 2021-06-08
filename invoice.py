@@ -7,6 +7,7 @@ from trytond.pyson import Eval, Bool, Not, Or, Not
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError, UserWarning
 from trytond.i18n import gettext
+from trytond import backend
 
 import os
 from datetime import datetime
@@ -14,6 +15,7 @@ from decimal import Decimal
 import codecs
 import barcodenumber
 from jinja2 import Template
+from sql import Literal
 
 __all__ = ['InvoiceEdiConfiguration', 'InvoiceEdi', 'InvoiceEdiLine',
     'SupplierEdi', 'InvoiceEdiReference', 'InvoiceEdiMaturityDates',
@@ -1003,19 +1005,48 @@ class Invoice(metaclass=PoolMeta):
     @classmethod
     def __setup__(cls):
         super(Invoice, cls).__setup__()
+        pool = Pool()
+        Module = pool.get('ir.module')
+        cursor = Transaction().connection.cursor()
+        module_table = Module.__table__()
+        cursor.execute(*module_table.select(
+            module_table.state, where=module_table.name == Literal('sale_edi')
+            ))
+        sale_edi_state = cursor.fetchall()
+        if sale_edi_state:
+            if sale_edi_state[0][0] == 'not activated':
+                sale_edi_installed = False
+            else:
+                sale_edi_installed = True
+        else:
+            sale_edi_installed = False
         cls._buttons.update({
                 'generate_edi_file': {'invisible': (
                         (Eval('type') != 'out') |
-                        Not(Eval('state').in_(['posted', 'paid']))
+                        Not(Eval('state').in_(['posted', 'paid'])) |
+                        (not sale_edi_installed)
                         )
                     },
                 })
 
     @classmethod
+    def get_sale_edi_installed(cls):
+        pool = Pool()
+        Module = pool.get('ir.module')
+        sale_edi = Module.search([
+              ('name', '=', 'sale_edi'),
+              ('state', '=', 'activated'),
+                ], limit=1)
+        if sale_edi:
+            return True
+        return False
+
+    @classmethod
     @ModelView.button
     def generate_edi_file(cls, invoices):
-        for invoice in invoices:
-            invoice.generate_edi()
+        if cls.get_sale_edi_installed():
+            for invoice in invoices:
+                invoice.generate_edi()
 
     def generate_edi(self):
         pool = Pool()
