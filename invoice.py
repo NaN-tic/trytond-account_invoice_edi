@@ -7,7 +7,6 @@ from trytond.pyson import Eval, Bool, Not, Or, Not
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError, UserWarning
 from trytond.i18n import gettext
-from trytond import backend
 
 import os
 from datetime import datetime
@@ -28,10 +27,12 @@ MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 KNOWN_EXTENSIONS = ['.txt', '.edi', '.pla']
 DATE_FORMAT = '%Y%m%d'
 
+
 def to_date(value):
     if value is None or value == '':
         return None
     return datetime.strptime(value, DATE_FORMAT)
+
 
 def to_decimal(value, digits=2):
     if value is None or value == '':
@@ -72,6 +73,7 @@ SUPPLIER_TYPE = [('NADSCO', 'Legal Supplier'),
     ('NAD', 'NAD'), ('NADMR', 'NADMR'),
     ('NADUC', 'Final Receiver'), ('NADSH', 'Sender'),
     ]
+
 
 class SupplierEdiMixin(ModelSQL, ModelView):
 
@@ -352,9 +354,11 @@ class InvoiceEdi(ModelSQL, ModelView):
     discounts = fields.One2Many('invoice.edi.discount',
             'invoice_edi', 'Discounts', readonly=True)
     net_amount = fields.Numeric('Net Amount', digits=(16, 2), readonly=True)
-    gross_amount = fields.Numeric('Gross Amount', digits=(16, 2), readonly=True)
+    gross_amount = fields.Numeric('Gross Amount', digits=(16, 2),
+        readonly=True)
     base_amount = fields.Numeric('Base Amount', digits=(16, 2), readonly=True)
-    total_amount = fields.Numeric('Total Amount', digits=(16, 2), readonly=True)
+    total_amount = fields.Numeric('Total Amount', digits=(16, 2),
+        readonly=True)
     tax_amount = fields.Numeric('Tax Amount', digits=(16, 2), readonly=True)
     discount_amount = fields.Numeric('Discount Amount', digits=(16, 2),
         readonly=True)
@@ -498,8 +502,10 @@ class InvoiceEdi(ModelSQL, ModelView):
         sequence = message.pop(0) if message else ''
         discount.sequence = int(sequence) or None
         discount.discount = message.pop(0) if message else ''
-        discount.percent = to_decimal(message.pop(0)) if message else Decimal(0)
-        discount.amount = to_decimal(message.pop(0)) if message else Decimal(0)
+        discount.percent = to_decimal(message.pop(0)
+            ) if message else Decimal(0)
+        discount.amount = to_decimal(message.pop(0)
+            ) if message else Decimal(0)
         if not getattr(self, 'discounts', False):
             self.discounts = []
         self.discounts += (discount,)
@@ -508,7 +514,8 @@ class InvoiceEdi(ModelSQL, ModelView):
         self.net_amount = to_decimal(message.pop(0)) if message else Decimal(0)
         self.gross_amount = to_decimal(message.pop(0)
             ) if message else Decimal(0)
-        self.base_amount = to_decimal(message.pop(0)) if message else Decimal(0)
+        self.base_amount = to_decimal(message.pop(0)
+            ) if message else Decimal(0)
         self.total_amount = to_decimal(message.pop(0)
             ) if message else Decimal(0)
         self.tax_amount = to_decimal(message.pop(0)) if message else Decimal(0)
@@ -814,16 +821,16 @@ class InvoiceEdiLine(ModelSQL, ModelView):
             for move in purchase.moves:
                 if move.state != 'done':
                     continue
-                if move.product == product: #TODO: check for quantity?
+                if move.product == product:  # TODO: check for quantity?
                     ref = REF()
                     ref.type_ = 'move'
-                    ref.origin = 'stock.move,%s'%move.id
+                    ref.origin = 'stock.move,%s' % move.id
                     self.references += (ref,)
 
     def get_line(self):
-        if self.edi_invoice.type_ == '381': # CREDIT:
+        if self.edi_invoice.type_ == '381':  # CREDIT:
             return self.get_line_credit()
-        if self.references == None or len(self.references) != 1:
+        if self.references is None or len(self.references) != 1:
             raise UserError(gettext(
                 'account_invoice_edi.confirm_invoice_with_reference',
                 line=self.description))
@@ -844,15 +851,16 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         #     invoice_line.discount = Decimal(1 -
         #         self.unit_price/self.gross_price).quantize(Decimal('.01'))
         # else:
-        #     invoice_line.unit_price = Decimal(self.base_amount / self.quantity).quantize(
-        #         Decimal('0.0001'))
+        #     invoice_line.unit_price = Decimal(
+        #         self.base_amount / self.quantity).quantize(Decimal('0.0001'))
 
         self.invoice_line = invoice_line
         return invoice_line
 
     def get_line_credit(self):
         move = self.references and self.references[0]
-        invoice_lines = [x for x in move and move.origin.invoice_lines or [] if not x.invoice]
+        invoice_lines = [x for x in move and move.origin.invoice_lines or []
+            if not x.invoice]
         invoice_line = invoice_lines and invoice_lines[0]
 
         Line = Pool().get('account.invoice.line')
@@ -872,8 +880,8 @@ class InvoiceEdiLine(ModelSQL, ModelView):
             line.discount = Decimal(1 -
                 self.unit_price/self.gross_price).quantize(Decimal('.01'))
         else:
-            line.unit_price = Decimal(self.base_amount / self.quantity).quantize(
-                Decimal('0.0001'))
+            line.unit_price = Decimal(
+                self.base_amount / self.quantity).quantize(Decimal('0.0001'))
         if invoice_line:
             line.origin = invoice_line
         self.invoice_line = line
@@ -899,6 +907,14 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         code_type = message.pop(0) if message else ''
         if code_type == 'EN':
             self.code_type = _get_code_type(self.code)
+        # Some times the provider send the EAN13 without left zeros
+        # and the EAN is an EAN13 but the check fail becasue it have
+        # less digits.
+        if self.code_type == 'EN' and len(self.code) < 13:
+            code = self.code.zfill(13)
+            if getattr(barcodenumber, 'check_code_ean13')(code):
+                self.code = code
+                self.code_type = 'EAN13'
         if message:
             self.sequence = int(message.pop(0))
 
@@ -941,13 +957,14 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         self.delivery_date = to_date(message.pop(0)) if message else None
 
     def read_MOALIN(self, message):
-        self.base_amount = to_decimal(message.pop(0)) if message else Decimal(0)
+        self.base_amount = to_decimal(message.pop(0)
+            ) if message else Decimal(0)
         if message:
             self.total_amount = to_decimal(message.pop(0))
 
     def read_PRILIN(self, message):
         type_ = message.pop(0)
-        if type_  == 'AAA':
+        if type_ == 'AAA':
             self.unit_price = to_decimal(message.pop(0), 4
                 ) if message else Decimal(0)
         elif type_ == 'AAB':
@@ -981,12 +998,13 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         self.note = message.pop(0) if message else ''
 
     def read_ALCLIN(self, message):
-        Discount =  Pool().get('invoice.edi.discount')
+        Discount = Pool().get('invoice.edi.discount')
         discount = Discount()
         discount.type_ = message.pop(0) if message else ''
         discount.sequence = int(message.pop(0) or 0) if message else 0
         discount.discount = message.pop(0) if message else ''
-        discount.percent = to_decimal(message.pop(0)) if message else Decimal(0)
+        discount.percent = to_decimal(message.pop(0)
+            ) if message else Decimal(0)
         discount.amount = to_decimal(message.pop(0)) if message else Decimal(0)
         if not getattr(self, 'discounts', False):
             self.discounts = []
@@ -1074,7 +1092,6 @@ class Invoice(metaclass=PoolMeta):
                 if os.path.exists(result_path):
                     with open(result_path, 'w') as f:
                         f.write(edi_file)
-
 
     @classmethod
     def post(cls, invoices):
