@@ -1028,41 +1028,42 @@ class Invoice(metaclass=PoolMeta):
         cursor = Transaction().connection.cursor()
         module_table = Module.__table__()
         cursor.execute(*module_table.select(
-            module_table.state, where=module_table.name == Literal('sale_edi')
+            module_table.state, where=module_table.name == Literal(
+                'sale_edi_ediversa')
             ))
-        sale_edi_state = cursor.fetchall()
-        if sale_edi_state:
-            if sale_edi_state[0][0] == 'not activated':
-                sale_edi_installed = False
+        sale_edi_ediversa_state = cursor.fetchall()
+        if sale_edi_ediversa_state:
+            if sale_edi_ediversa_state[0][0] == 'not activated':
+                sale_edi_ediversa_installed = False
             else:
-                sale_edi_installed = True
+                sale_edi_ediversa_installed = True
         else:
-            sale_edi_installed = False
+            sale_edi_ediversa_installed = False
         cls._buttons.update({
                 'generate_edi_file': {'invisible': (
                         (Eval('type') != 'out') |
                         Not(Eval('state').in_(['posted', 'paid'])) |
-                        (not sale_edi_installed)
+                        (not sale_edi_ediversa_installed)
                         )
                     },
                 })
 
     @classmethod
-    def get_sale_edi_installed(cls):
+    def get_sale_edi_ediversa_installed(cls):
         pool = Pool()
         Module = pool.get('ir.module')
-        sale_edi = Module.search([
-              ('name', '=', 'sale_edi'),
+        sale_edi_ediversa = Module.search([
+              ('name', '=', 'sale_edi_ediversa'),
               ('state', '=', 'activated'),
                 ], limit=1)
-        if sale_edi:
+        if sale_edi_ediversa:
             return True
         return False
 
     @classmethod
     @ModelView.button
     def generate_edi_file(cls, invoices):
-        if cls.get_sale_edi_installed():
+        if cls.get_sale_edi_ediversa_installed():
             for invoice in invoices:
                 invoice.generate_edi()
 
