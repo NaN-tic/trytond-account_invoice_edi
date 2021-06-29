@@ -3,7 +3,7 @@
 # copyright notices and license terms.
 from trytond.model import fields, ModelSQL, ModelView, ModelSingleton
 from trytond.pool import PoolMeta, Pool
-from trytond.pyson import Eval, Bool, Not, Or, Not
+from trytond.pyson import Eval, Bool, Or, Not
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError, UserWarning
 from trytond.i18n import gettext
@@ -1096,6 +1096,9 @@ class Invoice(metaclass=PoolMeta):
 
     @classmethod
     def post(cls, invoices):
+        pool = Pool()
+        Warning = pool.get('res.user.warning')
+
         super(Invoice, cls).post(invoices)
         differences = []
         for invoice in invoices:
@@ -1113,5 +1116,5 @@ class Invoice(metaclass=PoolMeta):
             if Warning.check(key):
                 raise UserWarning(key, gettext(
                         'account_invoice_edi.confirm_invoice_with_difference',
-                        invoices=",".join([x.referemce for x in differences])))
+                        invoices=",".join([x.reference for x in differences])))
         cls.generate_edi_file(invoices)
