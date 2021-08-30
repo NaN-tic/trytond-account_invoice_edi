@@ -803,15 +803,15 @@ class InvoiceEdiLine(ModelSQL, ModelView):
 
     def search_related(self, edi_invoice):
         pool = Pool()
-        Barcode = pool.get('product.code')
+        ProductIdentifier = pool.get('product.identifier')
         REF = Pool().get('invoice.edi.reference')
         # ('barcode', '=', self.code_type) Remove this from domain after some
         # received
-        domain = [('number', '=', self.code)]
-        barcode = Barcode.search(domain, limit=1)
-        if not barcode:
+        domain = [('code', '=', self.code)]
+        codes = ProductIdentifier.search(domain, limit=1)
+        if not codes:
             return
-        product = barcode[0].product
+        product = codes[0].product
         self.product = product
 
         purchases = [x.origin for x in edi_invoice.references if
