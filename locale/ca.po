@@ -680,12 +680,16 @@ msgid "EAN"
 msgstr "EAN"
 
 msgctxt "selection:invoice.edi.line,code_type:"
+msgid "UPC (EAN12)"
+msgstr "UPC (EAN12)"
+
+msgctxt "selection:invoice.edi.line,code_type:"
 msgid "EAN13"
 msgstr "EAN13"
 
 msgctxt "selection:invoice.edi.line,code_type:"
-msgid "EAN14"
-msgstr "EAN14"
+msgid "GTIN (EAN14)"
+msgstr "GTIN (EAN14)"
 
 msgctxt "selection:invoice.edi.line,code_type:"
 msgid "EAN8"
