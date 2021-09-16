@@ -24,6 +24,7 @@ def get_require_version(name):
         major_version, minor_version + 1)
     return require
 
+
 config = ConfigParser.ConfigParser()
 config.readfp(open('tryton.cfg'))
 info = dict(config.items('tryton'))
@@ -36,7 +37,7 @@ major_version, minor_version, _ = version.split('.', 2)
 major_version = int(major_version)
 minor_version = int(minor_version)
 
-requires = ['barcodenumber']
+requires = []
 for dep in info.get('depends', []):
     if not re.match(r'(ir|res|webdav)(\W|$)', dep):
         prefix = MODULE2PREFIX.get(dep, 'trytond')
