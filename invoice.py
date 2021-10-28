@@ -55,8 +55,8 @@ class InvoiceEdiConfiguration(ModelSingleton, ModelSQL, ModelView):
     'Invoice Edi Configuration'
     __name__ = 'invoice.edi.configuration'
 
-    edi_files_path = fields.Char('Invoice File Path')
-    outbox_path_edi = fields.Char('Invoice Outbox Path EDI')
+    edi_files_path = fields.Char('EDI Invoice Inbox Path')
+    outbox_path_edi = fields.Char('EDI Invoice Outbox Path')
     separator = fields.Char('Separator')
 
     @classmethod
@@ -1082,8 +1082,10 @@ class Invoice(metaclass=PoolMeta):
         template_name = 'invoice_out_edi_template.jinja2'
         result_name = 'invoice_{}.PLA'.format(self.number)
         template_path = os.path.join(MODULE_PATH, template_name)
-        result_path = os.path.join(config.outbox_path_edi, result_name)
-
+        try:
+            result_path = os.path.join(config.outbox_path_edi, result_name)
+        except Exception:
+            raise UserError(gettext('account_invoice_edi.msg_path_not_found'))
         if self.type == 'out' and self.is_edi:
             with open(template_path) as file_:
                 template = Template(file_.read())
