@@ -3,7 +3,7 @@
 # copyright notices and license terms.
 from trytond.model import fields, ModelSQL, ModelView, ModelSingleton
 from trytond.pool import PoolMeta, Pool
-from trytond.pyson import Eval, Bool, Or, Not
+from trytond.pyson import Eval, Not
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError, UserWarning
 from trytond.i18n import gettext
@@ -14,7 +14,6 @@ from decimal import Decimal
 import codecs
 from stdnum import ean
 from jinja2 import Template
-from sql import Literal
 
 __all__ = ['InvoiceEdiConfiguration', 'InvoiceEdi', 'InvoiceEdiLine',
     'SupplierEdi', 'InvoiceEdiReference', 'InvoiceEdiMaturityDates',
@@ -879,7 +878,7 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         line.unit_price = self.unit_price
         if self.unit_price and self.gross_price:
             line.discount = Decimal(1 -
-                self.unit_price/self.gross_price).quantize(Decimal('.01'))
+                self.unit_price / self.gross_price).quantize(Decimal('.01'))
         else:
             line.unit_price = Decimal(
                 self.base_amount / self.quantity).quantize(Decimal('0.0001'))
@@ -1021,27 +1020,10 @@ class Invoice(metaclass=PoolMeta):
     @classmethod
     def __setup__(cls):
         super(Invoice, cls).__setup__()
-        pool = Pool()
-        Module = pool.get('ir.module')
-        cursor = Transaction().connection.cursor()
-        module_table = Module.__table__()
-        cursor.execute(*module_table.select(
-            module_table.state, where=module_table.name == Literal(
-                'sale_edi_ediversa')
-            ))
-        sale_edi_ediversa_state = cursor.fetchall()
-        if sale_edi_ediversa_state:
-            if sale_edi_ediversa_state[0][0] == 'not activated':
-                sale_edi_ediversa_installed = False
-            else:
-                sale_edi_ediversa_installed = True
-        else:
-            sale_edi_ediversa_installed = False
         cls._buttons.update({
                 'generate_edi_file': {'invisible': (
                         (Eval('type') != 'out') |
-                        Not(Eval('state').in_(['posted', 'paid'])) |
-                        (not sale_edi_ediversa_installed)
+                        Not(Eval('state').in_(['posted', 'paid']))
                         )
                     },
                 })
@@ -1057,28 +1039,17 @@ class Invoice(metaclass=PoolMeta):
         super().__register__(module_name)
 
     @classmethod
-    def get_sale_edi_ediversa_installed(cls):
-        pool = Pool()
-        Module = pool.get('ir.module')
-        sale_edi_ediversa = Module.search([
-              ('name', '=', 'sale_edi_ediversa'),
-              ('state', '=', 'activated'),
-                ], limit=1)
-        if sale_edi_ediversa:
-            return True
-        return False
-
-    @classmethod
     @ModelView.button
     def generate_edi_file(cls, invoices):
-        if cls.get_sale_edi_ediversa_installed():
-            for invoice in invoices:
+        for invoice in invoices:
+            if invoice.is_edi:
                 invoice.generate_edi()
 
     def generate_edi(self):
         pool = Pool()
         InvoiceConfiguration = pool.get('invoice.edi.configuration')
         config = InvoiceConfiguration(1)
+
         template_name = 'invoice_out_edi_template.jinja2'
         result_name = 'invoice_{}.PLA'.format(self.number)
         template_path = os.path.join(MODULE_PATH, template_name)
@@ -1090,7 +1061,7 @@ class Invoice(metaclass=PoolMeta):
             with open(template_path) as file_:
                 template = Template(file_.read())
             edi_file = template.render({'invoice': self})
-            if os.path.exists(result_path):
+            if not os.path.exists(result_path):
                 with open(result_path, 'w') as f:
                     f.write(edi_file)
 

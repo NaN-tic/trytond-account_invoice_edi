@@ -9,7 +9,8 @@ contains the full copyright notices and license terms. -->
           <field name="edi_invoices" colspan="4"/>
         </page>
     </xpath>
-    <xpath expr="/form" position="inside">
+    <xpath expr="/form/group[@id='buttons']"
+            position="inside">
         <button name="generate_edi_file"/>
     </xpath>
 </data>
