@@ -2,6 +2,7 @@
 # copyright notices and license terms.
 from trytond.pool import Pool
 from . import invoice
+from . import sale
 
 def register():
     Pool.register(
@@ -17,3 +18,7 @@ def register():
         invoice.InvoiceEdiTax,
         invoice.Invoice,
         module='account_invoice_edi', type_='model')
+    Pool.register(
+        sale.Sale,
+        module='account_invoice_edi', type_='model',
+        depends=['sale', 'sale_edi_ediversa'])

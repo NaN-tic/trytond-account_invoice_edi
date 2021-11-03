@@ -6,9 +6,9 @@ msgctxt "field:account.invoice,edi_invoices:"
 msgid "Edi Invoices"
 msgstr "Factura edi"
 
-msgctxt "field:account.invoice,use_edi:"
-msgid "Use EDI"
-msgstr "Utiliza EDI"
+msgctxt "field:account.invoice,is_edi:"
+msgid "Is EDI"
+msgstr "Es EDI"
 
 msgctxt "field:invoice.edi,base_amount:"
 msgid "Base Amount"
@@ -427,9 +427,9 @@ msgctxt "field:invoice.edi.tax,type_:"
 msgid "Type"
 msgstr "Tipo"
 
-msgctxt "help:account.invoice,use_edi:"
-msgid "Use EDI protocol for this purchase"
-msgstr "Usa el protocolo EDI para esta compra"
+msgctxt "help:account.invoice,is_edi:"
+msgid "Use EDI protocol for this invoice"
+msgstr "Utilizar protocolo EDI para esta factura"
 
 msgctxt "model:invoice.edi,name:"
 msgid "Account Invoice Edi Reception Header"
@@ -686,20 +686,20 @@ msgid "EAN"
 msgstr "EAN"
 
 msgctxt "selection:invoice.edi.line,code_type:"
-msgid "UPC (EAN12)"
-msgstr "UPC (EAN12)"
-
-msgctxt "selection:invoice.edi.line,code_type:"
 msgid "EAN13"
 msgstr "EAN13"
+
+msgctxt "selection:invoice.edi.line,code_type:"
+msgid "EAN8"
+msgstr "EAN8"
 
 msgctxt "selection:invoice.edi.line,code_type:"
 msgid "GTIN (EAN14)"
 msgstr "GTIN (EAN14)"
 
 msgctxt "selection:invoice.edi.line,code_type:"
-msgid "EAN8"
-msgstr "EAN8"
+msgid "UPC (EAN12)"
+msgstr "UPC (EAN12)"
 
 #, fuzzy
 msgctxt "selection:invoice.edi.line,qualifier:"

@@ -4,12 +4,13 @@ contains the full copyright notices and license terms. -->
 <data>
     <xpath expr="/form/notebook" position="inside">
       <page id="edi" string="Edi" col="4">
-          <label name="use_edi"/>
-          <field name="use_edi"/>
+          <label name="is_edi"/>
+          <field name="is_edi"/>
           <field name="edi_invoices" colspan="4"/>
         </page>
     </xpath>
-    <xpath expr="/form" position="inside">
+    <xpath expr="/form/group[@id='buttons']"
+            position="inside">
         <button name="generate_edi_file"/>
     </xpath>
 </data>
