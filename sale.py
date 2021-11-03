@@ -6,7 +6,7 @@ class Sale(metaclass=PoolMeta):
 
     def create_invoice(self):
         invoice = super().create_invoice()
-        if invoice and self.edi:
+        if invoice and self.is_edi:
             invoice.is_edi = True
             if self.reference and self.number:
                 invoice.reference = self.reference + '-' + self.number
