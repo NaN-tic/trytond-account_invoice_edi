@@ -722,7 +722,7 @@ class InvoiceEdiLineQty(ModelSQL, ModelView):
 
     type_ = fields.Selection([('47', 'Invoiced'), ('46', 'Delivered'),
         ('61', 'Returned'), ('15E', 'Without Charge')], 'Type')
-    quantity = fields.Numeric('Quantity', digits=(16, 2))
+    quantity = fields.Numeric('Quantity', digits=(16, 4))
     uom_char = fields.Char('Uom')
     line = fields.Many2One('invoice.edi.line', 'Line', ondelete='CASCADE')
 

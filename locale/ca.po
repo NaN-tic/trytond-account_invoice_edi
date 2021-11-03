@@ -4,7 +4,7 @@ msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 msgctxt "field:account.invoice,edi_invoices:"
 msgid "Edi Invoices"
-msgstr "Edi Factures"
+msgstr "EDI Factures"
 
 msgctxt "field:account.invoice,is_edi:"
 msgid "Is EDI"
@@ -18,7 +18,6 @@ msgctxt "field:invoice.edi,charge_amount:"
 msgid "Charge Amount"
 msgstr "Import càrrec"
 
-#, fuzzy
 msgctxt "field:invoice.edi,comment:"
 msgid "Comment"
 msgstr "Observacions"
@@ -144,12 +143,12 @@ msgid "Document Type"
 msgstr "Tipus de document"
 
 msgctxt "field:invoice.edi.configuration,edi_files_path:"
-msgid "Invoice File Path"
-msgstr "Ruta factures Edi"
+msgid "EDI Invoice Inbox Path"
+msgstr "EDI Ruta Factura Proveïdor"
 
 msgctxt "field:invoice.edi.configuration,outbox_path_edi:"
-msgid "Invoice Outbox Path EDI"
-msgstr "Path sortida factura EDI"
+msgid "EDI Invoice Outbox Path"
+msgstr "EDI Ruta Factura Client"
 
 msgctxt "field:invoice.edi.configuration,separator:"
 msgid "Separator"
@@ -165,11 +164,11 @@ msgstr "Tipus descompte"
 
 msgctxt "field:invoice.edi.discount,invoice_edi:"
 msgid "Edi Invoice"
-msgstr "Factura edi"
+msgstr "EDI Factura"
 
 msgctxt "field:invoice.edi.discount,invoice_edi_line:"
 msgid "Edi Invoice Line"
-msgstr "Lína factura edi"
+msgstr "Lína factura EDI"
 
 msgctxt "field:invoice.edi.discount,percent:"
 msgid "Percent"
@@ -329,11 +328,11 @@ msgstr "Tipus"
 
 msgctxt "field:invoice.edi.reference,edi_invoice:"
 msgid "Edi Invoice"
-msgstr "Factura edi"
+msgstr "EDI Factura"
 
 msgctxt "field:invoice.edi.reference,edi_invoice_line:"
 msgid "Edi Invoice Line"
-msgstr "Línia Edifactura"
+msgstr "Línia EDI factura"
 
 msgctxt "field:invoice.edi.reference,line_number:"
 msgid "Line Number"
@@ -369,7 +368,7 @@ msgstr "Codi País"
 
 msgctxt "field:invoice.edi.supplier,edi_code:"
 msgid "Edi Code"
-msgstr "Codi Edi"
+msgstr "Codi EDI"
 
 msgctxt "field:invoice.edi.supplier,edi_invoice:"
 msgid "Edi Invoice"
@@ -399,7 +398,6 @@ msgctxt "field:invoice.edi.supplier,zip:"
 msgid "zip"
 msgstr "Codi postal"
 
-#, fuzzy
 msgctxt "field:invoice.edi.tax,base_amount:"
 msgid "Base Amount"
 msgstr "Import Base"
@@ -434,27 +432,27 @@ msgstr "Utilitzar el protocol EDI per aquesta factura"
 
 msgctxt "model:invoice.edi,name:"
 msgid "Account Invoice Edi Reception Header"
-msgstr "Capçalera de recepció factures edi"
+msgstr "Capçalera de recepció factures EDI"
 
 msgctxt "model:invoice.edi.configuration,name:"
 msgid "Invoice Edi Configuration"
-msgstr "Configuració factures edi"
+msgstr "Configuració factures EDI"
 
 msgctxt "model:invoice.edi.discount,name:"
 msgid "Edi discount"
-msgstr "Descompte edi"
+msgstr "Descompte EDI"
 
 msgctxt "model:invoice.edi.line,name:"
 msgid "Invoice Edi Line"
-msgstr "Línia edi factura"
+msgstr "Línia EDI factura"
 
 msgctxt "model:invoice.edi.line.quantity,name:"
 msgid "Invoice Edi Line Qty"
-msgstr "Quantitat línia factura edi"
+msgstr "Quantitat línia factura EDI"
 
 msgctxt "model:invoice.edi.maturity_date,name:"
 msgid "Edi Maturity Dates"
-msgstr "Dates de venciment Edi"
+msgstr "Dates de venciment EDI"
 
 msgctxt "model:invoice.edi.reference,name:"
 msgid "Account Invoice Reference"
@@ -462,18 +460,18 @@ msgstr "Referència factura"
 
 msgctxt "model:invoice.edi.supplier,name:"
 msgid "Supplier Edi"
-msgstr "Proveïdor edi"
+msgstr "Proveïdor EDI"
 
 msgctxt "model:invoice.edi.tax,name:"
 msgid "Invoice Edi Line Qty"
-msgstr "Quantity línia edi"
+msgstr "Quantity línia EDI"
 
 msgctxt "model:ir.action,name:act_configuration_form"
-msgid "EDI Invoice Configuration"
+msgid "Configuración factura edi"
 msgstr "EDI Configuració factures"
 
 msgctxt "model:ir.action,name:act_edi_invoice_form"
-msgid "EDI Supplier Invoices"
+msgid "Facturas edi"
 msgstr "EDI Factures Proveïdor"
 
 msgctxt ""
@@ -511,26 +509,25 @@ msgctxt "model:ir.message,text:msg_no_unique_edi"
 msgid "Invoice \"%(number)s\" from EDI sale cannot have more that 1 origin."
 msgstr "La factura \"%(number)s\" amb origen EDI no pot tenir més d'un origen"
 
+msgctxt "model:ir.message,text:msg_path_not_found"
+msgid "EDI path not found. Please check the configuration."
+msgstr "No s'ha trobat la ruta EDI. Si us plau comprova la configuració "
+
 msgctxt "model:ir.model.button,string:generate_edi_file"
 msgid "Generate EDI"
 msgstr "Generar EDI"
 
 msgctxt "model:ir.ui.menu,name:menu_edi_invoice_form"
-msgid "EDI Supplier Invoices"
+msgid "Edi Invoices"
 msgstr "EDI Factures Proveïdor"
 
 msgctxt "model:ir.ui.menu,name:menu_edi_invoices"
-msgid "EDI Invoices"
+msgid "Facturas edi"
 msgstr "EDI Factures"
 
 msgctxt "model:ir.ui.menu,name:menuitem_account_configuration"
-msgid "EDI Invoice Configuration"
+msgid "Invoice Edi Configuration"
 msgstr "EDI Configuració factures"
-
-#, fuzzy
-msgctxt "selection:invoice.edi,differences_state:"
-msgid ""
-msgstr "PAIN GONE"
 
 msgctxt "selection:invoice.edi,differences_state:"
 msgid "Difference"
@@ -540,11 +537,6 @@ msgctxt "selection:invoice.edi,differences_state:"
 msgid "Ok"
 msgstr "D'acord"
 
-#, fuzzy
-msgctxt "selection:invoice.edi,function_:"
-msgid ""
-msgstr "PAIN GONE"
-
 msgctxt "selection:invoice.edi,function_:"
 msgid "Copy"
 msgstr "Còpia"
@@ -552,6 +544,10 @@ msgstr "Còpia"
 msgctxt "selection:invoice.edi,function_:"
 msgid "Original"
 msgstr "Original"
+
+msgctxt "selection:invoice.edi,payment_type_value:"
+msgid ""
+msgstr "Tercer Editat"
 
 msgctxt "selection:invoice.edi,payment_type_value:"
 msgid "Account Bank"
@@ -596,11 +592,6 @@ msgstr "Haver"
 msgctxt "selection:invoice.edi,type_:"
 msgid "Invoice"
 msgstr "Factura"
-
-#, fuzzy
-msgctxt "selection:invoice.edi.discount,discount:"
-msgid ""
-msgstr "PAIN GONE"
 
 msgctxt "selection:invoice.edi.discount,discount:"
 msgid "Charge Container"
@@ -658,14 +649,9 @@ msgctxt "selection:invoice.edi.discount,type_:"
 msgid "Discount"
 msgstr "Descompte"
 
-#, fuzzy
-msgctxt "selection:invoice.edi.line,characteristic:"
-msgid ""
-msgstr "PAIN GONE"
-
 msgctxt "selection:invoice.edi.line,characteristic:"
 msgid "C"
-msgstr ""
+msgstr "C"
 
 msgctxt "selection:invoice.edi.line,characteristic:"
 msgid "Goods"
@@ -694,11 +680,6 @@ msgstr "GTIN (EAN14)"
 msgctxt "selection:invoice.edi.line,code_type:"
 msgid "UPC (EAN12)"
 msgstr "UPC (EAN12)"
-
-#, fuzzy
-msgctxt "selection:invoice.edi.line,qualifier:"
-msgid ""
-msgstr "PAIN GONE"
 
 msgctxt "selection:invoice.edi.line,qualifier:"
 msgid "Free Description"
@@ -788,22 +769,18 @@ msgctxt "selection:invoice.edi.supplier,type_:"
 msgid "Legal Supplier"
 msgstr "Proveïdor legal"
 
-#, fuzzy
 msgctxt "selection:invoice.edi.supplier,type_:"
 msgid "NAD"
 msgstr "NAD"
 
-#, fuzzy
 msgctxt "selection:invoice.edi.supplier,type_:"
 msgid "NADMR"
 msgstr "NAMDR"
 
-#, fuzzy
 msgctxt "selection:invoice.edi.supplier,type_:"
 msgid "NADPE"
 msgstr "NAPDE"
 
-#, fuzzy
 msgctxt "selection:invoice.edi.supplier,type_:"
 msgid "NADPW"
 msgstr "NADPW"
@@ -882,4 +859,4 @@ msgstr "Tercers"
 
 msgctxt "view:invoice.edi:"
 msgid "Search Related"
-msgstr ""
+msgstr "Cercar relacionat"
