@@ -1089,3 +1089,16 @@ class Invoice(metaclass=PoolMeta):
                         'account_invoice_edi.confirm_invoice_with_difference',
                         invoices=",".join([x.reference for x in differences])))
         cls.generate_edi_file(invoices)
+
+
+class InvoiceLine(metaclass=PoolMeta):
+    __name__ = 'account.invoice.line'
+
+    code_ean13 = fields.Function(fields.Char("Code EAN13"), 'get_code_ean13')
+
+    def get_code_ean13(self):
+        if self.product:
+            for identifier in self.product.identifiers:
+                if identifier.type == 'ean' and len(identifier.code) == 13:
+                    return identifier.code
+        return None
