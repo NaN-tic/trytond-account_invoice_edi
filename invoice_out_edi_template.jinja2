@@ -13,12 +13,13 @@ NADSU|{{invoice.company.party.edi_operational_point}}|{{invoice.company.party.na
 NADBY|{{invoice.party.edi_operational_point}}|{{invoice.party.name}}|{{invoice.party.addresses[0].street|replace('\n', '')}}|{{invoice.party.addresses[0].city}}|{{invoice.party.addresses[0].zip}}|{{invoice.party.identifier_code}}
 NADII|{{invoice.company.party.edi_operational_point}}|{{invoice.company.party.name}}
 NADIV|{{invoice.party.edi_operational_point}}|{{invoice.party.name}}|{{invoice.party.addresses[0].street|replace('\n', '')}}|{{invoice.party.addresses[0].city}}|{{invoice.party.addresses[0].zip}}|{{invoice.party.identifier_code}}
-NADPR|{{invoice.party.edi_operational_point}}|{{invoice.party.name}}|{{invoice.party.addresses[0].street|replace('\n', '')}}|{{invoice.party.addresses[0].city}}|{{invoice.party.addresses[0].zip}}|{{invoice.party.identifier_code}}
+NADPR|{{invoice.party.edi_operational_point}}|{{invoice.party.name}}|{{invoice.party.addresses[0].street|replace('\n',
+'')}}|{{invoice.party.addresses[0].city}}|{{invoice.party.addresses[0].zip}}|{{invoice.party.address[0].counrty.code}}|{{invoice.party.identifier_code}}
 NADPE|{{invoice.company.party.edi_operational_point}}|{{invoice.company.party.name}}
 CUX|EUR|4
 PAT|35|{{invoice.invoice_date|replace('-','')}}|{{invoice.total_amount}}
 {% for line in invoice.lines -%}
-LIN|{{line.product.code_ean13}}|EN|{{loop.index}}
+LIN|{{line.code_ean13}}|EN|{{loop.index}}
 PIALIN|{{line.product.code}}
 IMDLIN|{{line.product.name}}|M|F
 QTYLIN|47|{{line.quantity|int}}
@@ -35,4 +36,10 @@ ALCLIN|A|1|TD|{{(line.discount * 100)}}
 {% for tax in line.taxes -%}
 TAXLIN|VAT|{{(tax.rate * 100)|int}}|{{(line.amount * tax.rate)|round(2)}}
 {% endfor -%}
+{% endfor -%}
+CNTRES|2|{{ count(invoice.lines) }}
+MOARES|||{{ invoice.untaxed_amount }}|{{ invoice.total_amount }}|{{
+invoice.tax_amount }}
+{% for tax in invoice.taxes -%}
+TAXRES|VAT|{{tax.tax.rate}}|{{ tax.amount }}|{{ tax.base }}
 {% endfor -%}

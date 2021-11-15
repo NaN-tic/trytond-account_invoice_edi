@@ -4,6 +4,7 @@ from trytond.pool import Pool
 from . import invoice
 from . import sale
 
+
 def register():
     Pool.register(
         invoice.Cron,
@@ -17,6 +18,7 @@ def register():
         invoice.InvoiceEdiLineQty,
         invoice.InvoiceEdiTax,
         invoice.Invoice,
+        invoice.InvoiceLine,
         module='account_invoice_edi', type_='model')
     Pool.register(
         sale.Sale,
