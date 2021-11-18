@@ -143,7 +143,7 @@
           <field name="method">invoice.edi|import_edi_files</field>
       </record>
 
-      <menuitem parent="menu_edi_invoices" action="act_edi_invoice_form"
+      <menuitem parent="account_invoice_edi.menu_edi_invoices" action="act_edi_invoice_form"
           id="menu_edi_invoice_form" sequence="10"/>
 
       <record model="ir.ui.menu-res.group" id="menu_edi_invoice_group_account">
