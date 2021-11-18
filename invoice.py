@@ -1007,7 +1007,7 @@ class Invoice(metaclass=PoolMeta):
     @classmethod
     def __setup__(cls):
         super(Invoice, cls).__setup__()
-        cls._check_modify_exclude += {'is_edi'}
+        cls._check_modify_exclude.add('is_edi')
         cls._buttons.update({
                 'generate_edi_file': {'invisible': (
                         Not(Eval('is_edi')) |
