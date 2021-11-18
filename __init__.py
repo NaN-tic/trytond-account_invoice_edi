@@ -3,12 +3,12 @@
 from trytond.pool import Pool
 from . import invoice
 from . import sale
+from . import configuration
 
 
 def register():
     Pool.register(
         invoice.Cron,
-        invoice.InvoiceEdiConfiguration,
         invoice.InvoiceEdi,
         invoice.InvoiceEdiLine,
         invoice.SupplierEdi,
@@ -19,6 +19,7 @@ def register():
         invoice.InvoiceEdiTax,
         invoice.Invoice,
         invoice.InvoiceLine,
+        configuration.InvoiceEdiConfiguration,
         module='account_invoice_edi', type_='model')
     Pool.register(
         sale.Sale,
