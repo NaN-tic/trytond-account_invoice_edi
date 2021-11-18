@@ -10,6 +10,10 @@ msgctxt "field:account.invoice,is_edi:"
 msgid "Is EDI"
 msgstr "Es EDI"
 
+msgctxt "field:account.invoice.line,code_ean13:"
+msgid "Code EAN13"
+msgstr "Codi EAN13"
+
 msgctxt "field:invoice.edi,base_amount:"
 msgid "Base Amount"
 msgstr "Import Base"
@@ -141,6 +145,10 @@ msgstr "Total"
 msgctxt "field:invoice.edi,type_:"
 msgid "Document Type"
 msgstr "Tipus de document"
+
+msgctxt "field:invoice.edi.configuration,automatic_edi_invoice_out:"
+msgid "Send EDI file automatically"
+msgstr "Enviar fitxer EDI automáticament"
 
 msgctxt "field:invoice.edi.configuration,edi_files_path:"
 msgid "EDI Invoice Inbox Path"
@@ -513,6 +521,10 @@ msgctxt "model:ir.message,text:msg_path_not_found"
 msgid "EDI path not found. Please check the configuration."
 msgstr "No s'ha trobat la ruta EDI. Si us plau comprova la configuració "
 
+msgctxt "model:ir.message,text:msg_send_edi_invoice"
+msgid "The invoice %(invoice)s will processed and sended the EDI file."
+msgstr "De la factura %(invoice)s serà processat i enviat el fitxer EDI."
+
 msgctxt "model:ir.model.button,string:generate_edi_file"
 msgid "Generate EDI"
 msgstr "Generar EDI"
@@ -544,10 +556,6 @@ msgstr "Còpia"
 msgctxt "selection:invoice.edi,function_:"
 msgid "Original"
 msgstr "Original"
-
-msgctxt "selection:invoice.edi,payment_type_value:"
-msgid ""
-msgstr "Tercer Editat"
 
 msgctxt "selection:invoice.edi,payment_type_value:"
 msgid "Account Bank"

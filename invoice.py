@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-from trytond.model import fields, ModelSQL, ModelView, ModelSingleton
+from trytond.model import fields, ModelSQL, ModelView
 from trytond.pool import PoolMeta, Pool
 from trytond.pyson import Eval, Not
 from trytond.transaction import Transaction
@@ -15,9 +15,9 @@ import codecs
 from stdnum import ean
 from jinja2 import Template
 
-__all__ = ['InvoiceEdiConfiguration', 'InvoiceEdi', 'InvoiceEdiLine',
-    'SupplierEdi', 'InvoiceEdiReference', 'InvoiceEdiMaturityDates',
-    'InvoiceEdiDiscount', 'InvoiceEdiLineQty', 'InvoiceEdiTax', 'Cron']
+__all__ = ['InvoiceEdi', 'InvoiceEdiLine', 'SupplierEdi',
+    'InvoiceEdiReference', 'InvoiceEdiMaturityDates', 'InvoiceEdiDiscount',
+    'InvoiceEdiLineQty', 'InvoiceEdiTax', 'Cron']
 
 DEFAULT_FILES_LOCATION = '/tmp/invoice'
 
@@ -48,19 +48,6 @@ class Cron(metaclass=PoolMeta):
         cls.method.selection.extend([
             ('invoice.edi|import_edi_files', 'Import Edi Invoices'),
         ])
-
-
-class InvoiceEdiConfiguration(ModelSingleton, ModelSQL, ModelView):
-    'Invoice Edi Configuration'
-    __name__ = 'invoice.edi.configuration'
-
-    edi_files_path = fields.Char('EDI Invoice Inbox Path')
-    outbox_path_edi = fields.Char('EDI Invoice Outbox Path')
-    separator = fields.Char('Separator')
-
-    @classmethod
-    def default_separator(cls):
-        return '|'
 
 
 SUPPLIER_TYPE = [('NADSCO', 'Legal Supplier'),
@@ -1020,12 +1007,13 @@ class Invoice(metaclass=PoolMeta):
     @classmethod
     def __setup__(cls):
         super(Invoice, cls).__setup__()
+        cls._check_modify_exclude += {'is_edi'}
         cls._buttons.update({
                 'generate_edi_file': {'invisible': (
+                        Not(Eval('is_edi')) |
                         (Eval('type') != 'out') |
                         Not(Eval('state').in_(['posted', 'paid']))
-                        )
-                    },
+                        )},
                 })
 
     @classmethod
@@ -1041,8 +1029,24 @@ class Invoice(metaclass=PoolMeta):
     @classmethod
     @ModelView.button
     def generate_edi_file(cls, invoices):
+        pool = Pool()
+        Configuration = pool.get('invoice.edi.configuration')
+        Warning = pool.get('res.user.warning')
+
+        post_edi_invoice = Transaction().context.get('post_edi_invoice', False)
+        if post_edi_invoice:
+            configuration = Configuration(1)
+            if not configuration.automatic_edi_invoice_out:
+                return
+
         for invoice in invoices:
-            if invoice.is_edi:
+            if invoice.type == 'out' and invoice.is_edi:
+                if post_edi_invoice:
+                    warning_name = '%s.send_edi_invoice' % invoice
+                    if Warning.check(warning_name):
+                        raise UserWarning(warning_name, gettext(
+                                'account_invoice_edi.msg_send_edi_invoice',
+                                invoice=invoice.number))
                 invoice.generate_edi()
 
     def generate_edi(self):
@@ -1071,6 +1075,7 @@ class Invoice(metaclass=PoolMeta):
         Warning = pool.get('res.user.warning')
 
         super(Invoice, cls).post(invoices)
+
         differences = []
         for invoice in invoices:
             if invoice.type == 'out' or not invoice.is_edi:
@@ -1088,17 +1093,31 @@ class Invoice(metaclass=PoolMeta):
                 raise UserWarning(key, gettext(
                         'account_invoice_edi.confirm_invoice_with_difference',
                         invoices=",".join([x.reference for x in differences])))
-        cls.generate_edi_file(invoices)
+        with Transaction().set_context(post_edi_invoice=True):
+            cls.generate_edi_file(invoices)
 
 
 class InvoiceLine(metaclass=PoolMeta):
     __name__ = 'account.invoice.line'
 
+    shipment_reference = fields.Function(fields.Char('Shipment Number'),
+        'get_shipment_reference')
     code_ean13 = fields.Function(fields.Char("Code EAN13"), 'get_code_ean13')
 
-    def get_code_ean13(self):
+    def get_code_ean13(self, name):
         if self.product:
             for identifier in self.product.identifiers:
                 if identifier.type == 'ean' and len(identifier.code) == 13:
                     return identifier.code
         return None
+
+    def get_shipment_reference(self, name):
+        name = name[9:]
+        values = []
+        for move in self.stock_moves:
+            value = getattr(move.shipment, name, None)
+            if value:
+                values.append(value)
+        if values:
+            return " / ".join(values)
+        return ""

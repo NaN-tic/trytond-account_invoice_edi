@@ -10,6 +10,10 @@ msgctxt "field:account.invoice,is_edi:"
 msgid "Is EDI"
 msgstr "Es EDI"
 
+msgctxt "field:account.invoice.line,code_ean13:"
+msgid "Code EAN13"
+msgstr "Código EAN13"
+
 msgctxt "field:invoice.edi,base_amount:"
 msgid "Base Amount"
 msgstr "Importe base"
@@ -141,6 +145,10 @@ msgstr "Total"
 msgctxt "field:invoice.edi,type_:"
 msgid "Document Type"
 msgstr "Tipo de documento"
+
+msgctxt "field:invoice.edi.configuration,automatic_edi_invoice_out:"
+msgid "Send EDI file automatically"
+msgstr "Enviar fichero eDI automáticamente"
 
 msgctxt "field:invoice.edi.configuration,edi_files_path:"
 msgid "EDI Invoice Inbox Path"
@@ -514,6 +522,10 @@ msgstr ""
 msgctxt "model:ir.message,text:msg_path_not_found"
 msgid "EDI path not found. Please check the configuration."
 msgstr "No se ha encontrado la ruta EDI. Porfavor comprobar la confguración"
+
+msgctxt "model:ir.message,text:msg_send_edi_invoice"
+msgid "The invoice %(invoice)s will processed and sended the EDI file."
+msgstr "De la factura %(invoice)s será procesado y enviado el fichero EDI."
 
 msgctxt "model:ir.model.button,string:generate_edi_file"
 msgid "Generate EDI"
