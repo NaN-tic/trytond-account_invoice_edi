@@ -4,8 +4,10 @@ this repository contains the full copyright notices and license terms. -->
 <form>
     <label name="edi_files_path"/>
     <field name="edi_files_path"/>
-    <label name="separator"/>
-    <field name="separator"/>
     <label name="outbox_path_edi"/>
     <field name="outbox_path_edi"/>
+    <label name="automatic_edi_invoice_out"/>
+    <field name="automatic_edi_invoice_out"/>
+    <label name="separator"/>
+    <field name="separator"/>
 </form>

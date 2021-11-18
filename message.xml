@@ -18,5 +18,8 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.message" id="msg_path_not_found">
             <field name="text">EDI path not found. Please check the configuration.</field>
         </record>
+        <record model="ir.message" id="msg_send_edi_invoice">
+            <field name="text">The invoice %(invoice)s will processed and sended the EDI file.</field>
+        </record>
     </data>
 </tryton>
