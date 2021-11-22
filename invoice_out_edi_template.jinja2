@@ -16,6 +16,9 @@ NADIV|{{invoice.party.edi_operational_point}}|{{invoice.party.name}}|{{invoice.p
 NADPR|{{invoice.party.edi_operational_point}}|{{invoice.party.name}}|{{invoice.party.addresses[0].street|replace('\n',
 '')}}|{{invoice.party.addresses[0].city}}|{{invoice.party.addresses[0].zip}}|{{invoice.party.addresses[0].country.code}}|{{invoice.party.identifier_code}}
 NADPE|{{invoice.company.party.edi_operational_point}}|{{invoice.company.party.name}}
+{% if invoice['shipment_address'] -%}
+NADDP|{{invoice.shipment_address.edi_ean}}
+{% endif -%}
 CUX|EUR|4
 PAT|35|{{invoice.invoice_date|replace('-','')}}|{{invoice.total_amount}}
 {% for line in invoice.lines -%}
