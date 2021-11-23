@@ -2,9 +2,13 @@ INVOIC_D_93A_UN_EAN007
 INV|{{invoice.number}}|380
 DTM|{{invoice.invoice_date|replace('-','')}}
 PAI|14E
+{% if invoice['sales'] -%}
 {% for sale in invoice.sales -%}
 RFF|ON|{{sale.reference}}
 {% endfor -%}
+{% else -%}
+RFF|ON|{{invoice.reference}}
+{% endif -%}
 {% for shipment in invoice.shipments -%}
 RFF|DQ|{{shipment.reference}}
 {% endfor -%}
