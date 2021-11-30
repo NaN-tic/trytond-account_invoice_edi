@@ -48,5 +48,5 @@ CNTRES|2|{{ invoice.lines|length }}
 MOARES|||{{ invoice.untaxed_amount }}|{{ invoice.total_amount }}|{{
 invoice.tax_amount }}
 {% for tax in invoice.taxes -%}
-TAXRES|VAT|{{ tax.tax.rate*100 }}|{{ tax.amount }}|{{ tax.base }}
+TAXRES|VAT|{{ (tax.tax.rate*100)|round(2) }}|{{ tax.amount }}|{{ tax.base }}
 {% endfor -%}
