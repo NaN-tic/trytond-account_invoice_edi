@@ -1003,6 +1003,12 @@ class Invoice(metaclass=PoolMeta):
         help='Use EDI protocol for this invoice')
     edi_invoices = fields.One2Many('invoice.edi', 'invoice',
         'Edi Invoices')
+    edi_document_type = fields.Function(fields.Selection([
+            ('', 'Nothing'),
+            ('380', 'Invoice'),
+            ('381', 'Credit Invoice'),
+            ('325', 'Pro-forma'),
+            ], 'EDI Document Type'), 'get_edi_document_type')
 
     @classmethod
     def __setup__(cls):
@@ -1012,7 +1018,7 @@ class Invoice(metaclass=PoolMeta):
                 'generate_edi_file': {'invisible': (
                         Not(Eval('is_edi')) |
                         (Eval('type') != 'out') |
-                        Not(Eval('state').in_(['posted', 'paid']))
+                        (Eval('state').in_(['draft', 'cancel']))
                         )},
                 })
 
@@ -1025,6 +1031,18 @@ class Invoice(metaclass=PoolMeta):
             table.column_rename('use_edi', 'is_edi')
 
         super().__register__(module_name)
+
+    def get_edi_document_type(self, name):
+        if self.state in ('draft', 'cancel'):
+            return ''
+        if self.total_amount < 0:
+            # Credit Invoice
+            return '381'
+        elif self.state == 'validated':
+            # Pro-forma
+            return '325'
+        # Invoice
+        return '380'
 
     @classmethod
     @ModelView.button
@@ -1055,7 +1073,7 @@ class Invoice(metaclass=PoolMeta):
         config = InvoiceConfiguration(1)
 
         template_name = 'invoice_out_edi_template.jinja2'
-        result_name = 'invoice_{}.PLA'.format(self.number)
+        result_name = 'invoice_{}.PLA'.format(self.number or self.id)
         template_path = os.path.join(MODULE_PATH, template_name)
         try:
             result_path = os.path.join(config.outbox_path_edi, result_name)
