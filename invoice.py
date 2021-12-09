@@ -792,8 +792,6 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         pool = Pool()
         ProductIdentifier = pool.get('product.identifier')
         REF = Pool().get('invoice.edi.reference')
-        # ('barcode', '=', self.code_type) Remove this from domain after some
-        # received
         domain = [('code', '=', self.code)]
         codes = ProductIdentifier.search(domain, limit=1)
         if not codes:
@@ -882,20 +880,22 @@ class InvoiceEdiLine(ModelSQL, ModelView):
 
     def read_LIN(self, message):
         def _get_code_type(code):
-            # stdnum.ena only handles numbers EAN-13, EAN-8, UPC (12-digit)
+            # stdnum.ean only handles numbers EAN-13, EAN-8, UPC (12-digit)
             # and GTIN (EAN-14) format
             if ean.is_valid(code):
                 return 'EAN%s' % str(len(code))
             # TODO DUN14
+            return 'EAN'
 
         self.code = message.pop(0) if message else ''
+        self.code_type = None
         code_type = message.pop(0) if message else ''
         if code_type == 'EN':
             self.code_type = _get_code_type(self.code)
         # Some times the provider send the EAN13 without left zeros
         # and the EAN is an EAN13 but the check fail becasue it have
         # less digits.
-        if self.code_type == 'EN' and len(self.code) < 13:
+        if self.code_type == 'EAN' and len(self.code) < 13:
             code = self.code.zfill(13)
             if ean.is_valid(code):
                 self.code = code
