@@ -693,6 +693,9 @@ class InvoiceEdi(ModelSQL, ModelView):
             invoice.on_change_lines()
             invoice.on_change_type()
             invoice.is_edi = True
+            invoice.payment_type = invoice.on_change_with_payment_type()
+            if invoice.bank_account is None:
+                invoice._get_bank_account()
             edi_invoice.invoice = invoice
             invoices.append(invoice)
             to_save.append(edi_invoice)
