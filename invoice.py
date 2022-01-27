@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-from trytond.model import fields, ModelSQL, ModelView
-from trytond.pool import PoolMeta, Pool
-from trytond.pyson import Eval, Not
-from trytond.transaction import Transaction
-from trytond.exceptions import UserError, UserWarning
-from trytond.i18n import gettext
-
 import os
 from datetime import datetime
 from decimal import Decimal
@@ -15,9 +8,13 @@ import codecs
 from stdnum import ean
 from jinja2 import Template
 
-__all__ = ['InvoiceEdi', 'InvoiceEdiLine', 'SupplierEdi',
-    'InvoiceEdiReference', 'InvoiceEdiMaturityDates', 'InvoiceEdiDiscount',
-    'InvoiceEdiLineQty', 'InvoiceEdiTax', 'Cron']
+from trytond.model import fields, ModelSQL, ModelView
+from trytond.pool import PoolMeta, Pool
+from trytond.pyson import Eval, Not
+from trytond.transaction import Transaction
+from trytond.exceptions import UserError, UserWarning
+from trytond.i18n import gettext
+from trytond.modules.party_edi.party import SUPPLIER_TYPE, SupplierEdiMixin
 
 DEFAULT_FILES_LOCATION = '/tmp/invoice'
 
@@ -50,31 +47,11 @@ class Cron(metaclass=PoolMeta):
         ])
 
 
-SUPPLIER_TYPE = [('NADSCO', 'Legal Supplier'),
-    ('NADBCO', 'Legal Purchaser'), ('NADSU', 'Supplier'),
-    ('NADBY', 'Purchaser'), ('NADII', 'Invoice Issuer'),
-    ('NADIV', 'Invoice Receiver'), ('NADDP', 'Stock Receiver'),
-    ('NADPW', 'NADPW'), ('NADPE', 'NADPE'),
-    ('NADPR', 'Payment Issuer'), ('NADDL', 'Endorser'),
-    ('NAD', 'NAD'), ('NADMR', 'NADMR'),
-    ('NADUC', 'Final Receiver'), ('NADSH', 'Sender'),
-    ]
+class SupplierEdi(SupplierEdiMixin, ModelSQL, ModelView):
+    'Supplier Edi'
+    __name__ = 'invoice.edi.supplier'
 
-
-class SupplierEdiMixin(ModelSQL, ModelView):
-
-    type_ = fields.Selection(SUPPLIER_TYPE, 'Type')
-
-    edi_code = fields.Char('Edi Code')
-    name = fields.Char('Name')
-    commercial_register = fields.Char('Comercial Register')
-    street = fields.Char('Street')
-    city = fields.Char('City')
-    zip = fields.Char('zip')
-    vat = fields.Char('Vat')
-    country_code = fields.Char('Country_code')
-    account_bank = fields.Char('Account Bank')
-    party = fields.Many2One('party.party', 'Party')
+    edi_invoice = fields.Many2One('invoice.edi', 'Edi Invoice')
 
     def read_NADSCO(self, message):
         self.type_ = 'NADSCO'
@@ -90,25 +67,9 @@ class SupplierEdiMixin(ModelSQL, ModelView):
             self.zip = message.pop(0)
         if message:
             self.vat = message.pop(0)
-        if message:
-            self.account_bank = message.pop(0)
 
     def read_NADBCO(self, message):
         self.type_ = 'NADBCO'
-        self.edi_code = message.pop(0) if message else ''
-        self.name = message.pop(0) if message else ''
-        if message:
-            self.street = message.pop(0)
-        self.city = message.pop(0)
-        if message:
-            self.zip = message.pop(0)
-        if message:
-            self.vat = message.pop(0)
-        if message:
-            self.country_code = message.pop(0)
-
-    def read_NADMR(self, message):
-        self.type_ = 'NADMR'
         self.edi_code = message.pop(0) if message else ''
         self.name = message.pop(0) if message else ''
         if message:
@@ -117,6 +78,91 @@ class SupplierEdiMixin(ModelSQL, ModelView):
             self.city = message.pop(0)
         if message:
             self.zip = message.pop(0)
+        if message:
+            self.vat = message.pop(0)
+
+    def read_NADSU(self, message):
+        self.type_ = 'NADSU'
+        self.edi_code = message.pop(0) if message else ''
+        self.name = message.pop(0) if message else ''
+        if message:
+            self.commercial_register = message.pop(0)
+        if message:
+            self.street = message.pop(0)
+        if message:
+            self.city = message.pop(0)
+        if message:
+            self.zip = message.pop(0)
+        if message:
+            self.vat = message.pop(0)
+
+    def read_NADBY(self, message):
+        self.type_ = 'NADBY'
+        self.edi_code = message.pop(0) if message else ''
+        self.name = message.pop(0) if message else ''
+        if message:
+            self.street = message.pop(0)
+        if message:
+            self.city = message.pop(0)
+        if message:
+            self.zip = message.pop(0)
+        if message:
+            self.vat = message.pop(0)
+
+    def read_NADII(self, message):
+        self.type_ = 'NADII'
+        self.edi_code = message.pop(0) if message else ''
+        self.name = message.pop(0) if message else ''
+        if message:
+            self.street = message.pop(0)
+        if message:
+            self.city = message.pop(0)
+        if message:
+            self.zip = message.pop(0)
+        if message:
+            self.vat = message.pop(0)
+        if message:
+            self.country_code = message.pop(0)
+
+    def read_NADIV(self, message):
+        self.type_ = 'NADIV'
+        self.edi_code = message.pop(0) if message else ''
+        self.name = message.pop(0) if message else ''
+        if message:
+            self.street = message.pop(0)
+        if message:
+            self.city = message.pop(0)
+        if message:
+            self.zip = message.pop(0)
+        if message:
+            self.vat = message.pop(0)
+
+    def read_NADMS(self, message):
+        self.type_ = 'NADMS'
+        self.edi_code = message.pop(0) if message else ''
+
+    def read_NADMR(self, message):
+        self.type_ = 'NADMR'
+        self.edi_code = message.pop(0) if message else ''
+
+    def read_NADDP(self, message):
+        self.type_ = 'NADDP'
+        self.edi_code = message.pop(0) if message else ''
+        self.name = message.pop(0) if message else ''
+        if message:
+            self.street = message.pop(0)
+        if message:
+            self.city = message.pop(0)
+        if message:
+            self.zip = message.pop(0)
+
+    def read_NADPR(self, message):
+        self.type_ = 'NADPR'
+        self.edi_code = message.pop(0) if message else ''
+
+    def read_NADPE(self, message):
+        self.type_ = 'NADPE'
+        self.edi_code = message.pop(0) if message else ''
 
     def read_NADDL(self, message):
         self.type_ = 'NADDL'
@@ -136,84 +182,6 @@ class SupplierEdiMixin(ModelSQL, ModelView):
         self.edi_code = message.pop(0) if message else ''
         if message:
             self.vat = message.pop(0)
-
-    def read_NADIV(self, message):
-        self.type_ = 'NADIV'
-        self.edi_code = message.pop(0) if message else ''
-        if message:
-            self.vat = message.pop(0)
-
-    def read_NADPE(self, message):
-        self.type_ = 'NADPE'
-        self.edi_code = message.pop(0) if message else ''
-        if message:
-            self.vat = message.pop(0)
-
-    def read_NADSU(self, message):
-        self.type_ = 'NADSU'
-        self.edi_code = message.pop(0)
-        if message:
-            self.vat = message.pop(0)
-
-    def read_NADBY(self, message):
-        self.type_ = 'NADBY'
-        self.edi_code = message.pop(0) if message else ''
-        if message:
-            self.vat = message.pop(0)
-
-    def read_NADBIV(self, message):
-        self.type_ = 'NADBIV'
-        self.edi_code = message.pop(0) if message else ''
-        if message:
-            self.vat = message.pop(0)
-
-    def read_NADPR(self, message):
-        self.type_ = 'NADPR'
-        self.edi_code = message.pop(0) if message else ''
-
-    def read_NADII(self, message):
-        self.type_ = 'NADII'
-        self.edi_code = message.pop(0) if message else ''
-
-    def read_NADDP(self, message):
-        self.type_ = 'NADDP'
-        self.edi_code = message.pop(0) if message else ''
-
-    def read_NADPW(self, message):
-        self.type_ = 'NADPW'
-        self.edi_code = message.pop(0) if message else ''
-
-    def read_NADSH(self, message):
-        self.type_ = 'NADSH'
-        self.edi_code = message.pop(0) if message else ''
-
-    def read_NADUC(self, message):
-        self.type_ = 'NADUC'
-        self.edi_code = message.pop(0) if message else ''
-
-    def search_party(self):
-        PartyId = Pool().get('party.identifier')
-        domain = []
-        if self.edi_code:
-            domain += [('type', '=', 'edi'), ('code', '=', self.edi_code)]
-        if domain == []:
-            return
-        identifier = PartyId.search(domain, limit=1)
-        if identifier:
-            self.party = identifier[0].party
-            return
-        if hasattr(self, 'vat'):
-            domain = [('type', '=', 'vat'), ('code', '=', self.vat)]
-            identifier = PartyId.search(domain, limit=1)
-            if identifier:
-                self.party = identifier[0].party
-
-
-class SupplierEdi(SupplierEdiMixin, ModelSQL, ModelView):
-    'Supplier Edi'
-    __name__ = 'invoice.edi.supplier'
-
-    edi_invoice = fields.Many2One('invoice.edi', 'Edi Invoice')
 
 
 class InvoiceEdiReference(ModelSQL, ModelView):
