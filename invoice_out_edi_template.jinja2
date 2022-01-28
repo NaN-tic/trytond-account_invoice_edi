@@ -27,7 +27,11 @@ NADDP|{{shipment_address.edi_ean}}|{{shipment_address.party.name}}|{{shipment_ad
 NADPR|{{invoice.party.edi_operational_point}}
 NADPE|{{invoice.company.party.edi_operational_point}}
 CUX|EUR|4
-PAT|35|{{invoice.invoice_date|replace('-','')}}|{{invoice.total_amount}}
+{% if invoice.edi_document_type == '381' -%}
+PAT|35|{{ invoice.invoice_date|replace('-','') }}|{{ -1*invoice.total_amount }}
+{% else -%}
+PAT|35|{{ invoice.invoice_date|replace('-','') }}|{{ invoice.total_amount }}
+{% endif -%}
 {% for line in invoice.lines -%}
 LIN|{{line.code_ean13}}|EN|{{loop.index}}
 PIALIN|{{line.product.code}}
@@ -44,12 +48,23 @@ RFFLIN|DQ|{{line.shipment_reference}}
 ALCLIN|A|1|TD|{{(line.discount * 100)}}
 {% endif -%}
 {% for tax in line.taxes -%}
-TAXLIN|VAT|{{(tax.rate * 100)|int}}|{{(line.amount * tax.rate)|round(2)}}
+{% if invoice.edi_document_type == '381' -%}
+TAXLIN|VAT|{{ (tax.rate*100)|int }}|{{ (-1*line.amount*tax.rate)|round(2) }}
+{% else -%}
+TAXLIN|VAT|{{ (tax.rate*100)|int }}|{{ (line.amount*tax.rate)|round(2) }}
+{% endif -%}
 {% endfor -%}
 {% endfor -%}
 CNTRES|2|{{ invoice.lines|length }}
-MOARES|||{{ invoice.untaxed_amount }}|{{ invoice.total_amount }}|{{
-invoice.tax_amount }}
+{% if invoice.edi_document_type == '381' -%}
+MOARES|||{{ -1*invoice.untaxed_amount }}|{{ -1*invoice.total_amount }}|{{ -1*invoice.tax_amount }}
+{% else -%}
+MOARES|||{{ invoice.untaxed_amount }}|{{ invoice.total_amount }}|{{ invoice.tax_amount }}
+{% endif -%}
 {% for tax in invoice.taxes -%}
+{% if invoice.edi_document_type == '381' -%}
+TAXRES|VAT|{{ (tax.tax.rate*100)|round(2) }}|{{ -1*tax.amount }}|{{ -1*tax.base }}
+{% else -%}
 TAXRES|VAT|{{ (tax.tax.rate*100)|round(2) }}|{{ tax.amount }}|{{ tax.base }}
+{% endif -%}
 {% endfor -%}
