@@ -141,10 +141,6 @@ class SupplierEdi(SupplierEdiMixin, ModelSQL, ModelView):
         self.type_ = 'NADMS'
         self.edi_code = message.pop(0) if message else ''
 
-    def read_NADMR(self, message):
-        self.type_ = 'NADMR'
-        self.edi_code = message.pop(0) if message else ''
-
     def read_NADDP(self, message):
         self.type_ = 'NADDP'
         self.edi_code = message.pop(0) if message else ''
