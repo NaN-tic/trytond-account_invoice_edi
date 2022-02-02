@@ -35,7 +35,7 @@ PAT|35|{{ invoice.invoice_date|replace('-','') }}|{{ invoice.total_amount }}
 {% for line in invoice.lines -%}
 LIN|{{line.code_ean13}}|EN|{{loop.index}}
 PIALIN|{{line.product.code}}
-IMDLIN|{{ line.product.name|truncate(35) }}|M|F
+IMDLIN|{{ line.product.name|truncate(35, False, '', 0) }}|M|F
 QTYLIN|47|{{line.quantity|int}}
 MOALIN|{{line.amount}}
 PRILIN|AAA|0
