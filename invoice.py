@@ -4,7 +4,6 @@
 import os
 from datetime import datetime
 from decimal import Decimal
-import codecs
 from stdnum import ean
 from jinja2 import Template
 
@@ -492,7 +491,7 @@ class InvoiceEdi(ModelSQL, ModelView):
         pass
 
     @classmethod
-    def import_edi_file(cls, data):
+    def import_edi_file(cls, invoices, data):
         pool = Pool()
         Invoice = pool.get('invoice.edi')
         InvoiceLine = pool.get('invoice.edi.line')
@@ -505,7 +504,7 @@ class InvoiceEdi(ModelSQL, ModelView):
         invoice = None
         invoice_line = None
         document_type = data.pop(0)
-        if document_type == 'INVOIC_D_93A_UN_EAN007':
+        if document_type != 'INVOIC_D_93A_UN_EAN007':
             return
         for line in data:
             line = line.replace('\n', '').replace('\r', '')
@@ -570,9 +569,9 @@ class InvoiceEdi(ModelSQL, ModelView):
         for fname in files:
             if fname[-4:].lower() not in KNOWN_EXTENSIONS:
                 continue
-            with codecs.open(fname, 'rb', 'latin-1') as fp:
+            with open(fname, 'r', encoding='latin-1') as fp:
                 data = fp.readlines()
-                invoice = cls.import_edi_file(data)
+                invoice = cls.import_edi_file([], data)
 
             basename = os.path.basename(fname)
             if invoice:
