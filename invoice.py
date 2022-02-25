@@ -1035,7 +1035,8 @@ class Invoice(metaclass=PoolMeta):
         config = InvoiceConfiguration(1)
 
         template_name = 'invoice_out_edi_template.jinja2'
-        result_name = 'invoice_{}.PLA'.format(self.number or self.id)
+        result_name = 'invoice_{}.PLA'.format(
+            self.number.replace('/', '-') or self.id)
         template_path = os.path.join(MODULE_PATH, template_name)
         try:
             result_path = os.path.join(config.outbox_path_edi, result_name)
