@@ -499,7 +499,7 @@ class InvoiceEdi(ModelSQL, ModelView):
 
         invoice = None
         invoice_line = None
-        document_type = data.pop(0)
+        document_type = data.pop(0).replace('\n', '').replace('\r', '')
         if document_type != 'INVOIC_D_93A_UN_EAN007':
             return
         for line in data:
