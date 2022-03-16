@@ -9,8 +9,8 @@ RFF|ON|{{sale.reference}}
 {% else -%}
 RFF|ON|{{invoice.reference}}
 {% endif -%}
-{% for shipment in invoice.shipments -%}
-RFF|DQ|{{shipment.reference}}
+{% for shipment in invoice.shipments_number -%}
+RFF|DQ|{{shipment}}
 {% endfor -%}
 NADSCO|{{invoice.company.party.edi_operational_point_head}}|{{invoice.company.party.name}}|{{invoice.company.trade_register}}|{{invoice.company.party.addresses[0].street|replace('\n', '')}}|{{invoice.company.party.addresses[0].city}}|{{invoice.company.party.addresses[0].zip}}|{{invoice.company.party.identifier_code}}
 NADBCO|{{invoice.party.edi_operational_point_head}}|{{invoice.party.name}}|{{invoice.party.addresses[0].street|replace('\n', '')}}|{{invoice.party.addresses[0].city}}|{{invoice.party.addresses[0].zip}}|{{invoice.party.identifier_code}}|{{invoice.party.addresses[0].country.code}}|
