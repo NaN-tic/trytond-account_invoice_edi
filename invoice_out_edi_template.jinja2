@@ -46,8 +46,8 @@ PIALIN|{{line.product.code}}
 IMDLIN|{{ line.product.name|truncate(35, False, '', 0) }}|M|F
 QTYLIN|47|{{line.quantity|int}}
 MOALIN|{{line.amount}}
-PRILIN|AAA|0
-PRILIN|AAB|{{line.unit_price}}
+PRILIN|AAA|{{line.unit_price}}
+PRILIN|AAB|{{line.amount}}
 {% if invoice.shipments|length > 1 -%}
 RFFLIN|ON|{{line.sale.reference}}
 RFFLIN|DQ|{{line.shipment_reference}}
@@ -65,9 +65,9 @@ TAXLIN|VAT|{{ (tax.rate*100)|int }}|{{ (line.amount*tax.rate)|round(2) }}
 {% endfor -%}
 CNTRES|2|{{ invoice.lines|length }}
 {% if invoice.edi_document_type == '381' -%}
-MOARES|||{{ -1*invoice.untaxed_amount }}|{{ -1*invoice.total_amount }}|{{ -1*invoice.tax_amount }}
+MOARES|{{ -1*invoice.untaxed_amount }}||{{ -1*invoice.untaxed_amount }}|{{ -1*invoice.total_amount }}|{{ -1*invoice.tax_amount }}
 {% else -%}
-MOARES|||{{ invoice.untaxed_amount }}|{{ invoice.total_amount }}|{{ invoice.tax_amount }}
+MOARES|{{ invoice.untaxed_amount }}||{{ invoice.untaxed_amount }}|{{ invoice.total_amount }}|{{ invoice.tax_amount }}
 {% endif -%}
 {% for tax in invoice.taxes -%}
 {% if invoice.edi_document_type == '381' -%}
