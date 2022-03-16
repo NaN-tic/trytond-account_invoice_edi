@@ -46,8 +46,12 @@ PIALIN|{{line.product.code}}
 IMDLIN|{{ line.product.name|truncate(35, False, '', 0) }}|M|F
 QTYLIN|47|{{line.quantity|int}}
 MOALIN|{{line.amount}}
-PRILIN|AAA|{{line.unit_price}}
-PRILIN|AAB|{{line.amount}}
+PRILIN|AAA|{{ line.unit_price|round(2) }}
+{% if line.gross_unit_price -%}
+PRILIN|AAB|{{ line.gross_unit_price|round(2) }}
+{% else -%}
+PRILIN|AAB|{{ line.unit_price|round(2) }}
+{% endif -%}
 {% if invoice.shipments|length > 1 -%}
 RFFLIN|ON|{{line.sale.reference}}
 RFFLIN|DQ|{{line.shipment_reference}}
