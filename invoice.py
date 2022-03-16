@@ -713,7 +713,7 @@ class InvoiceEdiLine(ModelSQL, ModelView):
             ('EAN13', 'EAN13'),
             ('EAN14', 'GTIN (EAN14)'),
             ('DUN14', 'DUN14'),
-        ], 'Code Type')
+            ], 'Code Type')
     sequence = fields.Integer('Sequence')
     supplier_code = fields.Char('Supplier Code')
     purchaser_code = fields.Char('Purchaser Code')
@@ -1076,6 +1076,18 @@ class Invoice(metaclass=PoolMeta):
                         invoices=",".join([x.reference for x in differences])))
         with Transaction().set_context(post_edi_invoice=True):
             cls.generate_edi_file(invoices)
+
+    @property
+    def shipments_number(self):
+        pool = Pool()
+        Shipment = pool.get('stock.shipment.out')
+
+        numbers = set()
+        for line in self.lines:
+            for move in line.stock_moves:
+                if isinstance(move.shipment, Shipment):
+                    numbers.add(move.shipment.number)
+        return list(numbers)
 
 
 class InvoiceLine(metaclass=PoolMeta):
