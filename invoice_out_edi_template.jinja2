@@ -1,5 +1,5 @@
 INVOIC_D_93A_UN_EAN007
-INV|{{invoice.number or invoice.id}}|{{invoice.edi_document_type}}
+INV|{{invoice.number or invoice.id}}|{{invoice.edi_document_type}}|9
 DTM|{{invoice.invoice_date|replace('-','')}}
 PAI|14E
 {% if invoice['sales'] -%}
@@ -44,8 +44,13 @@ PAT|35|{{ invoice.invoice_date|replace('-','') }}|{{ invoice.total_amount }}
 LIN|{{line.code_ean13}}|EN|{{loop.index}}
 PIALIN|{{line.product.code}}
 IMDLIN|{{ line.product.name|truncate(35, False, '', 0) }}|M|F
-QTYLIN|47|{{line.quantity|int}}
-MOALIN|{{line.amount}}
+{% if invoice.edi_document_type == '381' -%}
+QTYLIN|47|{{ (-1*line.quantity)|int }}
+MOALIN|{{ (-1*line.amount)|round(2) }}
+{% else -%}
+QTYLIN|47|{{ line.quantity|int }}
+MOALIN|{{ line.amount|round(2) }}
+{% endif -%}
 PRILIN|AAA|{{ line.unit_price|round(2) }}
 {% if line.gross_unit_price -%}
 PRILIN|AAB|{{ line.gross_unit_price|round(2) }}
