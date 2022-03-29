@@ -46,10 +46,10 @@ PIALIN|{{line.product.code}}
 IMDLIN|{{ line.product.name|truncate(35, False, '', 0) }}|M|F
 {% if invoice.edi_document_type == '381' -%}
 QTYLIN|47|{{ (-1*line.quantity)|int }}
-MOALIN|{{ (-1*line.amount)|round(2) }}
+MOALIN|{{ -1*line.amount }}
 {% else -%}
 QTYLIN|47|{{ line.quantity|int }}
-MOALIN|{{ line.amount|round(2) }}
+MOALIN|{{ line.amount }}
 {% endif -%}
 PRILIN|AAA|{{ line.unit_price|round(2) }}
 {% if line.gross_unit_price -%}
