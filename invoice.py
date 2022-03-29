@@ -787,7 +787,10 @@ class InvoiceEdiLine(ModelSQL, ModelView):
                 line=self.description))
 
         move, = self.references
-        invoice_lines = [x for x in move.origin.invoice_lines if not x.invoice]
+        invoice_lines = []
+        if move and move.origin and hasattr(move.origin, 'invoice_lines'):
+            invoice_lines = [x for x in move.origin.invoice_lines
+                if not x.invoice]
         if not invoice_lines or len(invoice_lines) != 1:
             raise UserError(gettext(
                 'account_invoice_edi.confirm_invoice_with_invoice',
