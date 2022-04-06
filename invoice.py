@@ -179,10 +179,20 @@ class InvoiceEdiReference(ModelSQL, ModelView):
     'Account Invoice Reference'
     __name__ = 'invoice.edi.reference'
 
-    type_ = fields.Selection([('DQ', 'Shipment'), ('ON', 'Purchase'),
-        ('CT', 'Contract'), ('IV', 'Invoice'), ('AAK', 'Expedition'),
-        ('ALO', 'Confirmed Reception'), ('move', 'Move'),
-        ('LI', 'Line Number'), ('SNR', 'Medical Record')], 'Reference Code')
+    type_ = fields.Selection([
+            ('DQ', 'Shipment'),
+            ('ON', 'Purchase'),
+            ('CT', 'Contract'),
+            ('IV', 'Invoice'),
+            ('AAK', 'Expedition'),
+            ('ALO', 'Confirmed Reception'),
+            ('move', 'Move'),
+            ('LI', 'Line Number'),
+            ('SNR', 'Medical Record'),
+            ('PDR', 'Identicket number'),
+            ('AIJ', 'Charge note to be credited'),
+            ('RFA', 'Invoice number related'),
+            ], 'Reference Code')
 
     value = fields.Char('Reference')
     line_number = fields.Char('Line Number')
@@ -684,9 +694,14 @@ class InvoiceEdiTax(ModelSQL, ModelView):
     'Invoice Edi Line Qty'
     __name__ = 'invoice.edi.tax'
 
-    type_ = fields.Selection([('VAT', 'VAT'), ('EXT', 'Exempt'),
-        ('RET', 'IRPF'), ('RE', 'Equivalence Surcharge'),
-        ('ACT', 'Alcohol Tax'), ('ENV', 'Gree Dot'), ('IGIC', 'IGIC')], 'Type')
+    type_ = fields.Selection([
+            ('VAT', 'VAT'),
+            ('EXT', 'Exempt'),
+            ('RET', 'IRPF'),
+            ('RE', 'Equivalence Surcharge'),
+            ('ACT', 'Alcohol Tax'),
+            ('ENV', 'Gree Dot'),
+            ('IGIC', 'IGIC')], 'Type')
     percent = fields.Numeric('Percent', digits=(16, 2))
     tax_amount = fields.Numeric('Tax Amount', digits=(16, 2))
     base_amount = fields.Numeric('Base Amount', digits=(16, 2))

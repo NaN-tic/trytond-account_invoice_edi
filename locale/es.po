@@ -788,6 +788,18 @@ msgctxt "selection:invoice.edi.reference,type_:"
 msgid "Shipment"
 msgstr "Albarán"
 
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Identicket number"
+msgstr "Número de identicket"
+
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Charge note to be credited"
+msgstr "Nota de cargo que se abona"
+
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Invoice number related"
+msgstr "Número de Relación de Facturas"
+
 msgctxt "selection:invoice.edi.supplier,type_:"
 msgid "Endorser"
 msgstr "Avalador"
