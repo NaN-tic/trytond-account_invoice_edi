@@ -785,6 +785,18 @@ msgctxt "selection:invoice.edi.reference,type_:"
 msgid "Shipment"
 msgstr "Albarà"
 
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Identicket number"
+msgstr "Número d'identicket"
+
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Charge note to be credited"
+msgstr "Nota de càrrec que s'abona"
+
+msgctxt "selection:invoice.edi.reference,type_:"
+msgid "Invoice number related"
+msgstr "Número de Relació de Factures"
+
 msgctxt "selection:invoice.edi.supplier,type_:"
 msgid "Endorser"
 msgstr "Avalador"
