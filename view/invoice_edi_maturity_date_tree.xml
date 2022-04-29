@@ -1,6 +1,0 @@
-<tree>
-  <field name="type_"/>
-  <field name="maturity_date"/>
-  <field name="amount"/>
-  <field name="invoice_edi"/>
-</tree>
