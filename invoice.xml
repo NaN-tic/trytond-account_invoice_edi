@@ -170,5 +170,17 @@
           <field name="button" ref="search_related_button"/>
           <field name="group" ref="account.group_account"/>
       </record>
+
+      <record model="ir.rule.group" id="rule_group_invoice_edi">
+            <field name="name">User in company</field>
+            <field name="model" search="[('model', '=', 'invoice.edi')]"/>
+            <field name="global_p" eval="True"/>
+      </record>
+      <record model="ir.rule" id="rule_invoice_edi1">
+            <field name="domain"
+                eval="[('company', 'in', Eval('companies', []))]"
+                pyson="1"/>
+            <field name="rule_group" ref="rule_group_invoice_edi"/>
+      </record>
     </data>
 </tryton>
