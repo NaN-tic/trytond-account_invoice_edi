@@ -334,9 +334,14 @@ class InvoiceEdi(ModelSQL, ModelView):
         'Difference State'), 'get_differences_state')
     difference_amount = fields.Function(fields.Numeric('Differences',
         digits=(16, 2)), 'get_difference_amount')
-    party = fields.Function(fields.Many2One('party.party', 'Invoice Party'),
+    party = fields.Function(fields.Many2One('party.party', 'Invoice Party',
+        context={
+            'company': Eval('company'),
+            }, depends=['company']),
         'get_party', searcher='search_party')
-    manual_party = fields.Many2One('party.party', 'Manual Party')
+    manual_party = fields.Many2One('party.party', 'Manual Party', context={
+            'company': Eval('company'),
+            }, depends=['company'])
     comment = fields.Text('Comment')
 
     @classmethod
