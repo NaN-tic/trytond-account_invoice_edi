@@ -638,6 +638,44 @@ class InvoiceEdi(ModelSQL, ModelView):
                 eline.save()
 
     @classmethod
+    def edi_invoice_attach(cls, invoices):
+        pool = Pool()
+        Config = pool.get('account.configuration')
+        Attachment = pool.get('ir.attachment')
+
+        config = Config(1)
+        edi_invoice_file_path = config.edi_invoice_file_path
+        source_path = os.path.abspath(edi_invoice_file_path)
+
+        to_save = []
+        for invoice in invoices:
+            if invoice.type != 'in' or not invoice.reference:
+                continue
+            reference = invoice.reference
+
+            if os.path.exists('%s%s.pdf' % (source_path, reference)):
+                _file = '%s%s.pdf' % (source_path, reference)
+            else:
+                files = [fp for fp in os.listdir(source_path) if os.path.isfile(os.path.join(source_path, fp))]
+                for fi in files:
+                    if os.path.splitext(fi)[0].lower() == reference.lower():
+                        _file = '%s%s' % (source_path, fi)
+                        break
+
+            if not _file:
+                continue
+
+            attachment = Attachment()
+            attachment.name = reference
+            attachment.resource = 'account.invoice,%s' % invoice.id
+            attachment.type = 'data'
+            with open(_file, 'rb') as file_reader:
+                attachment.data = fields.Binary.cast(file_reader.read())
+            to_save.append(attachment)
+
+        Attachment.save(to_save)
+
+    @classmethod
     @ModelView.button
     def create_invoices(cls, edi_invoices):
         pool = Pool()
@@ -667,6 +705,9 @@ class InvoiceEdi(ModelSQL, ModelView):
         Invoice.validate(invoices)
         Invoice.draft(invoices)
         cls.save(to_save)
+
+        # invoice files attachment
+        cls.edi_invoice_attach(to_save)
 
 
 class InvoiceEdiLineQty(ModelSQL, ModelView):
