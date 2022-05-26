@@ -640,7 +640,7 @@ class InvoiceEdi(ModelSQL, ModelView):
     @classmethod
     def edi_invoice_attach(cls, invoices):
         pool = Pool()
-        Config = pool.get('account.configuration')
+        Config = pool.get('invoice.edi.configuration')
         Attachment = pool.get('ir.attachment')
 
         config = Config(1)
@@ -653,20 +653,21 @@ class InvoiceEdi(ModelSQL, ModelView):
                 continue
             reference = invoice.reference
 
-            if os.path.exists('%s%s.pdf' % (source_path, reference)):
-                _file = '%s%s.pdf' % (source_path, reference)
+            if os.path.exists('%s/%s.pdf' % (source_path, reference)):
+                _file = '%s/%s.pdf' % (source_path, reference)
             else:
-                files = [fp for fp in os.listdir(source_path) if os.path.isfile(os.path.join(source_path, fp))]
+                files = [fp for fp in os.listdir(source_path)
+                            if os.path.isfile(os.path.join(source_path, fp))]
                 for fi in files:
                     if os.path.splitext(fi)[0].lower() == reference.lower():
-                        _file = '%s%s' % (source_path, fi)
+                        _file = '%s/%s' % (source_path, fi)
                         break
 
             if not _file:
                 continue
 
             attachment = Attachment()
-            attachment.name = reference
+            attachment.name = '%s.pdf' % reference
             attachment.resource = 'account.invoice,%s' % invoice.id
             attachment.type = 'data'
             with open(_file, 'rb') as file_reader:
