@@ -655,6 +655,8 @@ class InvoiceEdi(ModelSQL, ModelView):
 
             if os.path.exists('%s/%s.pdf' % (source_path, reference)):
                 _file = '%s/%s.pdf' % (source_path, reference)
+            elif os.path.exists('%s/%s.PDF' % (source_path, reference)):
+                _file = '%s/%s.PDF' % (source_path, reference)
             else:
                 files = [fp for fp in os.listdir(source_path)
                             if os.path.isfile(os.path.join(source_path, fp))]
