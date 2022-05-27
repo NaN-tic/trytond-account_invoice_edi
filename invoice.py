@@ -648,22 +648,22 @@ class InvoiceEdi(ModelSQL, ModelView):
         source_path = os.path.abspath(edi_invoice_file_path)
 
         to_save = []
+        to_delete = []
         for invoice in invoices:
             if invoice.type != 'in' or not invoice.reference:
                 continue
             reference = invoice.reference
 
-            if os.path.exists('%s/%s.pdf' % (source_path, reference)):
-                _file = '%s/%s.pdf' % (source_path, reference)
-            elif os.path.exists('%s/%s.PDF' % (source_path, reference)):
-                _file = '%s/%s.PDF' % (source_path, reference)
-            else:
-                files = [fp for fp in os.listdir(source_path)
-                            if os.path.isfile(os.path.join(source_path, fp))]
-                for fi in files:
-                    if os.path.splitext(fi)[0].lower() == reference.lower():
-                        _file = '%s/%s' % (source_path, fi)
-                        break
+            # INVOIC_<invoice number>_<PO supplier>_<timestamp>.pdf
+            # INVOIC_20220014664_8436562372729_20220527105445.pdf
+            files = [fp for fp in os.listdir(source_path)
+                        if os.path.isfile(os.path.join(source_path, fp))]
+            for fi in files:
+                if not fi.startswith('INVOIC_'):
+                    continue
+                if fi.split('_')[1].lower() == reference.lower():
+                    _file = '%s/%s' % (source_path, fi)
+                    break
 
             if not _file:
                 continue
@@ -675,8 +675,12 @@ class InvoiceEdi(ModelSQL, ModelView):
             with open(_file, 'rb') as file_reader:
                 attachment.data = fields.Binary.cast(file_reader.read())
             to_save.append(attachment)
+            to_delete.append(_file)
 
         Attachment.save(to_save)
+
+        # TODO to_delete:
+
 
     @classmethod
     @ModelView.button
