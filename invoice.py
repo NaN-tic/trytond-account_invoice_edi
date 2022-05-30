@@ -2,6 +2,7 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
 import os
+import glob
 from datetime import datetime
 from decimal import Decimal
 from stdnum import ean
@@ -14,6 +15,7 @@ from trytond.transaction import Transaction
 from trytond.exceptions import UserError, UserWarning
 from trytond.i18n import gettext
 from trytond.modules.party_edi.party import SUPPLIER_TYPE, SupplierEdiMixin
+from .datamanager import FileDataManager
 
 DEFAULT_FILES_LOCATION = '/tmp/invoice'
 
@@ -647,6 +649,11 @@ class InvoiceEdi(ModelSQL, ModelView):
         edi_invoice_file_path = config.edi_invoice_file_path
         source_path = os.path.abspath(edi_invoice_file_path)
 
+        transaction = Transaction()
+
+        datamanager = FileDataManager()
+        datamanager = transaction.join(datamanager)
+
         to_save = []
         to_delete = []
         for invoice in invoices:
@@ -656,13 +663,13 @@ class InvoiceEdi(ModelSQL, ModelView):
 
             # INVOIC_<invoice number>_<PO supplier>_<timestamp>.pdf
             # INVOIC_20220014664_8436562372729_20220527105445.pdf
-            files = [fp for fp in os.listdir(source_path)
-                        if os.path.isfile(os.path.join(source_path, fp))]
-            for fi in files:
-                if not fi.startswith('INVOIC_'):
+            _file = None
+            for file_name in sorted(glob.glob(os.path.join(source_path, '*'))):
+                fname = os.path.basename(file_name)
+                if not fname.startswith('INVOIC_'):
                     continue
-                if fi.split('_')[1].lower() == reference.lower():
-                    _file = '%s/%s' % (source_path, fi)
+                if fname.split('_')[1].lower() == reference.lower():
+                    _file = file_name
                     break
 
             if not _file:
@@ -679,8 +686,11 @@ class InvoiceEdi(ModelSQL, ModelView):
 
         Attachment.save(to_save)
 
-        # TODO to_delete:
-
+        for filename in to_delete:
+            try:
+                os.remove(filename)
+            except OSError:
+                pass
 
     @classmethod
     @ModelView.button
