@@ -560,7 +560,7 @@ class InvoiceEdi(ModelSQL, ModelView):
         pool = Pool()
         Configuration = pool.get('invoice.edi.configuration')
         configuration = Configuration(1)
-        source_path = os.path.abspath(configuration.edi_files_path or
+        source_path = os.path.abspath(configuration.edi_invoice_file_path or
              DEFAULT_FILES_LOCATION)
         files = [os.path.join(source_path, fp) for fp in
                  os.listdir(source_path) if os.path.isfile(os.path.join(
@@ -640,7 +640,7 @@ class InvoiceEdi(ModelSQL, ModelView):
                 eline.save()
 
     @classmethod
-    def edi_invoice_attach(cls, invoices):
+    def edi_invoice_attach(cls, edi_invoices):
         pool = Pool()
         Config = pool.get('invoice.edi.configuration')
         Attachment = pool.get('ir.attachment')
@@ -656,21 +656,29 @@ class InvoiceEdi(ModelSQL, ModelView):
 
         to_save = []
         to_delete = []
-        for invoice in invoices:
+        for edi_invoice in edi_invoices:
+            invoice = edi_invoice.invoice
             if invoice.type != 'in' or not invoice.reference:
                 continue
             reference = invoice.reference
+
+            op_suppliers = [x.edi_code for x in edi_invoice.suppliers]
 
             # INVOIC_<invoice number>_<PO supplier>_<timestamp>.pdf
             # INVOIC_20220014664_8436562372729_20220527105445.pdf
             _file = None
             for file_name in sorted(glob.glob(os.path.join(source_path, '*'))):
-                fname = os.path.basename(file_name)
-                if not fname.startswith('INVOIC_'):
+                fname = os.path.basename(file_name).lower()
+                if (not fname.startswith('invoic_') or
+                        not fname.endswith('pdf')):
                     continue
-                if fname.split('_')[1].lower() == reference.lower():
-                    _file = file_name
-                    break
+                fname = fname.split('_')
+                if len(fname) < 4:
+                    continue
+                if fname[1] == reference.lower():
+                    if fname[2] in op_suppliers:
+                        _file = file_name
+                        break
 
             if not _file:
                 continue
@@ -684,7 +692,8 @@ class InvoiceEdi(ModelSQL, ModelView):
             to_save.append(attachment)
             to_delete.append(_file)
 
-        Attachment.save(to_save)
+        if to_save:
+            Attachment.save(to_save)
 
         for filename in to_delete:
             try:
@@ -707,7 +716,6 @@ class InvoiceEdi(ModelSQL, ModelView):
             for eline in edi_invoice.lines:
                 line = eline.get_line()
                 invoice.lines += (line,)
-            invoice.on_change_lines()
             invoice.on_change_lines()
             invoice.on_change_type()
             invoice.is_edi = True
@@ -856,7 +864,7 @@ class InvoiceEdiLine(ModelSQL, ModelView):
 
         invoice_line, = invoice_lines
 
-        # JUst invoice wat system expect to see differences.
+        # Just invoice wat system expect to see differences.
         # invoice_line.gross_unit_price = self.gross_price or self.unit_price
         # invoice_line.unit_price = self.unit_price
         # if self.unit_price and self.gross_price:
