@@ -560,7 +560,7 @@ class InvoiceEdi(ModelSQL, ModelView):
         pool = Pool()
         Configuration = pool.get('invoice.edi.configuration')
         configuration = Configuration(1)
-        source_path = os.path.abspath(configuration.edi_invoice_file_path or
+        source_path = os.path.abspath(configuration.edi_files_path or
              DEFAULT_FILES_LOCATION)
         files = [os.path.join(source_path, fp) for fp in
                  os.listdir(source_path) if os.path.isfile(os.path.join(
