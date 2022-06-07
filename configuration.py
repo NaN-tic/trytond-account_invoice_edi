@@ -12,6 +12,7 @@ class InvoiceEdiConfiguration(ModelSingleton, ModelSQL, ModelView):
     outbox_path_edi = fields.Char('EDI Invoice Outbox Path')
     separator = fields.Char('Separator')
     automatic_edi_invoice_out = fields.Boolean('Send EDI file automatically')
+    edi_invoice_file_path = fields.Char("EDI Invoice File Path")
 
     @classmethod
     def default_separator(cls):
