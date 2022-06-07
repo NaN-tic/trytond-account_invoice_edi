@@ -166,6 +166,10 @@ msgctxt "field:invoice.edi.configuration,edi_files_path:"
 msgid "EDI Invoice Inbox Path"
 msgstr "EDI Factura directorio de entrada"
 
+msgctxt "field:invoice.edi.configuration,edi_invoice_file_path:"
+msgid "EDI Invoice File Path"
+msgstr "Ruta fichero factura EDI"
+
 msgctxt "field:invoice.edi.configuration,outbox_path_edi:"
 msgid "EDI Invoice Outbox Path"
 msgstr "EDI Factura directorio de salida"
@@ -370,6 +374,10 @@ msgctxt "field:invoice.edi.reference,value:"
 msgid "Reference"
 msgstr "Referencia"
 
+msgctxt "field:invoice.edi.supplier,address:"
+msgid "Address"
+msgstr "Dirección"
+
 msgctxt "field:invoice.edi.supplier,city:"
 msgid "City"
 msgstr "Ciudad"
@@ -492,12 +500,12 @@ msgid "Invoice Edi Line Qty"
 msgstr "Cantidad Factura EDI"
 
 msgctxt "model:ir.action,name:act_configuration_form"
-msgid "Configuración factura edi"
-msgstr "EDI Configuración Factura"
+msgid "EDI Invoice Configuration"
+msgstr "EDI Configuración factura"
 
 msgctxt "model:ir.action,name:act_edi_invoice_form"
-msgid "Facturas edi"
-msgstr "EDI Facturas Proveedor"
+msgid "EDI Supplier Invoices"
+msgstr "EDI Facturas proveedor"
 
 msgctxt ""
 "model:ir.action.act_window.domain,name:act_invoice_edi_domain_confirmed"
@@ -549,15 +557,15 @@ msgid "Generate EDI"
 msgstr "Generar EDI"
 
 msgctxt "model:ir.ui.menu,name:menu_edi_invoice_form"
-msgid "Edi Invoices"
-msgstr "EDI Facturas Proveedor"
+msgid "EDI Supplier Invoices"
+msgstr "EDI Facturas proveedor"
 
 msgctxt "model:ir.ui.menu,name:menu_edi_invoices"
-msgid "Facturas edi"
+msgid "EDI Invoices"
 msgstr "EDI Facturas"
 
 msgctxt "model:ir.ui.menu,name:menuitem_account_configuration"
-msgid "Invoice Edi Configuration"
+msgid "EDI Invoice Configuration"
 msgstr "EDI Configuración factura"
 
 msgctxt "selection:account.invoice,edi_document_type:"
@@ -813,16 +821,16 @@ msgid "Legal Supplier"
 msgstr "Proveedor legal"
 
 msgctxt "selection:invoice.edi.supplier,type_:"
-msgid "NAD"
-msgstr "NAD"
-
-msgctxt "selection:invoice.edi.supplier,type_:"
 msgid "Message Receiver"
 msgstr "Receptor del mensaje"
 
 msgctxt "selection:invoice.edi.supplier,type_:"
 msgid "Message Sender"
 msgstr "Emisor del mensaje"
+
+msgctxt "selection:invoice.edi.supplier,type_:"
+msgid "NAD"
+msgstr "NAD"
 
 msgctxt "selection:invoice.edi.supplier,type_:"
 msgid "NADPE"
