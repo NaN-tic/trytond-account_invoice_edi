@@ -7,6 +7,28 @@ contains the full copyright notices and license terms. -->
           <label name="is_edi"/>
           <field name="is_edi"/>
           <field name="edi_invoices" colspan="4"/>
+          <separator string="edi fields" colspan="4"/>
+          <label name="edi_sale"/>
+          <field name="edi_sale"/>
+          <newline/>
+          <label name="edi_nadsco"/>
+          <field name="edi_nadsco"/>
+          <label name="edi_nadbco"/>
+          <field name="edi_nadbco"/>
+          <label name="edi_nadsu"/>
+          <field name="edi_nadsu"/>
+          <label name="edi_nadby"/>
+          <field name="edi_nadby"/>
+          <label name="edi_nadii"/>
+          <field name="edi_nadii"/>
+          <label name="edi_nadiv"/>
+          <field name="edi_nadiv"/>
+          <label name="edi_naddp"/>
+          <field name="edi_naddp"/>
+          <label name="edi_nadpr"/>
+          <field name="edi_nadpr"/>
+          <label name="edi_nadpe"/>
+          <field name="edi_nadpe"/>
         </page>
     </xpath>
     <xpath expr="/form/group[@id='buttons']"
