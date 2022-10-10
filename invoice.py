@@ -109,6 +109,8 @@ class SupplierEdi(SupplierEdiMixin, ModelSQL, ModelView):
             self.zip = message.pop(0)
         if message:
             self.vat = message.pop(0)
+        if message:
+            self.section = message.pop(0)
 
     def read_NADII(self, message):
         self.type_ = 'NADII'
@@ -1108,15 +1110,13 @@ class Invoice(metaclass=PoolMeta):
             'company_party_identifier']
 
     def get_NADSCO(self, name):
-        print('GET NADSCO')
         edi_fields = {}
-        if self.edi_sale and self.edi_sale.parties:
-            edi_fields = {f:None for f in self.get_NADSCO_fields()}
-            edi_fields['type'] = 'NADSCO'
+        edi_fields = {f:None for f in self.get_NADSCO_fields()}
+        edi_fields['type'] = 'NADSCO'
 
+        if self.edi_sale and self.edi_sale.parties:
             edi_party = self.get_edi_party('NADSCO', self.company.party)
             if edi_party:
-                #TODO: search a better way of do this
                 edi_fields['edi_operational'] = (edi_party.edi_code or None)
                 edi_fields['company_party_name'] = (edi_party.name or None)
                 edi_fields['company_trade_register'] = (None)
@@ -1128,6 +1128,7 @@ class Invoice(metaclass=PoolMeta):
                     edi_party.zip or None)
                 edi_fields['company_party_identifier'] = (None)
 
+        if self.company:
             if not edi_fields['edi_operational']:
                 edi_fields['edi_operational'] = (
                     self.company.party.edi_operational_point_head or '')
@@ -1147,11 +1148,8 @@ class Invoice(metaclass=PoolMeta):
             if not edi_fields['company_party_address_zip']:
                 edi_fields['company_party_address_zip'] = (
                     self.company.party.addresses[0].postal_code or '')
-            if not edi_fields['company_party_identifier']:
-                #TODO: identifier_code not found
-                edi_fields['company_party_identifier'] = ('')
 
-        return '|'.join(edi for edi in edi_fields.values())
+        return '|'.join(edi or '' for edi in edi_fields.values())
 
     def get_NADBCO_fields(self):
         return ['type', 'edi_operational', 'invoice_party_name',
@@ -1160,12 +1158,11 @@ class Invoice(metaclass=PoolMeta):
             'invoice_address_country_code']
 
     def get_NADBCO(self, name):
-        print('GET NADBCO')
         edi_fields = {}
-        if self.edi_sale and self.edi_sale.parties:
-            edi_fields = {f:None for f in self.get_NADBCO_fields()}
-            edi_fields['type'] = 'NADBCO'
+        edi_fields = {f:None for f in self.get_NADBCO_fields()}
+        edi_fields['type'] = 'NADBCO'
 
+        if self.edi_sale and self.edi_sale.parties:
             edi_party = self.get_edi_party('NADBCO', self.party)
             if edi_party:
                 edi_fields['edi_operational'] = (edi_party.edi_code or None)
@@ -1177,6 +1174,7 @@ class Invoice(metaclass=PoolMeta):
                 edi_fields['invoice_address_country_code'] = (
                     edi_party.country_code or None)
 
+        if self.party:
             if not edi_fields['edi_operational']:
                 edi_fields['edi_operational'] = (
                     self.party.edi_operational_point_head or '')
@@ -1191,18 +1189,15 @@ class Invoice(metaclass=PoolMeta):
             if not edi_fields['invoice_address_zip']:
                 edi_fields['invoice_address_zip'] = (
                     self.party.addresses[0].postal_code or '')
-            if not edi_fields['invoice_party_identifier_code']:
-                #TODO: identifier_code not found
-                edi_fields['invoice_party_identifier_code'] = ('')
             if not edi_fields['invoice_address_country_code']:
                 edi_fields['invoice_address_country_code'] = (
                     self.party.addresses[0].country.code)
 
-            # The NADBCO line have an empty value at the end, add one element
-            # more to edi_fields dictionary:
-            edi_fields[None] = ''
+        # The NADBCO line have an empty value at the end, add one element
+        # more to edi_fields dictionary:
+        edi_fields[None] = ''
 
-        return '|'.join(edi for edi in edi_fields.values())
+        return '|'.join(edi or '' for edi in edi_fields.values())
 
     def get_NADSU_fields(self):
         return ['type', 'edi_operational', 'company_party_name',
@@ -1211,15 +1206,13 @@ class Invoice(metaclass=PoolMeta):
             'company_party_identifier']
 
     def get_NADSU(self, name):
-        print('GET NADSU')
         edi_fields = {}
-        if self.edi_sale and self.edi_sale.parties:
-            edi_fields = {f:None for f in self.get_NADSU_fields()}
-            edi_fields['type'] = 'NADSU'
+        edi_fields = {f:None for f in self.get_NADSU_fields()}
+        edi_fields['type'] = 'NADSU'
 
+        if self.edi_sale and self.edi_sale.parties:
             edi_party = self.get_edi_party('NADSU', self.company.party)
             if edi_party:
-                #TODO: search a better way of do this
                 edi_fields['edi_operational'] = (edi_party.edi_code or None)
                 edi_fields['company_party_name'] = (edi_party.name or None)
                 edi_fields['company_trade_register'] = (None)
@@ -1231,7 +1224,7 @@ class Invoice(metaclass=PoolMeta):
                     edi_party.zip or None)
                 edi_fields['company_party_identifier'] = (None)
 
-
+        if self.company:
             if not edi_fields['edi_operational']:
                 edi_fields['edi_operational'] = (
                     self.company.party.edi_operational_point_head or '')
@@ -1251,41 +1244,38 @@ class Invoice(metaclass=PoolMeta):
             if not edi_fields['company_party_address_zip']:
                 edi_fields['company_party_address_zip'] = (
                     self.company.party.addresses[0].postal_code or '')
-            if not edi_fields['company_party_identifier']:
-                #TODO: identifier_code not found
-                edi_fields['company_party_identifier'] = ('')
 
-            # The NADS line have an empty value at the end, add one element
-            # more to edi_fields dictionary:
-            edi_fields[None] = ''
+        # The NADS line have an empty value at the end, add one element
+        # more to edi_fields dictionary:
+        edi_fields[None] = ''
 
-        return '|'.join(edi for edi in edi_fields.values())
+        return '|'.join(edi or '' for edi in edi_fields.values())
 
     def get_NADBY_fields(self):
         return ['type', 'edi_operational', 'party_name',
             'party_address_street', 'party_address_city', 'party_address_zip',
-            'party_identifier_code']
+            'party_identifier_code', 'edi_section']
 
     def get_NADBY(self, name):
-        print('GET NADBY')
         edi_fields = {}
-        if self.edi_sale and self.edi_sale.parties:
-            edi_fields = {f:None for f in self.get_NADBY_fields()}
-            edi_fields['type'] = 'NADBY'
+        edi_fields = {f:None for f in self.get_NADBY_fields()}
+        edi_fields['type'] = 'NADBY'
 
+        if self.edi_sale and self.edi_sale.parties:
             edi_party = self.get_edi_party('NADBY', self.party)
             if edi_party:
-                #TODO: search a better way of do this
                 edi_fields['edi_operational'] = (edi_party.edi_code or None)
                 edi_fields['party_name'] = (edi_party.name or None)
                 edi_fields['party_address_street'] = (edi_party.street or None)
                 edi_fields['party_address_city'] = (edi_party.city or None)
                 edi_fields['party_address_zip'] = (edi_party.zip or None)
                 edi_fields['party_identifier_code'] = (None)
+                edi_fields['edi_section'] = (edi_party.section or None)
 
+        if self.sales:
             if not edi_fields['edi_operational']:
-                edi_fields['edi_operational'] = (
-                    self.sales[0].party.edi_operational_point_head or '')
+                    edi_fields['edi_operational'] = (
+                        self.sales[0].party.edi_operational_point_head or '')
             if not edi_fields['party_name']:
                 edi_fields['party_name'] = (self.sales[0].party.name or '')
             if not edi_fields['party_address_street']:
@@ -1298,15 +1288,14 @@ class Invoice(metaclass=PoolMeta):
             if not edi_fields['party_address_zip']:
                 edi_fields['party_address_zip'] = (
                     self.sales[0].party.addresses[0].postal_code or '')
-            if not edi_fields['party_identifier_code']:
-                #TODO: identifier_code not found
-                edi_fields['party_identifier_code'] = ('')
+            if not edi_fields['edi_section']:
+                edi_fields['edi_section'] = ('')
 
-            # The NADBY line have an empty value at the end, add one element
-            # more to edi_fields dictionary:
-            edi_fields[None] = ''
+        # The NADBY line have an empty value at the end, add one element
+        # more to edi_fields dictionary:
+        #edi_fields[None] = ''
 
-        return '|'.join(edi for edi in edi_fields.values())
+        return '|'.join(edi or '' for edi in edi_fields.values())
 
     def get_NADII_fields(self):
         return ['type', 'company_edi_operational', 'company_party_name',
@@ -1315,12 +1304,11 @@ class Invoice(metaclass=PoolMeta):
             'company_party_address_country_code']
 
     def get_NADII(self, name):
-        print('GET NADII')
         edi_fields = {}
-        if self.edi_sale and self.edi_sale.parties:
-            edi_fields = {f:None for f in self.get_NADII_fields()}
-            edi_fields['type'] = 'NADII'
+        edi_fields = {f:None for f in self.get_NADII_fields()}
+        edi_fields['type'] = 'NADII'
 
+        if self.edi_sale and self.edi_sale.parties:
             edi_party = self.get_edi_party('NADII', self.company.party)
             if edi_party:
                 edi_fields['company_edi_operational'] = (
@@ -1332,10 +1320,10 @@ class Invoice(metaclass=PoolMeta):
                     edi_party.city or None)
                 edi_fields['company_party_address_zip'] = (
                     edi_party.zip or None)
-                edi_fields['company_party_identifier_code'] = (None)
                 edi_fields['company_party_address_country_code'] = (
                     edi_party.country_code or None)
 
+        if self.company:
             if not edi_fields['company_edi_operational']:
                 edi_fields['company_edi_operational'] = (
                     self.company.party.edi_operational_point_head or '')
@@ -1352,14 +1340,11 @@ class Invoice(metaclass=PoolMeta):
             if not edi_fields['company_party_address_zip']:
                 edi_fields['company_party_address_zip'] = (
                     self.company.party.addresses[0].postal_code or '')
-            if not edi_fields['company_party_identifier_code']:
-                #TODO: identifier_code not found
-                edi_fields['company_party_identifier_code'] = ('')
             if not edi_fields['company_party_address_country_code']:
                 edi_fields['company_party_address_country_code'] = (
                     self.party.addresses[0].country.code)
 
-        return '|'.join(edi for edi in edi_fields.values())
+        return '|'.join(edi or '' for edi in edi_fields.values())
 
     def get_NADIV_fields(self):
         return ['type', 'address_edi_ean', 'address_party_name',
@@ -1367,15 +1352,13 @@ class Invoice(metaclass=PoolMeta):
             'address_party_identifier']
 
     def get_NADIV(self, name):
-        print('GET NADIV')
         edi_fields = {}
-        if self.edi_sale and self.edi_sale.parties:
-            edi_fields = {f:None for f in self.get_NADIV_fields()}
-            edi_fields['type'] = 'NADIV'
+        edi_fields = {f:None for f in self.get_NADIV_fields()}
+        edi_fields['type'] = 'NADIV'
 
+        if self.edi_sale and self.edi_sale.parties:
             edi_party = self.get_edi_party('NADBY', self.party)
             if edi_party:
-                #TODO: search a better way of do this
                 edi_fields['address_edi_ean'] = (edi_party.edi_code or None)
                 edi_fields['address_party_name'] = (edi_party.name or None)
                 edi_fields['address_street'] = (edi_party.street or None)
@@ -1383,6 +1366,7 @@ class Invoice(metaclass=PoolMeta):
                 edi_fields['address_zip'] = (edi_party.zip or None)
                 edi_fields['address_party_identifier'] = (None)
 
+        if self.invoice_address:
             if not edi_fields['address_edi_ean']:
                 edi_fields['address_edi_ean'] = (
                     self.invoice_address.edi_ean or '')
@@ -1397,11 +1381,8 @@ class Invoice(metaclass=PoolMeta):
             if not edi_fields['address_zip']:
                 edi_fields['address_zip'] = (
                     self.invoice_address.postal_code or '')
-            if not edi_fields['address_party_identifier']:
-                #TODO: identifier_code not found
-                edi_fields['address_party_identifier'] = ('')
 
-        return '|'.join(edi for edi in edi_fields.values())
+        return '|'.join(edi or '' for edi in edi_fields.values())
 
     def get_NADDP_fields(self):
         return ['type', 'shipment_address_edi_ean',
@@ -1409,15 +1390,13 @@ class Invoice(metaclass=PoolMeta):
             'shipment_address_city', 'shipment_address_zip']
 
     def get_NADDP(self, name):
-        print('GET NADDP')
         edi_fields = {}
-        if self.edi_sale and self.edi_sale.parties:
-            edi_fields = {f:None for f in self.get_NADDP_fields()}
-            edi_fields['type'] = 'NADDP'
+        edi_fields = {f:None for f in self.get_NADDP_fields()}
+        edi_fields['type'] = 'NADDP'
 
+        if self.edi_sale and self.edi_sale.parties:
             edi_party = self.get_edi_party('NADDP', self.party)
             if edi_party:
-                #TODO: search a better way of do this
                 edi_fields['shipment_address_edi_ean'] = (
                     edi_party.edi_code or None)
                 edi_fields['shipment_address_party_name'] = (
@@ -1427,6 +1406,7 @@ class Invoice(metaclass=PoolMeta):
                 edi_fields['shipment_address_city'] = (edi_party.city or None)
                 edi_fields['shipment_address_zip'] = (edi_party.zip or None)
 
+        if self.party:
             if self.shipment_address:
                 shipment_address = self.shipment_address
             else:
@@ -1453,22 +1433,22 @@ class Invoice(metaclass=PoolMeta):
                 edi_fields['shipment_address_zip'] = (
                     shipment_address.postal_code or '')
 
-        return '|'.join(edi for edi in edi_fields.values())
+        return '|'.join(edi or '' for edi in edi_fields.values())
 
     def get_NADPR_fields(self):
         return ['type', 'edi_ean']
 
     def get_NADPR(self, name):
-        print('GET NADPR')
         edi_fields = {}
-        if self.edi_sale and self.edi_sale.parties:
-            edi_fields = {f:None for f in self.get_NADPR_fields()}
-            edi_fields['type'] = 'NADPR'
+        edi_fields = {f:None for f in self.get_NADPR_fields()}
+        edi_fields['type'] = 'NADPR'
 
+        if self.edi_sale and self.edi_sale.parties:
             edi_party = self.get_edi_party('NADPR', self.party)
             if edi_party:
                 edi_fields['edi_ean'] = (edi_party.edi_code or None)
 
+        if self.party:
             if not edi_fields['edi_ean']:
                 if self.party.edi_operational_point_pay:
                     edi_fields['edi_ean'] = (
@@ -1477,28 +1457,28 @@ class Invoice(metaclass=PoolMeta):
                     edi_fields['edi_ean'] = (
                         self.invoice_address.edi_ean or '')
 
-        return '|'.join(edi for edi in edi_fields.values())
+        return '|'.join(edi or '' for edi in edi_fields.values())
 
     def get_NADPE_fields(self):
         return ['type', 'company_edi_operational']
 
     def get_NADPE(self, name):
-        print('GET NADPE')
         edi_fields = {}
-        if self.edi_sale and self.edi_sale.parties:
-            edi_fields = {f:None for f in self.get_NADPE_fields()}
-            edi_fields['type'] = 'NADPE'
+        edi_fields = {f:None for f in self.get_NADPE_fields()}
+        edi_fields['type'] = 'NADPE'
 
+        if self.edi_sale and self.edi_sale.parties:
             edi_party = self.get_edi_party('NADPE', self.party)
             if edi_party:
                 edi_fields['company_edi_operational'] = (
                     edi_party.edi_code or None)
 
+        if self.company:
             if not edi_fields['company_edi_operational']:
                 edi_fields['company_edi_operational'] = (
                     self.company.party.edi_operational_point_head or '')
 
-        return '|'.join(edi for edi in edi_fields.values())
+        return '|'.join(edi or '' for edi in edi_fields.values())
 
     @classmethod
     def __setup__(cls):
