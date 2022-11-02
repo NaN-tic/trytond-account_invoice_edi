@@ -12,28 +12,15 @@ RFF|ON|{{invoice.reference}}
 {% for shipment in invoice.shipments_number -%}
 RFF|DQ|{{shipment}}
 {% endfor -%}
-NADSCO|{{invoice.company.party.edi_operational_point_head}}|{{invoice.company.party.name}}|{{invoice.company.trade_register}}|{{invoice.company.party.addresses[0].street|replace('\n', '')}}|{{invoice.company.party.addresses[0].city}}|{{invoice.company.party.addresses[0].zip}}|{{invoice.company.party.identifier_code}}
-NADBCO|{{invoice.party.edi_operational_point_head}}|{{invoice.party.name}}|{{invoice.party.addresses[0].street|replace('\n', '')}}|{{invoice.party.addresses[0].city}}|{{invoice.party.addresses[0].zip}}|{{invoice.party.identifier_code}}|{{invoice.party.addresses[0].country.code}}|
-NADSU|{{invoice.company.party.edi_operational_point_head}}|{{invoice.company.party.name}}|{{invoice.company.trade_register}}|{{invoice.company.party.addresses[0].street|replace('\n', '')}}|{{invoice.company.party.addresses[0].city}}|{{invoice.company.party.addresses[0].zip}}|{{invoice.company.party.identifier_code}}|
-{% if invoice['sales'] -%}
-NADBY|{{invoice.sales[0].party.edi_operational_point_head}}|{{invoice.sales[0].party.name}}|{{invoice.sales[0].party.addresses[0].street|replace('\n','')}}|{{invoice.sales[0].party.addresses[0].city}}|{{invoice.sales[0].party.addresses[0].zip}}|{{invoice.sales[0].party.identifier_code}}|
-{% else -%}
-NADBY|{{invoice.party.edi_operational_point_head}}|{{invoice.party.name}}|{{invoice.party.addresses[0].street|replace('\n', '')}}|{{invoice.party.addresses[0].city}}|{{invoice.party.addresses[0].zip}}|{{invoice.party.identifier_code}}|
-{% endif -%}
-NADII|{{invoice.company.party.edi_operational_point_head}}|{{invoice.company.party.name}}|{{invoice.company.party.addresses[0].street|replace('\n', '')}}|{{invoice.company.party.addresses[0].city}}|{{invoice.company.party.addresses[0].zip}}|{{invoice.company.party.identifier_code}}|{{invoice.party.addresses[0].country.code}}
-NADIV|{{invoice.invoice_address.edi_ean}}|{{invoice.invoice_address.party.name}}|{{invoice.invoice_address.street|replace('\n','')}}|{{invoice.invoice_address.city}}|{{invoice.invoice_address.zip}}|{{invoice.invoice_address.party.identifier_code}}
-{% if invoice['shipment_address'] -%}
-NADDP|{{invoice.shipment_address.edi_ean}}|{{invoice.shipment_address.party.name}}|{{invoice.shipment_address.street|replace('\n', '')}}|{{invoice.shipment_address.city}}|{{invoice.shipment_address.zip}}
-{% else -%}
-{% set shipment_address = invoice.party.addresses|selectattr('delivery')|first -%}
-NADDP|{{shipment_address.edi_ean}}|{{shipment_address.party.name}}|{{shipment_address.street|replace('\n', '')}}|{{shipment_address.city}}|{{shipment_address.zip}}
-{% endif -%}
-{% if invoice.party.edi_operational_point_pay -%}
-NADPR|{{invoice.party.edi_operational_point_pay}}
-{% else -%}
-NADPR|{{invoice.invoice_address.edi_ean}}
-{% endif -%}
-NADPE|{{invoice.company.party.edi_operational_point_head}}
+{{invoice.edi_nadsco}}
+{{invoice.edi_nadbco}}
+{{invoice.edi_nadsu}}
+{{invoice.edi_nadby}}
+{{invoice.edi_nadii}}
+{{invoice.edi_nadiv}}
+{{invoice.edi_naddp}}
+{{invoice.edi_nadpr}}
+{{invoice.edi_nadpe}}
 CUX|EUR|4
 {% if invoice.edi_document_type == '381' -%}
 PAT|35|{{ invoice.invoice_date|replace('-','') }}|{{ -1*invoice.total_amount }}
