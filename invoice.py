@@ -1064,8 +1064,6 @@ class Invoice(metaclass=PoolMeta):
             ], 'EDI Document Type'), 'get_edi_document_type')
 
     # EDI FIELDS
-    edi_sale = fields.Function(fields.Many2One('edi.sale', "Edi Sale"),
-        'get_edi_sale')
     edi_nadsco = fields.Function(fields.Char('NADSCO'), 'get_NADSCO')
     edi_nadbco = fields.Function(fields.Char('NADBCO'), 'get_NADBCO')
     edi_nadsu = fields.Function(fields.Char('NADSU'), 'get_NADSU')
@@ -1076,12 +1074,16 @@ class Invoice(metaclass=PoolMeta):
     edi_nadpr = fields.Function(fields.Char('NADPR'), 'get_NADPR')
     edi_nadpe = fields.Function(fields.Char('NADPE'), 'get_NADPE')
 
-    def get_edi_sale(self, name):
+    def get_edi_sale(self):
         pool = Pool()
-        SaleLine = pool.get('sale.line')
-        EdiSale = pool.get('edi.sale')
-
         edi_sale = None
+
+        try:
+            SaleLine = pool.get('sale.line')
+            EdiSale = pool.get('edi.sale')
+        except KeyError:
+            return edi_sale
+
         if self.is_edi:
             sales = []
             for line in self.lines:
@@ -1098,9 +1100,12 @@ class Invoice(metaclass=PoolMeta):
         return edi_sale
 
     def get_edi_party(self, type, party):
-        for edi_party in self.edi_sale.parties:
-            if edi_party.type_ == type and edi_party.party == party:
-                return edi_party
+        edi_sale = self.get_edi_sale()
+
+        if edi_sale:
+            for edi_party in edi_sale.parties:
+                if edi_party.type_ == type and edi_party.party == party:
+                    return edi_party
         return None
 
     def get_NADSCO_fields(self):
@@ -1114,7 +1119,8 @@ class Invoice(metaclass=PoolMeta):
         edi_fields = {f:None for f in self.get_NADSCO_fields()}
         edi_fields['type'] = 'NADSCO'
 
-        if self.edi_sale and self.edi_sale.parties:
+        edi_sale = self.get_edi_sale()
+        if edi_sale and edi_sale.parties:
             edi_party = self.get_edi_party('NADSCO', self.company.party)
             if edi_party:
                 edi_fields['edi_operational'] = (edi_party.edi_code or None)
@@ -1162,7 +1168,8 @@ class Invoice(metaclass=PoolMeta):
         edi_fields = {f:None for f in self.get_NADBCO_fields()}
         edi_fields['type'] = 'NADBCO'
 
-        if self.edi_sale and self.edi_sale.parties:
+        edi_sale = self.get_edi_sale()
+        if edi_sale and edi_sale.parties:
             edi_party = self.get_edi_party('NADBCO', self.party)
             if edi_party:
                 edi_fields['edi_operational'] = (edi_party.edi_code or None)
@@ -1210,7 +1217,8 @@ class Invoice(metaclass=PoolMeta):
         edi_fields = {f:None for f in self.get_NADSU_fields()}
         edi_fields['type'] = 'NADSU'
 
-        if self.edi_sale and self.edi_sale.parties:
+        edi_sale = self.get_edi_sale()
+        if edi_sale and edi_sale.parties:
             edi_party = self.get_edi_party('NADSU', self.company.party)
             if edi_party:
                 edi_fields['edi_operational'] = (edi_party.edi_code or None)
@@ -1261,7 +1269,8 @@ class Invoice(metaclass=PoolMeta):
         edi_fields = {f:None for f in self.get_NADBY_fields()}
         edi_fields['type'] = 'NADBY'
 
-        if self.edi_sale and self.edi_sale.parties:
+        edi_sale = self.get_edi_sale()
+        if edi_sale and edi_sale.parties:
             edi_party = self.get_edi_party('NADBY', self.party)
             if edi_party:
                 edi_fields['edi_operational'] = (edi_party.edi_code or None)
@@ -1308,7 +1317,8 @@ class Invoice(metaclass=PoolMeta):
         edi_fields = {f:None for f in self.get_NADII_fields()}
         edi_fields['type'] = 'NADII'
 
-        if self.edi_sale and self.edi_sale.parties:
+        edi_sale = self.get_edi_sale()
+        if edi_sale and edi_sale.parties:
             edi_party = self.get_edi_party('NADII', self.company.party)
             if edi_party:
                 edi_fields['company_edi_operational'] = (
@@ -1356,7 +1366,8 @@ class Invoice(metaclass=PoolMeta):
         edi_fields = {f:None for f in self.get_NADIV_fields()}
         edi_fields['type'] = 'NADIV'
 
-        if self.edi_sale and self.edi_sale.parties:
+        edi_sale = self.get_edi_sale()
+        if edi_sale and edi_sale.parties:
             edi_party = self.get_edi_party('NADBY', self.party)
             if edi_party:
                 edi_fields['address_edi_ean'] = (edi_party.edi_code or None)
@@ -1394,7 +1405,8 @@ class Invoice(metaclass=PoolMeta):
         edi_fields = {f:None for f in self.get_NADDP_fields()}
         edi_fields['type'] = 'NADDP'
 
-        if self.edi_sale and self.edi_sale.parties:
+        edi_sale = self.get_edi_sale()
+        if edi_sale and edi_sale.parties:
             edi_party = self.get_edi_party('NADDP', self.party)
             if edi_party:
                 edi_fields['shipment_address_edi_ean'] = (
@@ -1443,7 +1455,8 @@ class Invoice(metaclass=PoolMeta):
         edi_fields = {f:None for f in self.get_NADPR_fields()}
         edi_fields['type'] = 'NADPR'
 
-        if self.edi_sale and self.edi_sale.parties:
+        edi_sale = self.get_edi_sale()
+        if edi_sale and edi_sale.parties:
             edi_party = self.get_edi_party('NADPR', self.party)
             if edi_party:
                 edi_fields['edi_ean'] = (edi_party.edi_code or None)
@@ -1467,7 +1480,8 @@ class Invoice(metaclass=PoolMeta):
         edi_fields = {f:None for f in self.get_NADPE_fields()}
         edi_fields['type'] = 'NADPE'
 
-        if self.edi_sale and self.edi_sale.parties:
+        edi_sale = self.get_edi_sale()
+        if edi_sale and edi_sale.parties:
             edi_party = self.get_edi_party('NADPE', self.party)
             if edi_party:
                 edi_fields['company_edi_operational'] = (
