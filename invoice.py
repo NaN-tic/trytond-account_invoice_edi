@@ -573,11 +573,11 @@ class InvoiceEdi(ModelSQL, ModelView):
         pool = Pool()
         Configuration = pool.get('invoice.edi.configuration')
         configuration = Configuration(1)
-        source_path = os.path.abspath(configuration.edi_files_path or
-             DEFAULT_FILES_LOCATION)
+        source_path = os.path.abspath(configuration.edi_files_path
+            or DEFAULT_FILES_LOCATION)
         files = [os.path.join(source_path, fp) for fp in
-                 os.listdir(source_path) if os.path.isfile(os.path.join(
-                     source_path, fp))]
+            os.listdir(source_path) if os.path.isfile(os.path.join(
+                    source_path, fp))]
         files_to_delete = []
         to_save = []
         attachments = dict()
@@ -682,8 +682,8 @@ class InvoiceEdi(ModelSQL, ModelView):
             _file = None
             for file_name in sorted(glob.glob(os.path.join(source_path, '*'))):
                 fname = os.path.basename(file_name).lower()
-                if (not fname.startswith('invoic_') or
-                        not fname.endswith('pdf')):
+                if (not fname.startswith('invoic_')
+                        or not fname.endswith('pdf')):
                     continue
                 fname = fname.split('_')
                 if len(fname) < 4:
@@ -915,8 +915,9 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         line.gross_unit_price = self.gross_price or self.unit_price
         line.unit_price = self.unit_price
         if self.unit_price and self.gross_price:
-            line.discount = Decimal(1 -
-                self.unit_price / self.gross_price).quantize(Decimal('.01'))
+            line.discount = Decimal(
+                1 - self.unit_price / self.gross_price).quantize(
+                    Decimal('.01'))
         else:
             line.unit_price = Decimal(
                 self.base_amount / self.quantity).quantize(Decimal('0.0001'))
@@ -1088,14 +1089,14 @@ class Invoice(metaclass=PoolMeta):
             sales = []
             for line in self.lines:
                 if (line.origin and isinstance(line.origin, SaleLine)
-                        and line.origin.sale and line.origin.sale.origin and
-                        isinstance(line.origin.sale.origin, EdiSale)):
-                    sales.append(line.origin.sale.origin.id)
+                        and line.origin.sale and line.origin.sale.origin
+                        and isinstance(line.origin.sale.origin, EdiSale)):
+                    sales.append(line.origin.sale.origin)
             if len(set(sales)):
                 edi_sale = sales[0]
             elif len(set(sales)) > 1:
-                #TODO: in this case, we have two or more edi sales in one invoice,
-                # for now, we pic the first one we found
+                # TODO: in this case, we have two or more edi sales in one
+                # invoice, for now, we pic the first one we found
                 edi_sale = sales[0]
         return edi_sale
 
@@ -1116,7 +1117,7 @@ class Invoice(metaclass=PoolMeta):
 
     def get_NADSCO(self, name):
         edi_fields = {}
-        edi_fields = {f:None for f in self.get_NADSCO_fields()}
+        edi_fields = {f: None for f in self.get_NADSCO_fields()}
         edi_fields['type'] = 'NADSCO'
 
         edi_sale = self.get_edi_sale()
@@ -1165,7 +1166,7 @@ class Invoice(metaclass=PoolMeta):
 
     def get_NADBCO(self, name):
         edi_fields = {}
-        edi_fields = {f:None for f in self.get_NADBCO_fields()}
+        edi_fields = {f: None for f in self.get_NADBCO_fields()}
         edi_fields['type'] = 'NADBCO'
 
         edi_sale = self.get_edi_sale()
@@ -1174,7 +1175,8 @@ class Invoice(metaclass=PoolMeta):
             if edi_party:
                 edi_fields['edi_operational'] = (edi_party.edi_code or None)
                 edi_fields['invoice_party_name'] = (edi_party.name or None)
-                edi_fields['invoice_address_street'] = (edi_party.street or None)
+                edi_fields['invoice_address_street'] = (edi_party.street
+                    or None)
                 edi_fields['invoice_address_city'] = (edi_party.city or None)
                 edi_fields['invoice_address_zip'] = (edi_party.zip or None)
                 edi_fields['invoice_party_identifier_code'] = (None)
@@ -1214,7 +1216,7 @@ class Invoice(metaclass=PoolMeta):
 
     def get_NADSU(self, name):
         edi_fields = {}
-        edi_fields = {f:None for f in self.get_NADSU_fields()}
+        edi_fields = {f: None for f in self.get_NADSU_fields()}
         edi_fields['type'] = 'NADSU'
 
         edi_sale = self.get_edi_sale()
@@ -1266,7 +1268,7 @@ class Invoice(metaclass=PoolMeta):
 
     def get_NADBY(self, name):
         edi_fields = {}
-        edi_fields = {f:None for f in self.get_NADBY_fields()}
+        edi_fields = {f: None for f in self.get_NADBY_fields()}
         edi_fields['type'] = 'NADBY'
 
         edi_sale = self.get_edi_sale()
@@ -1283,8 +1285,8 @@ class Invoice(metaclass=PoolMeta):
 
         if self.sales:
             if not edi_fields['edi_operational']:
-                    edi_fields['edi_operational'] = (
-                        self.sales[0].party.edi_operational_point_head or '')
+                edi_fields['edi_operational'] = (
+                    self.sales[0].party.edi_operational_point_head or '')
             if not edi_fields['party_name']:
                 edi_fields['party_name'] = (self.sales[0].party.name or '')
             if not edi_fields['party_address_street']:
@@ -1302,7 +1304,7 @@ class Invoice(metaclass=PoolMeta):
 
         # The NADBY line have an empty value at the end, add one element
         # more to edi_fields dictionary:
-        #edi_fields[None] = ''
+        # edi_fields[None] = ''
 
         return '|'.join(edi or '' for edi in edi_fields.values())
 
@@ -1314,7 +1316,7 @@ class Invoice(metaclass=PoolMeta):
 
     def get_NADII(self, name):
         edi_fields = {}
-        edi_fields = {f:None for f in self.get_NADII_fields()}
+        edi_fields = {f: None for f in self.get_NADII_fields()}
         edi_fields['type'] = 'NADII'
 
         edi_sale = self.get_edi_sale()
@@ -1363,7 +1365,7 @@ class Invoice(metaclass=PoolMeta):
 
     def get_NADIV(self, name):
         edi_fields = {}
-        edi_fields = {f:None for f in self.get_NADIV_fields()}
+        edi_fields = {f: None for f in self.get_NADIV_fields()}
         edi_fields['type'] = 'NADIV'
 
         edi_sale = self.get_edi_sale()
@@ -1402,7 +1404,7 @@ class Invoice(metaclass=PoolMeta):
 
     def get_NADDP(self, name):
         edi_fields = {}
-        edi_fields = {f:None for f in self.get_NADDP_fields()}
+        edi_fields = {f: None for f in self.get_NADDP_fields()}
         edi_fields['type'] = 'NADDP'
 
         edi_sale = self.get_edi_sale()
@@ -1426,7 +1428,7 @@ class Invoice(metaclass=PoolMeta):
                     if address.delivery:
                         shipment_address = self.shipment_address
                         break
-                        #TODO: if we dont have any shipment address, which
+                        # TODO: if we dont have any shipment address, which
                         # addres we use?
 
             if not edi_fields['shipment_address_edi_ean']:
@@ -1452,7 +1454,7 @@ class Invoice(metaclass=PoolMeta):
 
     def get_NADPR(self, name):
         edi_fields = {}
-        edi_fields = {f:None for f in self.get_NADPR_fields()}
+        edi_fields = {f: None for f in self.get_NADPR_fields()}
         edi_fields['type'] = 'NADPR'
 
         edi_sale = self.get_edi_sale()
@@ -1477,7 +1479,7 @@ class Invoice(metaclass=PoolMeta):
 
     def get_NADPE(self, name):
         edi_fields = {}
-        edi_fields = {f:None for f in self.get_NADPE_fields()}
+        edi_fields = {f: None for f in self.get_NADPE_fields()}
         edi_fields['type'] = 'NADPE'
 
         edi_sale = self.get_edi_sale()
@@ -1500,9 +1502,9 @@ class Invoice(metaclass=PoolMeta):
         cls._check_modify_exclude.add('is_edi')
         cls._buttons.update({
                 'generate_edi_file': {'invisible': (
-                        Not(Eval('is_edi')) |
-                        (Eval('type') != 'out') |
-                        (Eval('state').in_(['draft', 'cancel']))
+                        Not(Eval('is_edi'))
+                        | (Eval('type') != 'out')
+                        | (Eval('state').in_(['draft', 'cancel']))
                         )},
                 })
 
