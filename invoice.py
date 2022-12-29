@@ -1212,7 +1212,7 @@ class Invoice(metaclass=PoolMeta):
         return ['type', 'edi_operational', 'company_party_name',
             'company_trade_register', 'company_party_address_street',
             'company_party_address_city', 'company_party_address_zip',
-            'company_party_identifier']
+            'company_party_identifier', 'company_party_cip']
 
     def get_NADSU(self, name):
         edi_fields = {}
@@ -1232,7 +1232,9 @@ class Invoice(metaclass=PoolMeta):
                     edi_party.city or None)
                 edi_fields['company_party_address_zip'] = (
                     edi_party.zip or None)
-                edi_fields['company_party_identifier'] = (None)
+                edi_fields['company_party_identifier'] = (edi_party.vat
+                    or None)
+                edi_fields['company_party_cip'] = (edi_party.cip or None)
 
         if self.company:
             if not edi_fields['edi_operational']:
@@ -1254,6 +1256,10 @@ class Invoice(metaclass=PoolMeta):
             if not edi_fields['company_party_address_zip']:
                 edi_fields['company_party_address_zip'] = (
                     self.company.party.addresses[0].postal_code or '')
+            if not edi_fields['company_party_identifier']:
+                edi_fields['company_party_identifier'] = (
+                    self.company.party.tax_identifier
+                    and self.company.party.tax_identifier.code or '')
 
         # The NADS line have an empty value at the end, add one element
         # more to edi_fields dictionary:
