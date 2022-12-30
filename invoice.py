@@ -1261,10 +1261,6 @@ class Invoice(metaclass=PoolMeta):
                     self.company.party.tax_identifier
                     and self.company.party.tax_identifier.code or '')
 
-        # The NADS line have an empty value at the end, add one element
-        # more to edi_fields dictionary:
-        edi_fields[None] = ''
-
         return '|'.join(edi or '' for edi in edi_fields.values())
 
     def get_NADBY_fields(self):
@@ -1307,10 +1303,6 @@ class Invoice(metaclass=PoolMeta):
                     self.sales[0].party.addresses[0].postal_code or '')
             if not edi_fields['edi_section']:
                 edi_fields['edi_section'] = ('')
-
-        # The NADBY line have an empty value at the end, add one element
-        # more to edi_fields dictionary:
-        # edi_fields[None] = ''
 
         return '|'.join(edi or '' for edi in edi_fields.values())
 
