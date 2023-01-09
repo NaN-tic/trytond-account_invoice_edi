@@ -619,7 +619,7 @@ class InvoiceEdi(ModelSQL, ModelView):
         invoice.reference = self.number
         invoice.invoice_date = self.invoice_date
         invoice.type = 'in'
-        invoice.on_change_type()
+        invoice.journal = invoice.on_change_with_journal()
         invoice.account = invoice.on_change_with_account()
         invoice.state = 'draft'
         return invoice
