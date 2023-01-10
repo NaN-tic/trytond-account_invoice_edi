@@ -730,7 +730,6 @@ class InvoiceEdi(ModelSQL, ModelView):
                 line = eline.get_line()
                 invoice.lines += (line,)
             invoice.on_change_lines()
-            invoice.on_change_type()
             invoice.is_edi = True
             invoice.payment_type = invoice.on_change_with_payment_type()
             if invoice.bank_account is None:
