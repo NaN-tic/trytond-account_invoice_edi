@@ -139,6 +139,8 @@ class SupplierEdi(SupplierEdiMixin, ModelSQL, ModelView):
             self.zip = message.pop(0)
         if message:
             self.vat = message.pop(0)
+        if message:
+            self.section = message.pop(0)
 
     def read_NADMS(self, message):
         self.type_ = 'NADMS'
