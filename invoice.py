@@ -1236,7 +1236,11 @@ class Invoice(metaclass=PoolMeta):
                     edi_party.zip or None)
                 edi_fields['company_party_identifier'] = (edi_party.vat
                     or None)
-                edi_fields['company_party_cip'] = (edi_party.cip or None)
+                # It's not necessary this code, only indacte the type of EDI,
+                # but it's needed to have it for the correct structur
+                # In some customer parties doesn't matter if it's indicate, but
+                # some other dont want it.
+                edi_fields['company_party_cip'] = None
 
         if self.company:
             if not edi_fields['edi_operational']:
@@ -1284,7 +1288,9 @@ class Invoice(metaclass=PoolMeta):
                 edi_fields['party_address_street'] = (edi_party.street or None)
                 edi_fields['party_address_city'] = (edi_party.city or None)
                 edi_fields['party_address_zip'] = (edi_party.zip or None)
-                edi_fields['party_identifier_code'] = (None)
+                edi_fields['party_identifier_code'] = (
+                    edi_party.vat or (edi_party.party.tax_identifier
+                        and edi_party.party.tax_identifier.code) or None)
                 edi_fields['edi_section'] = (edi_party.section or None)
 
         if self.sales:
@@ -1370,7 +1376,7 @@ class Invoice(metaclass=PoolMeta):
 
         edi_sale = self.get_edi_sale()
         if edi_sale and edi_sale.parties:
-            edi_party = self.get_edi_party('NADBY', self.party)
+            edi_party = self.get_edi_party('NADIV', self.party)
             if edi_party:
                 edi_fields['address_edi_ean'] = (edi_party.edi_code or None)
                 edi_fields['address_party_name'] = (edi_party.name or None)
