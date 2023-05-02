@@ -45,7 +45,12 @@ PRILIN|AAB|{{ line.gross_unit_price|round(2) }}
 PRILIN|AAB|{{ line.unit_price|round(2) }}
 {% endif -%}
 {% if invoice.shipments|length > 1 -%}
-RFFLIN|ON|{{line.sale.reference}}
+{% if line.origin -%}
+{% set model, id = (line.origin|string).split(',') -%}
+{% if model == 'sale.line' -%}
+RFFLIN|ON|{{line.origin.sale.reference}}
+{% endif -%}
+{% endif -%}
 RFFLIN|DQ|{{line.shipment_reference}}
 {% endif -%}
 {% if line.discount -%}
