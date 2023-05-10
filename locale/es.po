@@ -614,7 +614,7 @@ msgstr "Nota bancaria"
 
 msgctxt "selection:invoice.edi,payment_type_value:"
 msgid "Credit Transfer"
-msgstr "Transferencia de Crèdito"
+msgstr "Transferencia de Crédito"
 
 msgctxt "selection:invoice.edi,payment_type_value:"
 msgid "cash"
