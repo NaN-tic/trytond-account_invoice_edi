@@ -622,7 +622,7 @@ class InvoiceEdi(ModelSQL, ModelView):
         invoice.invoice_date = self.invoice_date
         invoice.type = 'in'
         invoice.on_change_type()
-        invoice.account = invoice.on_change_with_account()
+        invoice._update_account()
         invoice.state = 'draft'
         return invoice
 
