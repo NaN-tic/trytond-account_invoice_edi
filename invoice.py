@@ -1611,12 +1611,15 @@ class Invoice(metaclass=PoolMeta):
     def shipments_number(self):
         pool = Pool()
         Shipment = pool.get('stock.shipment.out')
+        ShipmentReturn = pool.get('stock.shipment.out.return')
 
         numbers = set()
         for line in self.lines:
             for move in line.stock_moves:
-                if isinstance(move.shipment, Shipment):
-                    numbers.add(move.shipment.number)
+                shipment = move.shipment
+                if (isinstance(shipment, Shipment)
+                        or isinstance(shipment, ShipmentReturn)):
+                    numbers.add(shipment.number)
         return list(numbers)
 
 
