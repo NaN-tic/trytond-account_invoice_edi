@@ -1577,8 +1577,11 @@ class Invoice(metaclass=PoolMeta):
                 template = Template(file_.read())
             edi_file = template.render({'invoice': self})
             if not os.path.exists(result_path):
-                with open(result_path, 'w', encoding='latin-1') as f:
-                    f.write(edi_file)
+                try:
+                    with open(result_path, 'w', encoding='latin-1') as f:
+                        f.write(edi_file)
+                except OSError as e:
+                    raise UserError(str(e))
 
     @classmethod
     def post(cls, invoices):
