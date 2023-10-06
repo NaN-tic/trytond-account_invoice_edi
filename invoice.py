@@ -1592,7 +1592,6 @@ class Invoice(metaclass=PoolMeta):
                             raise
                         else:
                             time.sleep(0.02 * (retry - count))
-                    break
 
     @classmethod
     def post(cls, invoices):
