@@ -3,6 +3,7 @@
 # copyright notices and license terms.
 import os
 import glob
+import time
 from datetime import datetime
 from decimal import Decimal
 from stdnum import ean
@@ -14,6 +15,7 @@ from trytond.pyson import Eval, Not
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError, UserWarning
 from trytond.i18n import gettext
+from trytond.config import config as config_
 from trytond.modules.party_edi.party import SUPPLIER_TYPE, SupplierEdiMixin
 from .datamanager import FileDataManager
 
@@ -23,6 +25,8 @@ DEFAULT_FILES_LOCATION = '/tmp/invoice'
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 KNOWN_EXTENSIONS = ['.txt', '.edi', '.pla']
 DATE_FORMAT = '%Y%m%d'
+
+retry = config_.getint('edi', 'retry', default=5)
 
 
 def to_date(value):
@@ -1575,9 +1579,18 @@ class Invoice(metaclass=PoolMeta):
             with open(template_path) as file_:
                 template = Template(file_.read())
             edi_file = template.render({'invoice': self})
-            if not os.path.exists(result_path):
-                with open(result_path, 'w', encoding='latin-1') as f:
-                    f.write(edi_file)
+
+            for count in range(retry, -1, -1):
+                if not os.path.exists(result_path):
+                    try:
+                        with open(result_path, 'w', encoding='latin-1') as f:
+                            f.write(edi_file)
+                        break
+                    except OSError:
+                        if not count:
+                            raise
+                        else:
+                            time.sleep(0.02 * (retry - count))
 
     @classmethod
     def post(cls, invoices):
