@@ -9,9 +9,11 @@ RFF|ON|{{sale.reference}}
 {% else -%}
 RFF|ON|{{invoice.reference}}
 {% endif -%}
-{% for shipment in invoice.shipments_number -%}
+{% if invoice['shipments_reference'] -%}
+{% for shipment in invoice.shipments_reference -%}
 RFF|DQ|{{shipment}}
 {% endfor -%}
+{% endif -%}
 {{invoice.edi_nadsco}}
 {{invoice.edi_nadbco}}
 {{invoice.edi_nadsu}}
@@ -44,14 +46,16 @@ PRILIN|AAB|{{ line.gross_unit_price|round(2) }}
 {% else -%}
 PRILIN|AAB|{{ line.unit_price|round(2) }}
 {% endif -%}
-{% if invoice.shipments|length > 1 -%}
-{% if line.origin -%}
+{% if invoice.shipments|length > 1 and line.origin -%}
 {% set model, id = (line.origin|string).split(',') -%}
 {% if model == 'sale.line' -%}
 RFFLIN|ON|{{line.origin.sale.reference}}
 {% endif -%}
 {% endif -%}
-RFFLIN|DQ|{{line.shipment_reference}}
+{% if line.shipments_reference -%}
+{% for shipment in line.shipments_reference -%}
+RFFLIN|DQ|{{shipment}}
+{% endfor -%}
 {% endif -%}
 {% if line.discount -%}
 ALCLIN|A|1|TD|{{(line.discount * 100)}}
