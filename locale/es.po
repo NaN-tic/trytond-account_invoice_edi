@@ -18,10 +18,6 @@ msgctxt "field:account.invoice.line,code_ean13:"
 msgid "Code EAN13"
 msgstr "Código EAN13"
 
-msgctxt "field:account.invoice.line,shipment_reference:"
-msgid "Shipment Number"
-msgstr "Número de albarán"
-
 msgctxt "field:company.company,trade_register:"
 msgid "Trade Register"
 msgstr "Registro Mercantil"

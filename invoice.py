@@ -1621,26 +1621,16 @@ class Invoice(metaclass=PoolMeta):
             cls.generate_edi_file(invoices)
 
     @property
-    def shipments_number(self):
-        pool = Pool()
-        Shipment = pool.get('stock.shipment.out')
-        ShipmentReturn = pool.get('stock.shipment.out.return')
-
-        numbers = set()
+    def shipments_reference(self):
+        numbers = []
         for line in self.lines:
-            for move in line.stock_moves:
-                shipment = move.shipment
-                if (isinstance(shipment, Shipment)
-                        or isinstance(shipment, ShipmentReturn)):
-                    numbers.add(shipment.number)
-        return list(numbers)
+            numbers.extend(line.shipments_reference)
+        return list(set(numbers))
 
 
 class InvoiceLine(metaclass=PoolMeta):
     __name__ = 'account.invoice.line'
 
-    shipment_reference = fields.Function(fields.Char('Shipment Number'),
-        'get_shipment_reference')
     code_ean13 = fields.Function(fields.Char("Code EAN13"), 'get_code_ean13')
 
     def get_code_ean13(self, name):
@@ -1650,13 +1640,13 @@ class InvoiceLine(metaclass=PoolMeta):
                     return identifier.code
         return None
 
-    def get_shipment_reference(self, name):
-        name = name[9:]
-        values = []
+    @property
+    def shipments_reference(self):
+        values = set()
         for move in self.stock_moves:
-            value = getattr(move.shipment, name, None)
+            reference = getattr(move.shipment, 'reference', None)
+            number = getattr(move.shipment, 'number', None)
+            value = reference or number
             if value:
-                values.append(value)
-        if values:
-            return " / ".join(values)
-        return ""
+                values.add(value)
+        return list(values) if values else []
