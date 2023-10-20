@@ -1621,6 +1621,7 @@ class Invoice(metaclass=PoolMeta):
             cls.generate_edi_file(invoices)
 
     @property
+    @fields.depends('lines')
     def shipments_reference(self):
         numbers = []
         for line in self.lines:
@@ -1641,6 +1642,7 @@ class InvoiceLine(metaclass=PoolMeta):
         return None
 
     @property
+    @fields.depends('stock_moves')
     def shipments_reference(self):
         values = set()
         for move in self.stock_moves:
