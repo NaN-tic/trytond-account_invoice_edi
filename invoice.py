@@ -346,11 +346,11 @@ class InvoiceEdi(ModelSQL, ModelView):
         digits=(16, 2)), 'get_difference_amount')
     party = fields.Function(fields.Many2One('party.party', 'Invoice Party',
         context={
-            'company': Eval('company'),
+            'company': Eval('company', -1),
             }, depends=['company']),
         'get_party', searcher='search_party')
     manual_party = fields.Many2One('party.party', 'Manual Party', context={
-            'company': Eval('company'),
+            'company': Eval('company', -1),
             }, depends=['company'])
     comment = fields.Text('Comment')
 
