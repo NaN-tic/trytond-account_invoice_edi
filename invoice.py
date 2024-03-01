@@ -500,7 +500,6 @@ class InvoiceEdi(ModelSQL, ModelView):
         tax.type_ = message.pop(0)
         tax.percent = to_decimal(message.pop(0)) if message else Decimal(0)
         tax.tax_amount = to_decimal(message.pop(0)) if message else Decimal(0)
-        print(message)
         if message:
             tax.base_amount = to_decimal(message.pop(0))
         tax.search_tax()
