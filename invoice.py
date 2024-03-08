@@ -1429,6 +1429,7 @@ class Invoice(metaclass=PoolMeta):
                 edi_fields['shipment_address_zip'] = (edi_party.zip or None)
 
         if self.party:
+            shipment_address = None
             if self.shipment_address:
                 shipment_address = self.shipment_address
             else:
@@ -1441,19 +1442,19 @@ class Invoice(metaclass=PoolMeta):
 
             if not edi_fields['shipment_address_edi_ean']:
                 edi_fields['shipment_address_edi_ean'] = (
-                    shipment_address.edi_ean or '')
+                    shipment_address and shipment_address.edi_ean or '')
             if not edi_fields['shipment_address_party_name']:
                 edi_fields['shipment_address_party_name'] = (
-                    shipment_address.party.name or '')
+                    shipment_address and shipment_address.party.name or '')
             if not edi_fields['shipment_address_street']:
                 edi_fields['shipment_address_street'] = (
-                    shipment_address.street.replace('\n', '') or '')
+                    shipment_address and shipment_address.street.replace('\n', '') or '')
             if not edi_fields['shipment_address_city']:
                 edi_fields['shipment_address_city'] = (
-                    shipment_address.city or '')
+                    shipment_address and shipment_address.city or '')
             if not edi_fields['shipment_address_zip']:
                 edi_fields['shipment_address_zip'] = (
-                    shipment_address.postal_code or '')
+                    shipment_address and shipment_address.postal_code or '')
 
         return '|'.join(edi or '' for edi in edi_fields.values())
 
