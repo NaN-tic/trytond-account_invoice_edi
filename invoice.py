@@ -1189,6 +1189,7 @@ class Invoice(metaclass=PoolMeta):
                     edi_party.country_code or None)
 
         if self.party:
+            address = self.party.addresses and self.party.addresses[0]
             if not edi_fields['edi_operational']:
                 edi_fields['edi_operational'] = (
                     self.party.edi_operational_point_head or '')
@@ -1196,16 +1197,17 @@ class Invoice(metaclass=PoolMeta):
                 edi_fields['invoice_party_name'] = (self.party.name or '')
             if not edi_fields['invoice_address_street']:
                 edi_fields['invoice_address_street'] = (
-                    self.party.addresses[0].street.replace('\n', '') or '')
+                    address and address.street
+                    and address.street.replace('\n', '') or '')
             if not edi_fields['invoice_address_city']:
                 edi_fields['invoice_address_city'] = (
-                    self.party.addresses[0].city or '')
+                    address and address.city or '')
             if not edi_fields['invoice_address_zip']:
                 edi_fields['invoice_address_zip'] = (
-                    self.party.addresses[0].postal_code or '')
+                    address and address.postal_code or '')
             if not edi_fields['invoice_address_country_code']:
                 edi_fields['invoice_address_country_code'] = (
-                    self.party.addresses[0].country.code)
+                    address and address.country and address.country.code)
 
         # The NADBCO line have an empty value at the end, add one element
         # more to edi_fields dictionary:
@@ -1345,6 +1347,7 @@ class Invoice(metaclass=PoolMeta):
                     edi_party.country_code or None)
 
         if self.company:
+            address = self.company.party.addresses and self.company.party.addresses[0]
             if not edi_fields['company_edi_operational']:
                 edi_fields['company_edi_operational'] = (
                     self.company.party.edi_operational_point_head or '')
@@ -1353,17 +1356,17 @@ class Invoice(metaclass=PoolMeta):
                     self.company.party.name or '')
             if not edi_fields['company_party_address_street']:
                 edi_fields['company_party_address_street'] = (
-                    self.company.party.addresses[0].street.replace('\n', '')
-                    or '')
+                    address and address.street
+                    and address.street.replace('\n', '') or '')
             if not edi_fields['company_party_address_city']:
                 edi_fields['company_party_address_city'] = (
-                    self.company.party.addresses[0].city or '')
+                    address and address.city or '')
             if not edi_fields['company_party_address_zip']:
                 edi_fields['company_party_address_zip'] = (
-                    self.company.party.addresses[0].postal_code or '')
+                    address and address.postal_code or '')
             if not edi_fields['company_party_address_country_code']:
                 edi_fields['company_party_address_country_code'] = (
-                    self.party.addresses[0].country.code)
+                    address and address.country and address.country.code)
 
         return '|'.join(edi or '' for edi in edi_fields.values())
 
