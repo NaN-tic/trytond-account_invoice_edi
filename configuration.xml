@@ -27,8 +27,7 @@
           sequence="0" icon="tryton-list"/>
 
       <record model="ir.model.access" id="access_invoice_edi_configuration">
-          <field name="model"
-              search="[('model', '=', 'invoice.edi.configuration')]"/>
+          <field name="model">invoice.edi.configuration</field>
           <field name="perm_read" eval="True"/>
           <field name="perm_write" eval="False"/>
           <field name="perm_create" eval="False"/>
@@ -36,8 +35,7 @@
       </record>
       <record model="ir.model.access"
           id="access_invoice_edi_configuration_account_admin">
-          <field name="model"
-              search="[('model', '=', 'invoice.edi.configuration')]"/>
+          <field name="model">invoice.edi.configuration</field>
           <field name="group" ref="account.group_account_admin"/>
           <field name="perm_read" eval="True"/>
           <field name="perm_write" eval="True"/>

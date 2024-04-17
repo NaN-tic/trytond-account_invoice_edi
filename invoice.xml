@@ -97,7 +97,7 @@
           <field name="act_window" ref="act_edi_invoice_form"/>
       </record>
 
-        <record model="ir.action.act_window.domain" id="act_invoice_edi_domain_draft">
+      <record model="ir.action.act_window.domain" id="act_invoice_edi_domain_draft">
         <field name="name">Draft</field>
         <field name="sequence" eval="10"/>
         <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
@@ -120,7 +120,7 @@
       <record model="ir.model.button" id="generate_edi_file">
           <field name="name">generate_edi_file</field>
           <field name="string">Generate EDI</field>
-          <field name="model" search="[('model', '=', 'account.invoice')]"/>
+          <field name="model">account.invoice</field>
       </record>
 
       <!-- EDI Invoice User -->
@@ -153,7 +153,7 @@
 
       <record model="ir.model.button" id="create_invoice_button">
           <field name="name">create_invoices</field>
-          <field name="model" search="[('model', '=', 'invoice.edi')]"/>
+          <field name="model">invoice.edi</field>
       </record>
       <record model="ir.model.button-res.group"
           id="create_invoice_button_group_account">
@@ -163,7 +163,7 @@
 
         <record model="ir.model.button" id="search_related_button">
           <field name="name">search_references</field>
-          <field name="model" search="[('model', '=', 'invoice.edi')]"/>
+          <field name="model">invoice.edi</field>
       </record>
       <record model="ir.model.button-res.group"
           id="search_related_button_group_account">
@@ -173,7 +173,7 @@
 
       <record model="ir.rule.group" id="rule_group_invoice_edi">
             <field name="name">User in company</field>
-            <field name="model" search="[('model', '=', 'invoice.edi')]"/>
+            <field name="model">invoice.edi</field>
             <field name="global_p" eval="True"/>
       </record>
       <record model="ir.rule" id="rule_invoice_edi1">
