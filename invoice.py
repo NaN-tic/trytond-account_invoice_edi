@@ -1433,12 +1433,12 @@ class Invoice(metaclass=PoolMeta):
 
         if self.party:
             shipment_address = None
-            if self.shipment_address:
+            if hasattr(self, 'shipment_address') and self.shipment_address:
                 shipment_address = self.shipment_address
             else:
                 for address in self.party.addresses:
                     if address.delivery:
-                        shipment_address = self.shipment_address
+                        shipment_address = address
                         break
                         # TODO: if we dont have any shipment address, which
                         # addres we use?
