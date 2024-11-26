@@ -640,7 +640,6 @@ class InvoiceEdi(ModelSQL, ModelView):
         line.description = description
         line.quantity = 1
         line.unit_price = amount
-        line.gross_unit_price = amount
         line.account = config.default_product_account_expense
         line.taxes = taxes
         return line
@@ -886,16 +885,6 @@ class InvoiceEdiLine(ModelSQL, ModelView):
 
         invoice_line, = invoice_lines
 
-        # Just invoice wat system expect to see differences.
-        # invoice_line.gross_unit_price = self.gross_price or self.unit_price
-        # invoice_line.unit_price = self.unit_price
-        # if self.unit_price and self.gross_price:
-        #     invoice_line.discount = Decimal(1 -
-        #         self.unit_price/self.gross_price).quantize(Decimal('.01'))
-        # else:
-        #     invoice_line.unit_price = Decimal(
-        #         self.base_amount / self.quantity).quantize(Decimal('0.0001'))
-
         self.invoice_line = invoice_line
         return invoice_line
 
@@ -916,10 +905,9 @@ class InvoiceEdiLine(ModelSQL, ModelView):
         line.type = 'line'
         line.on_change_product()
         line.on_change_account()
-        line.gross_unit_price = self.gross_price or self.unit_price
         line.unit_price = self.unit_price
         if self.unit_price and self.gross_price:
-            line.discount = Decimal(
+            line.discount_rate = Decimal(
                 1 - self.unit_price / self.gross_price).quantize(
                     Decimal('.01'))
         else:
