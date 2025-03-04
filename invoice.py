@@ -1398,8 +1398,8 @@ class Invoice(metaclass=PoolMeta):
                 edi_fields['address_party_name'] = (
                     self.invoice_address.party.name or '')
             if not edi_fields['address_street']:
-                edi_fields['address_street'] = (
-                    self.invoice_address.street.replace('\n', '') or '')
+                edi_fields['address_street'] = (self.invoice_address.street
+                    and self.invoice_address.street.replace('\n', '') or '')
             if not edi_fields['address_city']:
                 edi_fields['address_city'] = (self.invoice_address.city or '')
             if not edi_fields['address_zip']:
