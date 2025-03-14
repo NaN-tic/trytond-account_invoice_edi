@@ -1574,7 +1574,8 @@ class Invoice(metaclass=PoolMeta):
             with open(template_path) as file_:
                 template = Template(file_.read())
             edi_file = template.render({'invoice': self})
-
+            # Ensure all characters are valid latin-1
+            edi_file = edi_file.encode('latin-1', errors='ignore').decode('latin-1')
             for count in range(retry, -1, -1):
                 if not os.path.exists(result_path):
                     try:
