@@ -3,10 +3,15 @@ INV|{{invoice.number or invoice.id}}|{{invoice.edi_document_type}}|9
 DTM|{{invoice.invoice_date|replace('-','')}}
 PAI|14E
 {% if invoice.sales -%}
+{% set sales_rff = False -%}
 {% for sale in invoice.sales -%}
+{% if sale.reference -%}
 RFF|ON|{{sale.reference}}
+{% set sales_rff = True -%}
+{% endif -%}
 {% endfor -%}
-{% else -%}
+{% endif -%}
+{% if not sales_rff -%}
 RFF|ON|{{invoice.reference}}
 {% endif -%}
 {% if invoice.shipments_reference -%}
@@ -48,8 +53,10 @@ PRILIN|AAB|{{ line.unit_price|round(2) }}
 {% endif -%}
 {% if invoice.shipments|length > 1 and line.origin -%}
 {% set model, id = (line.origin|string).split(',') -%}
-{% if model == 'sale.line' -%}
+{% if model == 'sale.line' and line.origin and line.origin.sale and line.origin.sale.reference -%}
 RFFLIN|ON|{{line.origin.sale.reference}}
+{% else -%}
+RFFLIN|ON|{{invoice.reference}}
 {% endif -%}
 {% endif -%}
 {% if line.shipments_reference -%}
