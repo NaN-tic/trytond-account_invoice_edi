@@ -1594,7 +1594,7 @@ class Invoice(metaclass=PoolMeta):
         cursor = Transaction().connection.cursor()
 
         post_edi_invoice = Transaction().context.get('post_edi_invoice', False)
-        if post_edi_invoice and invoices:
+        if post_edi_invoice:
             configuration = Configuration(1)
             if not configuration.automatic_edi_invoice_out:
                 return
