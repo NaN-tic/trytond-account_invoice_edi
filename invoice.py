@@ -41,17 +41,6 @@ def to_decimal(value, digits=2):
     return Decimal(value).quantize(Decimal('10')**-digits)
 
 
-class Cron(metaclass=PoolMeta):
-    __name__ = 'ir.cron'
-
-    @classmethod
-    def __setup__(cls):
-        super(Cron, cls).__setup__()
-        cls.method.selection.extend([
-            ('invoice.edi|import_edi_files', 'Import Edi Invoices'),
-        ])
-
-
 class SupplierEdi(SupplierEdiMixin, ModelSQL, ModelView):
     'Supplier Edi'
     __name__ = 'invoice.edi.supplier'
@@ -1046,9 +1035,19 @@ class Invoice(metaclass=PoolMeta):
     __name__ = 'account.invoice'
 
     is_edi = fields.Boolean('Is EDI',
+        states={
+            'invisible': Eval('type') != 'out',
+        },
         help='Use EDI protocol for this invoice')
+    edi_sent = fields.Boolean('Edi Sent',
+        states={
+            'invisible': ~Eval('is_edi'),
+        }, help='The invoice has been sent to EDI')
     edi_invoices = fields.One2Many('invoice.edi', 'invoice',
-        'Edi Invoices')
+        'Edi Invoices',
+        states={
+            'invisible': ~Eval('is_edi'),
+        })
     edi_document_type = fields.Function(fields.Selection([
             ('', 'Nothing'),
             ('380', 'Invoice'),
@@ -1066,6 +1065,57 @@ class Invoice(metaclass=PoolMeta):
     edi_naddp = fields.Function(fields.Char('NADDP'), 'get_NADDP')
     edi_nadpr = fields.Function(fields.Char('NADPR'), 'get_NADPR')
     edi_nadpe = fields.Function(fields.Char('NADPE'), 'get_NADPE')
+
+    @classmethod
+    def __setup__(cls):
+        super().__setup__()
+        cls._check_modify_exclude.update(['is_edi', 'edi_sent'])
+        cls._buttons.update({
+                'generate_edi_file': {
+                    'invisible': (
+                        Not(Eval('is_edi'))
+                        | (Eval('type') != 'out')
+                        | (Eval('state').in_(['draft', 'cancel']))
+                        )},
+                })
+
+    @classmethod
+    def __register__(cls, module_name):
+        table = cls.__table_handler__(module_name)
+        cursor = Transaction().connection.cursor()
+        sql_table = cls.__table__()
+
+        # Field name change:
+        if table.column_exist('use_edi'):
+            table.column_rename('use_edi', 'is_edi')
+
+        has_is_edi = table.column_exist('is_edi')
+        has_edi_sent = table.column_exist('edi_sent')
+        super().__register__(module_name)
+
+        if has_is_edi and not has_edi_sent:
+            cursor.execute(*sql_table.update(
+                    [sql_table.edi_sent], [True],
+                    where=(
+                        (sql_table.type == 'out') &
+                        (sql_table.is_edi == True) &
+                        sql_table.state.in_(['posted', 'paid'])
+                        )
+                    ))
+
+    @classmethod
+    def view_attributes(cls):
+        return super().view_attributes() + [
+            ('/form//notebook/page[@id="edi"]', 'states', {'invisible': Eval('type') != 'out'}),
+            ]
+
+    @staticmethod
+    def default_is_edi():
+        return False
+
+    @staticmethod
+    def default_edi_sent():
+        return False
 
     def get_edi_sale(self):
         pool = Pool()
@@ -1500,28 +1550,6 @@ class Invoice(metaclass=PoolMeta):
 
         return '|'.join(edi or '' for edi in edi_fields.values())
 
-    @classmethod
-    def __setup__(cls):
-        super(Invoice, cls).__setup__()
-        cls._check_modify_exclude.add('is_edi')
-        cls._buttons.update({
-                'generate_edi_file': {'invisible': (
-                        Not(Eval('is_edi'))
-                        | (Eval('type') != 'out')
-                        | (Eval('state').in_(['draft', 'cancel']))
-                        )},
-                })
-
-    @classmethod
-    def __register__(cls, module_name):
-        table = cls.__table_handler__(module_name)
-
-        # Field name change:
-        if table.column_exist('use_edi'):
-            table.column_rename('use_edi', 'is_edi')
-
-        super().__register__(module_name)
-
     def get_edi_document_type(self, name):
         if self.state in ('draft', 'cancel'):
             return ''
@@ -1536,19 +1564,36 @@ class Invoice(metaclass=PoolMeta):
 
     @classmethod
     @ModelView.button
-    def generate_edi_file(cls, invoices):
+    def generate_edi_file(cls, invoices=None):
         pool = Pool()
         Configuration = pool.get('invoice.edi.configuration')
         Warning = pool.get('res.user.warning')
 
+        sql_table = cls.__table__()
+        cursor = Transaction().connection.cursor()
+
         post_edi_invoice = Transaction().context.get('post_edi_invoice', False)
-        if post_edi_invoice:
+        if post_edi_invoice and invoices:
             configuration = Configuration(1)
             if not configuration.automatic_edi_invoice_out:
                 return
 
+        if not invoices:
+            post_edi_invoice = False
+            invoices = Invoice.search([
+                ('type', '=', 'out'),
+                ('state', 'in', ['posted', 'paid']),
+                ('is_edi', '=', True),
+                ('edi_sent', '=', False),
+            ])
+
+        to_edi_sent = []
         for invoice in invoices:
-            if invoice.type == 'out' and invoice.is_edi:
+            if (invoice.type == 'out'
+                    and invoice.state in ['posted', 'paid']
+                    and invoice.is_edi
+                    and not invoice.edi_sent
+                    ):
                 if post_edi_invoice:
                     warning_name = '%s.send_edi_invoice' % invoice
                     if Warning.check(warning_name):
@@ -1556,6 +1601,13 @@ class Invoice(metaclass=PoolMeta):
                                 'account_invoice_edi.msg_send_edi_invoice',
                                 invoice=invoice.number))
                 invoice.generate_edi()
+                to_edi_sent.append(invoice.id)
+        if to_edi_sent:
+            cursor.execute(*sql_table.update(
+                columns=[sql_table.edi_sent],
+                values=[True],
+                where=sql_table.id.in_(to_edi_sent)
+                ))
 
     def generate_edi(self):
         pool = Pool()

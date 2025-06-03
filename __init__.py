@@ -1,6 +1,7 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
 from trytond.pool import Pool
+from . import ir
 from . import invoice
 from . import sale
 from . import configuration
@@ -9,7 +10,7 @@ from . import company
 
 def register():
     Pool.register(
-        invoice.Cron,
+        ir.Cron,
         invoice.InvoiceEdi,
         invoice.InvoiceEdiLine,
         invoice.SupplierEdi,
