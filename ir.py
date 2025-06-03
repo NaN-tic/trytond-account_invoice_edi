@@ -11,5 +11,5 @@ class Cron(metaclass=PoolMeta):
         super().__setup__()
         cls.method.selection.extend([
             ('invoice.edi|import_edi_files', 'Import Edi Invoices'),
-            ('account.invoice|generate_edi_file', 'Generate Edi Invoices'),
+            ('account.invoice|run_generate_edi_file', 'Generate Edi Invoices'),
         ])

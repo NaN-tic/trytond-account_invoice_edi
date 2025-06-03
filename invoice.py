@@ -1574,8 +1574,18 @@ class Invoice(metaclass=PoolMeta):
         return '380'
 
     @classmethod
+    def run_generate_edi_file(cls):
+        invoices = cls.search([
+            ('type', '=', 'out'),
+            ('state', 'in', ['posted', 'paid']),
+            ('is_edi', '=', True),
+            ('edi_sent', '=', False),
+            ])
+        cls.generate_edi_file(invoices)
+
+    @classmethod
     @ModelView.button
-    def generate_edi_file(cls, invoices=None):
+    def generate_edi_file(cls, invoices):
         pool = Pool()
         Configuration = pool.get('invoice.edi.configuration')
         Warning = pool.get('res.user.warning')
@@ -1588,15 +1598,6 @@ class Invoice(metaclass=PoolMeta):
             configuration = Configuration(1)
             if not configuration.automatic_edi_invoice_out:
                 return
-
-        if not invoices:
-            post_edi_invoice = False
-            invoices = Invoice.search([
-                ('type', '=', 'out'),
-                ('state', 'in', ['posted', 'paid']),
-                ('is_edi', '=', True),
-                ('edi_sent', '=', False),
-            ])
 
         to_edi_sent = []
         for invoice in invoices:
