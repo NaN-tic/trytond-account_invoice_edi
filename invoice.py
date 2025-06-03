@@ -1117,6 +1117,17 @@ class Invoice(metaclass=PoolMeta):
     def default_edi_sent():
         return False
 
+    @classmethod
+    def copy(cls, invoices, default=None):
+        if default is None:
+            default = {}
+        else:
+            default = default.copy()
+        default.setdefault('is_edi', False)
+        default.setdefault('edi_sent', False)
+        default.setdefault('edi_invoices', None)
+        return super().copy(invoices, default=default)
+
     def get_edi_sale(self):
         pool = Pool()
         edi_sale = None
