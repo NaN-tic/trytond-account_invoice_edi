@@ -6,6 +6,8 @@ contains the full copyright notices and license terms. -->
       <page id="edi" string="Edi" col="4">
           <label name="is_edi"/>
           <field name="is_edi"/>
+          <label name="edi_sent"/>
+          <field name="edi_sent"/>
           <field name="edi_invoices" colspan="4"/>
         </page>
     </xpath>
