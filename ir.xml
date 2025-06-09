@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
+<tryton>
+    <data>
+        <record model="ir.cron" id="cron_import_edi_invoice">
+            <field name="active" eval="True"/>
+            <field name="interval_number" eval="1"/>
+            <field name="interval_type">hours</field>
+            <field name="method">invoice.edi|import_edi_files</field>
+        </record>
+
+        <record model="ir.cron" id="cron_run_generate_edi_file">
+            <field name="active" eval="True"/>
+            <field name="interval_number" eval="1"/>
+            <field name="interval_type">hours</field>
+            <field name="method">account.invoice|run_generate_edi_file</field>
+        </record>
+    </data>
+</tryton>
