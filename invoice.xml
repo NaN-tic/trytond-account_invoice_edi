@@ -135,13 +135,6 @@
           <field name="user" ref="user_edi_invoice"/>
           <field name="group" ref="res.group_admin"/>
       </record>
-      <!-- Edi Shipments cron -->
-      <record model="ir.cron" id="cron_import_edi_invoice">
-          <field name="active" eval="True"/>
-          <field name="interval_number" eval="1"/>
-          <field name="interval_type">hours</field>
-          <field name="method">invoice.edi|import_edi_files</field>
-      </record>
 
       <menuitem parent="account_invoice_edi.menu_edi_invoices" action="act_edi_invoice_form"
           id="menu_edi_invoice_form" sequence="10"/>
