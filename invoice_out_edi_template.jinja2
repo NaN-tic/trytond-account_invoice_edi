@@ -46,7 +46,6 @@ QTYLIN|47|{{ line.quantity|int }}
 MOALIN|{{ line.amount }}
 {% endif -%}
 {% if line.base_price -%}
-PRILIN|AAB|{{ line.base_price|round(2) }}
 PRILIN|AAA|{{ line.base_price|round(2) }}
 PRILIN|AAB|{{ line.unit_price|round(2) }}
 {% else -%}
