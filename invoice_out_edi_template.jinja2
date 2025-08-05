@@ -46,7 +46,7 @@ QTYLIN|47|{{ line.quantity|int }}
 MOALIN|{{ line.amount }}
 {% endif -%}
 PRILIN|AAA|{{ line.unit_price|round(2) }}
-{% if line.base_price -%}
+{% if line.base_price and line.base_price > line.unit_price -%}
 PRILIN|AAB|{{ line.base_price|round(2) }}
 {% else -%}
 PRILIN|AAB|{{ line.unit_price|round(2) }}
@@ -64,7 +64,7 @@ RFFLIN|ON|{{invoice.reference}}
 RFFLIN|DQ|{{shipment}}
 {% endfor -%}
 {% endif -%}
-{% if line.discount_rate -%}
+{% if line.discount_rate and line.discount_rate > 0 -%}
 ALCLIN|A|1|TD||{{ (line.discount_rate*100)|round(2) }}|{{ line.discount_amount or '' }}
 {% endif -%}
 {% for tax in line.taxes -%}
