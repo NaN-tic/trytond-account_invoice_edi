@@ -65,7 +65,7 @@ RFFLIN|DQ|{{shipment}}
 {% endfor -%}
 {% endif -%}
 {% if line.discount_rate -%}
-ALCLIN|A|1|TD||{{ (line.discount_rate*100)|round(2) }}{% if line.discount_amount -%}|{{ line.discount_amount }}{% endif -%}
+ALCLIN|A|1|TD||{{ (line.discount_rate*100)|round(2) }}|{{ line.discount_amount or '' }}
 {% endif -%}
 {% for tax in line.taxes -%}
 {% if invoice.edi_document_type == '381' -%}
