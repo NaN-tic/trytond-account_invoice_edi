@@ -653,6 +653,8 @@ class InvoiceEdi(ModelSQL, ModelView):
 
         config = Config(1)
         edi_invoice_file_path = config.edi_invoice_file_path
+        if not edi_invoice_file_path:
+            return
         source_path = os.path.abspath(edi_invoice_file_path)
 
         transaction = Transaction()
