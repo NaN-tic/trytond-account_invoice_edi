@@ -45,11 +45,11 @@ MOALIN|{{ -1*line.amount }}
 QTYLIN|47|{{ line.quantity|int }}
 MOALIN|{{ line.amount }}
 {% endif -%}
-PRILIN|AAA|{{ line.unit_price|round(2) }}
+PRILIN|AAA|{{ line.unit_price }}
 {% if line.base_price and line.base_price > line.unit_price -%}
-PRILIN|AAB|{{ line.base_price|round(2) }}
+PRILIN|AAB|{{ line.base_price }}
 {% else -%}
-PRILIN|AAB|{{ line.unit_price|round(2) }}
+PRILIN|AAB|{{ line.unit_price }}
 {% endif -%}
 {% if invoice.shipments|length > 1 and line.origin -%}
 {% set model, id = (line.origin|string).split(',') -%}
