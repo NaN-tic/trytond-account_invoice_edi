@@ -34,7 +34,7 @@ PAT|35|{{ invoice.invoice_date|replace('-','') }}|{{ -1*invoice.total_amount }}
 {% else -%}
 PAT|35|{{ invoice.invoice_date|replace('-','') }}|{{ invoice.total_amount }}
 {% endif -%}
-{% set ns = namespace(counter=1) %}
+{% set ns = namespace(counter=1) -%}
 {% for line in invoice.lines -%}
 {% if line.is_edi or line.code_ean13 -%}
 LIN|{{line.code_ean13}}|EN|{{ns.counter}}
@@ -76,7 +76,7 @@ TAXLIN|VAT|{{ (tax.rate*100)|int }}|{{ (-1*line.amount*tax.rate)|round(2) }}
 TAXLIN|VAT|{{ (tax.rate*100)|int }}|{{ (line.amount*tax.rate)|round(2) }}
 {% endif -%}
 {% endfor -%}
-{% set ns.counter = ns.counter + 1 %}
+{% set ns.counter = ns.counter + 1 -%}
 {% endif -%}
 {% endfor -%}
 CNTRES|2|{{ invoice.lines|length }}
