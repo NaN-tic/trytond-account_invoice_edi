@@ -63,7 +63,6 @@ RFFLIN|ON|{{invoice.reference}}
 {% if line.shipments_reference -%}
 {% for shipment in line.shipments_reference -%}
 RFFLIN|DQ|{{shipment}}
-{% endif -%}
 {% endfor -%}
 {% endif -%}
 {% if line.discount_rate and line.discount_rate > 0 -%}
@@ -76,6 +75,7 @@ TAXLIN|VAT|{{ (tax.rate*100)|int }}|{{ (-1*line.amount*tax.rate)|round(2) }}
 TAXLIN|VAT|{{ (tax.rate*100)|int }}|{{ (line.amount*tax.rate)|round(2) }}
 {% endif -%}
 {% endfor -%}
+{% endif -%}
 {% endfor -%}
 CNTRES|2|{{ invoice.lines|length }}
 {% if invoice.edi_document_type == '381' -%}
