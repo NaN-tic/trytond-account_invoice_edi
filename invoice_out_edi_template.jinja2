@@ -35,6 +35,7 @@ PAT|35|{{ invoice.invoice_date|replace('-','') }}|{{ -1*invoice.total_amount }}
 PAT|35|{{ invoice.invoice_date|replace('-','') }}|{{ invoice.total_amount }}
 {% endif -%}
 {% for line in invoice.lines -%}
+{% if line.is_edi or line.code_ean13 -%}
 LIN|{{line.code_ean13}}|EN|{{loop.index}}
 PIALIN|{{line.product.code}}
 IMDLIN|{{ line.product.name|truncate(35, False, '', 0) }}|M|F
@@ -62,6 +63,7 @@ RFFLIN|ON|{{invoice.reference}}
 {% if line.shipments_reference -%}
 {% for shipment in line.shipments_reference -%}
 RFFLIN|DQ|{{shipment}}
+{% endif -%}
 {% endfor -%}
 {% endif -%}
 {% if line.discount_rate and line.discount_rate > 0 -%}
