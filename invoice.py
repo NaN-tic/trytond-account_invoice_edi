@@ -1694,6 +1694,7 @@ class InvoiceLine(metaclass=PoolMeta):
     __name__ = 'account.invoice.line'
 
     code_ean13 = fields.Function(fields.Char("Code EAN13"), 'get_code_ean13')
+    is_edi = fields.Function(fields.Char('Is EDI'), 'get_is_edi')
 
     def get_code_ean13(self, name):
         if self.product:
@@ -1713,3 +1714,17 @@ class InvoiceLine(metaclass=PoolMeta):
             if value:
                 values.add(value)
         return list(values) if values else []
+
+    def get_is_edi(self, name):
+        edi_sale = (self.invoice.get_edi_sale()
+            if self.invoice else None)
+        is_edi = False
+        if not edi_sale:
+            return is_edi
+        for line in edi_sale.lines:
+            if (line.product == self.product
+                    and line.code == self.code_ean13
+                    and line.quantity <= self.quantity):
+                is_edi = True
+                break
+        return is_edi
