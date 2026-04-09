@@ -1,0 +1,75 @@
+INVOIC_D_01B_UN_EAN011
+INV|{{ invoice.number or invoice.id }}|{{ invoice.edi_document_type }}|9
+DTM|{{ invoice.invoice_date|replace('-','') }}|||||{{ invoice.edi_delivery_date|replace('-','') }}
+{% set ns = namespace(sales_rff=False) -%}
+{% if invoice.sales -%}
+{% for sale in invoice.sales -%}
+{% if sale.reference -%}
+RFF|ON|{{ sale.reference|replace(' ', '') }}
+{% set ns.sales_rff = True -%}
+{% endif -%}
+{% endfor -%}
+{% endif -%}
+{% if not ns.sales_rff and invoice.reference -%}
+RFF|ON|{{ invoice.reference|replace(' ', '') }}
+{% endif -%}
+{% if invoice.shipments_reference -%}
+{% for shipment in invoice.shipments_reference -%}
+RFF|DQ|{{ shipment|replace(' ', '') }}
+{% endfor -%}
+{% endif -%}
+{{ invoice.edi_aldi_nadsu }}
+{% if invoice.edi_fii_su_account -%}
+FIISU|RB|{{ invoice.edi_fii_su_account }}
+{% endif -%}
+{{ invoice.edi_aldi_nadby }}
+{% if invoice.edi_aldi_nadiv -%}
+{{ invoice.edi_aldi_nadiv }}
+{% endif -%}
+{{ invoice.edi_aldi_naddp }}
+{% for tax in invoice.taxes -%}
+TAX|VAT|{{ (tax.tax.rate * 100)|round(2) }}|||||{% if tax.tax.rate %}S{% else %}E{% endif %}
+{% endfor -%}
+CUX|EUR|4
+{% if invoice.edi_due_date -%}
+PAT|3|{{ invoice.edi_due_date|replace('-','') }}
+{% endif -%}
+{% for line in invoice.lines -%}
+{% if line.is_edi or line.code_ean13 -%}
+LIN|{{ line.code_ean13 or '' }}|SRV|{{ loop.index }}
+PIALIN|{{ line.edi_aldi_supplier_code }}|{{ line.edi_aldi_purchaser_code }}
+IMDLIN|{{ line.product.name|truncate(70, False, '', 0) if line.product else '' }}||A
+QTYLIN|47|{{ line.quantity }}|{{ line.edi_uom_code }}
+{% if line.edi_aldi_consumer_quantity -%}
+QTYLIN|59|{{ line.edi_aldi_consumer_quantity }}|PCE
+{% endif -%}
+MOALIN|||{{ line.amount }}
+PRILIN|AAA|{{ line.unit_price }}|{{ line.edi_uom_code }}|1
+{% if line.base_price and line.base_price > line.unit_price -%}
+PRILIN|AAB|{{ line.base_price }}|{{ line.edi_uom_code }}|1
+{% else -%}
+PRILIN|AAB|{{ line.unit_price }}|{{ line.edi_uom_code }}|1
+{% endif -%}
+{% if line.origin and line.origin.sale and line.origin.sale.reference -%}
+RFFLIN|ON|{{ line.origin.sale.reference|replace(' ', '') }}||{{ line.edi_aldi_order_line_number }}
+{% elif invoice.reference -%}
+RFFLIN|ON|{{ invoice.reference|replace(' ', '') }}||{{ line.edi_aldi_order_line_number }}
+{% endif -%}
+{% if line.shipments_reference -%}
+{% for shipment in line.shipments_reference -%}
+RFFLIN|DQ|{{ shipment|replace(' ', '') }}||{{ line.edi_aldi_order_line_number }}
+{% endfor -%}
+{% endif -%}
+{% if line.discount_rate and line.discount_rate > 0 -%}
+ALCLIN|A|1|DI|||||||Discount|||||||{{ line.amount }}||||{{ (line.discount_rate * 100)|round(2) }}|{{ line.discount_amount or '' }}
+{% endif -%}
+{% for tax in line.taxes -%}
+TAXLIN|VAT|{{ (tax.rate * 100)|round(2) }}|{{ (line.amount * tax.rate)|round(2) }}||{% if tax.rate %}S{% else %}E{% endif %}
+{% endfor -%}
+{% endif -%}
+{% endfor -%}
+CNTRES|2|{{ invoice.lines|selectattr('is_edi')|list|length if invoice.lines else 0 }}
+MOARES|{{ invoice.untaxed_amount }}||{{ invoice.untaxed_amount }}|||||||{{ invoice.total_amount }}|{{ invoice.tax_amount }}
+{% for tax in invoice.taxes -%}
+TAXRES|VAT|{{ (tax.tax.rate * 100)|round(2) }}||{{ tax.base }}|{{ tax.amount }}||{% if tax.tax.rate %}S{% else %}E{% endif %}
+{% endfor -%}
