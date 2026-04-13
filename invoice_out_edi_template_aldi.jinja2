@@ -60,12 +60,12 @@ RFFLIN|ON|{{ invoice.reference|replace(' ', '') }}||{{ line.edi_aldi_order_line_
 RFFLIN|DQ|{{ shipment|replace(' ', '') }}||{{ line.edi_aldi_order_line_number }}
 {% endfor -%}
 {% endif -%}
-{% if line.discount_rate and line.discount_rate > 0 -%}
-ALCLIN|A|1|DI|||||||Discount|||||||{{ line.amount }}||||{{ (line.discount_rate * 100)|round(2) }}|{{ line.discount_amount or '' }}
-{% endif -%}
 {% for tax in line.taxes -%}
 TAXLIN|VAT|{{ (tax.rate * 100)|round(2) }}|{{ (line.amount * tax.rate)|round(2) }}||{% if tax.rate %}S{% else %}E{% endif %}
 {% endfor -%}
+{% if line.discount_rate and line.discount_rate > 0 -%}
+ALCLIN|A|1|DI|||||||Discount|||||||{{ line.amount }}||||{{ (line.discount_rate * 100)|round(2) }}|{{ line.discount_amount or '' }}
+{% endif -%}
 {% endif -%}
 {% endfor -%}
 CNTRES|2|{{ invoice.lines|selectattr('is_edi')|list|length if invoice.lines else 0 }}
