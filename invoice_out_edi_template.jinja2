@@ -1,6 +1,6 @@
 INVOIC_D_93A_UN_EAN007
-INV|{{invoice.number or invoice.id}}|{{invoice.edi_document_type}}|9
-DTM|{{invoice.invoice_date|replace('-','')}}
+INV|{{ invoice.number or invoice.id }}|{{ invoice.edi_document_type }}|9
+DTM|{{ invoice.invoice_date|replace('-','') }}
 PAI|14E
 {% set ns = namespace(sales_rff=False) -%}
 {% if invoice.sales -%}
@@ -11,7 +11,7 @@ RFF|ON|{{ sale.reference|replace(' ', '') }}
 {% endif -%}
 {% endfor -%}
 {% endif -%}
-{% if not ns.sales_rff -%}
+{% if not ns.sales_rff and invoice.reference -%}
 RFF|ON|{{ invoice.reference|replace(' ', '') }}
 {% endif -%}
 {% if invoice.shipments_reference -%}
