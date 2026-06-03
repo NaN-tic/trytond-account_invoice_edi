@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
+<data>
+    <xpath expr="/form/notebook/page[@id='edi']/label[@name='allow_edi']"
+        position="after">
+        <label name="force_edi_invoice"/>
+        <field name="force_edi_invoice"/>
+    </xpath>
+</data>
