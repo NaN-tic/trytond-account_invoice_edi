@@ -6,6 +6,7 @@ from . import invoice
 from . import sale
 from . import configuration
 from . import company
+from . import party
 
 
 def register():
@@ -23,6 +24,7 @@ def register():
         invoice.InvoiceLine,
         configuration.InvoiceEdiConfiguration,
         company.Company,
+        party.Party,
         module='account_invoice_edi', type_='model')
     Pool.register(
         sale.Sale,
