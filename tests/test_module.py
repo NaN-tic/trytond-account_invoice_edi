@@ -26,7 +26,8 @@ class AccountInvoiceEdiTestCase(CompanyTestMixin, ModuleTestCase):
             party = Party(name='EDI Customer', force_edi_invoice=True)
             party.save()
 
-            invoice = Invoice(company=company, type='out', party=party)
+            invoice = Invoice(
+                company=company, type='out', party=party, reference=None)
             invoice.on_change_party()
 
             self.assertTrue(invoice.is_edi)
