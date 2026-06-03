@@ -54,6 +54,10 @@ msgctxt "field:account.invoice,is_edi:"
 msgid "Is EDI"
 msgstr "Es EDI"
 
+msgctxt "field:party.party,force_edi_invoice:"
+msgid "Force EDI Invoice"
+msgstr "Forzar factura EDI"
+
 msgctxt "field:account.invoice.line,code_ean13:"
 msgid "Code EAN13"
 msgstr "Código EAN13"
@@ -61,6 +65,10 @@ msgstr "Código EAN13"
 msgctxt "field:company.company,trade_register:"
 msgid "Trade Register"
 msgstr "Registro Mercantil"
+
+msgctxt "help:party.party,force_edi_invoice:"
+msgid "Always generate customer invoices as EDI."
+msgstr "Genera siempre las facturas de cliente como EDI."
 
 msgctxt "field:invoice.edi,base_amount:"
 msgid "Base Amount"
