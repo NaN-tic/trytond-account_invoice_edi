@@ -1120,6 +1120,37 @@ class Invoice(metaclass=PoolMeta):
     def default_edi_sent():
         return False
 
+    def _party_forces_edi_invoice(self):
+        return bool(
+            self.type == 'out'
+            and self.party
+            and getattr(self.party, 'force_edi_invoice', False))
+
+    def _get_origin_sale_reference(self):
+        pool = Pool()
+        try:
+            SaleLine = pool.get('sale.line')
+        except KeyError:
+            return None
+
+        references = []
+        for line in self.lines or []:
+            origin = getattr(line, 'origin', None)
+            sale = (origin.sale
+                if origin and isinstance(origin, SaleLine) else None)
+            reference = sale.reference if sale else None
+            if reference and reference not in references:
+                references.append(reference)
+        return references[0] if references else None
+
+    def set_edi_defaults_from_party(self):
+        if self._party_forces_edi_invoice():
+            self.is_edi = True
+            if not self.reference:
+                sale_reference = self._get_origin_sale_reference()
+                if sale_reference:
+                    self.reference = sale_reference
+
     @classmethod
     def copy(cls, invoices, default=None):
         if default is None:
@@ -1130,6 +1161,16 @@ class Invoice(metaclass=PoolMeta):
         default.setdefault('edi_sent', False)
         default.setdefault('edi_invoices', None)
         return super().copy(invoices, default=default)
+
+    @fields.depends(methods=['set_edi_defaults_from_party'])
+    def on_change_party(self):
+        super().on_change_party()
+        self.set_edi_defaults_from_party()
+
+    @fields.depends(methods=['set_edi_defaults_from_party'])
+    def on_change_lines(self):
+        super().on_change_lines()
+        self.set_edi_defaults_from_party()
 
     def get_edi_sale(self):
         pool = Pool()
