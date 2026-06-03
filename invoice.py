@@ -1120,12 +1120,12 @@ class Invoice(metaclass=PoolMeta):
     def default_edi_sent():
         return False
 
+    @fields.depends('type', 'party')
     def _party_forces_edi_invoice(self):
-        return bool(
-            self.type == 'out'
-            and self.party
-            and getattr(self.party, 'force_edi_invoice', False))
+        return bool(self.type == 'out' and self.party
+            and self.party.force_edi_invoice)
 
+    @fields.depends('lines')
     def _get_origin_sale_reference(self):
         pool = Pool()
         try:
@@ -1134,8 +1134,8 @@ class Invoice(metaclass=PoolMeta):
             return None
 
         references = []
-        for line in self.lines or []:
-            origin = getattr(line, 'origin', None)
+        for line in self.lines:
+            origin = line.origin
             sale = (origin.sale
                 if origin and isinstance(origin, SaleLine) else None)
             reference = sale.reference if sale else None
@@ -1143,6 +1143,7 @@ class Invoice(metaclass=PoolMeta):
                 references.append(reference)
         return references[0] if references else None
 
+    @fields.depends('is_edi', 'reference')
     def set_edi_defaults_from_party(self):
         if self._party_forces_edi_invoice():
             self.is_edi = True
