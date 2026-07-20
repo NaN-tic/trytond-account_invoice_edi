@@ -15,7 +15,7 @@ from trytond.pyson import Eval, Not
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError, UserWarning
 from trytond.i18n import gettext
-from trytond.config import config as config_
+import trytond.config as config_
 from trytond.modules.party_edi.party import SUPPLIER_TYPE, SupplierEdiMixin
 from .datamanager import FileDataManager
 
