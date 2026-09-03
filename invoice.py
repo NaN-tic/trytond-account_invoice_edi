@@ -33,7 +33,7 @@ ALDI_ORDERS_DOCUMENT_TYPE = 'ORDERS_D_01B_UN_EAN010'
 def to_date(value):
     if value is None or value == '':
         return None
-    return datetime.strptime(value, DATE_FORMAT)
+    return datetime.strptime(value, DATE_FORMAT).date()
 
 
 def to_decimal(value, digits=2):
