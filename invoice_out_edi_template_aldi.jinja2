@@ -35,7 +35,7 @@ CUX|EUR|4
 PAT|3|{{ invoice.edi_due_date|replace('-','') }}
 {% endif -%}
 {% for line in invoice.lines -%}
-{% if line.is_edi or line.code_ean13 -%}
+{% if line.is_edi or (line.code_ean13 and line.amount != 0) -%}
 LIN|{{ line.code_ean13 or '' }}|SRV|{{ loop.index }}
 PIALIN|{{ line.edi_aldi_supplier_code }}|{{ line.edi_aldi_purchaser_code }}
 IMDLIN|{{ line.product.name|truncate(70, False, '', 0) if line.product else '' }}||A
