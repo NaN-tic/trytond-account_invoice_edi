@@ -36,7 +36,7 @@ PAT|35|{{ invoice.invoice_date|replace('-','') }}|{{ invoice.total_amount }}
 {% endif -%}
 {% set ns = namespace(counter=0) -%}
 {% for line in invoice.lines -%}
-{% if line.is_edi or line.code_ean13 -%}
+{% if line.is_edi or (line.code_ean13 and line.amount != 0) -%}
 {% set ns.counter = ns.counter + 1 -%}
 LIN|{{line.code_ean13}}|EN|{{ns.counter}}
 PIALIN|{{line.product.code}}
