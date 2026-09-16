@@ -42,5 +42,41 @@
           <field name="perm_create" eval="True"/>
           <field name="perm_delete" eval="True"/>
       </record>
+
+      <record model="ir.model.access"
+          id="access_invoice_edi_configuration_discount_product">
+          <field name="model">invoice.edi.configuration-product.discount</field>
+          <field name="perm_read" eval="True"/>
+          <field name="perm_write" eval="False"/>
+          <field name="perm_create" eval="False"/>
+          <field name="perm_delete" eval="False"/>
+      </record>
+      <record model="ir.model.access"
+          id="access_invoice_edi_configuration_discount_product_account_admin">
+          <field name="model">invoice.edi.configuration-product.discount</field>
+          <field name="group" ref="account.group_account_admin"/>
+          <field name="perm_read" eval="True"/>
+          <field name="perm_write" eval="True"/>
+          <field name="perm_create" eval="True"/>
+          <field name="perm_delete" eval="True"/>
+      </record>
+
+      <record model="ir.model.access"
+          id="access_invoice_edi_configuration_no_edi_product">
+          <field name="model">invoice.edi.configuration-product.no_edi</field>
+          <field name="perm_read" eval="True"/>
+          <field name="perm_write" eval="False"/>
+          <field name="perm_create" eval="False"/>
+          <field name="perm_delete" eval="False"/>
+      </record>
+      <record model="ir.model.access"
+          id="access_invoice_edi_configuration_no_edi_product_account_admin">
+          <field name="model">invoice.edi.configuration-product.no_edi</field>
+          <field name="group" ref="account.group_account_admin"/>
+          <field name="perm_read" eval="True"/>
+          <field name="perm_write" eval="True"/>
+          <field name="perm_create" eval="True"/>
+          <field name="perm_delete" eval="True"/>
+      </record>
     </data>
 </tryton>

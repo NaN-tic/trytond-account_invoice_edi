@@ -1513,6 +1513,122 @@ class Invoice(metaclass=PoolMeta):
             return 'invoice_out_edi_template_aldi.jinja2'
         return 'invoice_out_edi_template.jinja2'
 
+    def _edi_round(self, amount):
+        if self.currency:
+            return self.currency.round(amount)
+        return amount
+
+    def _get_edi_taxes(self, lines):
+        taxes = {}
+        for line, is_discount in lines:
+            for tax_line in line._get_taxes().values():
+                tax = tax_line.tax
+                key = tax.id
+                if key not in taxes:
+                    taxes[key] = {
+                        'tax': tax,
+                        'rate': tax.rate or Decimal(0),
+                        'base': Decimal(0),
+                        'amount': Decimal(0),
+                        'discount_amount': Decimal(0),
+                        }
+                values = taxes[key]
+                values['base'] += tax_line.base
+                values['amount'] += tax_line.amount
+                if is_discount:
+                    values['discount_amount'] += tax_line.base
+        for values in taxes.values():
+            values['base'] = self._edi_round(values['base'])
+            values['amount'] = self._edi_round(values['amount'])
+            values['discount_amount'] = self._edi_round(
+                values['discount_amount'])
+            values['absolute_discount_amount'] = abs(
+                values['discount_amount'])
+        return sorted(taxes.values(), key=lambda values: (
+                values['tax'].sequence is None,
+                values['tax'].sequence or 0,
+                values['tax'].id))
+
+    @property
+    def edi_data(self):
+        Configuration = Pool().get('invoice.edi.configuration')
+        configuration = Configuration(1)
+        discount_products = {p.id for p in configuration.discount_products}
+        no_edi_products = {p.id for p in configuration.no_edi_products}
+
+        groups = []
+        global_discounts = []
+        for line in self.lines:
+            if getattr(line, 'type', None) != 'line':
+                continue
+            product_id = line.product.id if line.product else None
+            configurable = not line.has_edi_sale_origin
+            if configurable and product_id in discount_products:
+                amount = (Decimal(str(line.quantity or 0))
+                    * Decimal(str(line.unit_price or 0)))
+                invoice_amount = Decimal(str(self.total_amount or 0))
+                if ((invoice_amount >= 0 and amount >= 0)
+                        or (invoice_amount < 0 and amount <= 0)):
+                    raise UserError(gettext(
+                            'account_invoice_edi.msg_invalid_discount_line',
+                            line=(getattr(line, 'description', None)
+                                or line.product.rec_name)))
+                amount = self._edi_round(amount)
+                discount = {
+                    'line': line,
+                    'amount': amount,
+                    'absolute_amount': abs(amount),
+                    }
+                global_discounts.append(discount)
+                continue
+            if configurable and product_id in no_edi_products:
+                continue
+            if not (line.has_edi_sale_origin
+                    or (line.code_ean13 and line.amount != 0)
+                    or line.is_edi):
+                continue
+            group = {
+                'line': line,
+                }
+            groups.append(group)
+
+        summary_tax_sources = []
+        shipments_reference = set()
+        untaxed_amount = Decimal(0)
+        discount_amount = Decimal(0)
+        for group in groups:
+            line = group['line']
+            group['amount'] = self._edi_round(Decimal(str(line.amount or 0)))
+            tax_sources = [(line, False)]
+            group['taxes'] = self._get_edi_taxes(tax_sources)
+            summary_tax_sources.extend(tax_sources)
+            shipments_reference.update(line.shipments_reference)
+            untaxed_amount += group['amount']
+
+        for discount in global_discounts:
+            summary_tax_sources.append((discount['line'], True))
+            untaxed_amount += discount['amount']
+            discount_amount += discount['amount']
+
+        taxes = self._get_edi_taxes(summary_tax_sources)
+        untaxed_amount = self._edi_round(untaxed_amount)
+        tax_amount = self._edi_round(sum(
+                (tax['amount'] for tax in taxes), Decimal(0)))
+        return {
+            'lines': groups,
+            'global_discounts': global_discounts,
+            'line_count': len(groups),
+            'shipments_reference': sorted(shipments_reference),
+            'untaxed_amount': untaxed_amount,
+            'base_amount': untaxed_amount,
+            'discount_amount': self._edi_round(discount_amount),
+            'absolute_discount_amount': abs(
+                self._edi_round(discount_amount)),
+            'tax_amount': tax_amount,
+            'total_amount': self._edi_round(untaxed_amount + tax_amount),
+            'taxes': taxes,
+            }
+
     def get_edi_party(self, type, party):
         edi_sale = self.get_edi_sale()
 
@@ -1925,6 +2041,20 @@ class InvoiceLine(metaclass=PoolMeta):
 
     code_ean13 = fields.Function(fields.Char("Code EAN13"), 'get_code_ean13')
     is_edi = fields.Function(fields.Char('Is EDI'), 'get_is_edi')
+
+    @property
+    def has_edi_sale_origin(self):
+        pool = Pool()
+        try:
+            SaleLine = pool.get('sale.line')
+            EdiSale = pool.get('edi.sale')
+        except KeyError:
+            return False
+        origin = getattr(self, 'origin', None)
+        sale = getattr(origin, 'sale', None)
+        sale_origin = getattr(sale, 'origin', None)
+        return bool(isinstance(origin, SaleLine)
+            and isinstance(sale_origin, EdiSale))
 
     def get_code_ean13(self, name):
         if self.product:

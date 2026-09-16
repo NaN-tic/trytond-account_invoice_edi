@@ -1,5 +1,6 @@
 INVOIC_D_93A_UN_EAN007
 INV|{{ invoice.number or invoice.id }}|{{ invoice.edi_document_type }}|9
+{% set edi = invoice.edi_data -%}
 DTM|{{ invoice.invoice_date|replace('-','') }}
 PAI|14E
 {% set ns = namespace(sales_rff=False) -%}
@@ -14,8 +15,8 @@ RFF|ON|{{ sale.reference|replace(' ', '') }}
 {% if not ns.sales_rff and invoice.reference -%}
 RFF|ON|{{ invoice.reference|replace(' ', '') }}
 {% endif -%}
-{% if invoice.shipments_reference -%}
-{% for shipment in invoice.shipments_reference -%}
+{% if edi.shipments_reference -%}
+{% for shipment in edi.shipments_reference -%}
 RFF|DQ|{{ shipment|replace(' ', '') }}
 {% endfor -%}
 {% endif -%}
@@ -30,23 +31,24 @@ RFF|DQ|{{ shipment|replace(' ', '') }}
 {{invoice.edi_nadpe}}
 CUX|EUR|4
 {% if invoice.edi_document_type == '381' -%}
-PAT|35|{{ invoice.invoice_date|replace('-','') }}|{{ -1*invoice.total_amount }}
+PAT|35|{{ invoice.invoice_date|replace('-','') }}|{{ -1*edi.total_amount }}
 {% else -%}
-PAT|35|{{ invoice.invoice_date|replace('-','') }}|{{ invoice.total_amount }}
+PAT|35|{{ invoice.invoice_date|replace('-','') }}|{{ edi.total_amount }}
 {% endif -%}
-{% set ns = namespace(counter=0) -%}
-{% for line in invoice.lines -%}
-{% if line.is_edi or (line.code_ean13 and line.amount != 0) -%}
-{% set ns.counter = ns.counter + 1 -%}
-LIN|{{line.code_ean13}}|EN|{{ns.counter}}
+{% for discount in edi.global_discounts -%}
+ALC|A|1|TD||{{ discount.absolute_amount }}
+{% endfor -%}
+{% for edi_line in edi.lines -%}
+{% set line = edi_line.line -%}
+LIN|{{line.code_ean13}}|EN|{{loop.index}}
 PIALIN|{{line.product.code}}
 IMDLIN|{{ line.product.name|truncate(35, False, '', 0) }}|M|F
 {% if invoice.edi_document_type == '381' -%}
 QTYLIN|47|{{ (-1*line.quantity)|int }}
-MOALIN|{{ -1*line.amount }}
+MOALIN|{{ -1*edi_line.amount }}
 {% else -%}
 QTYLIN|47|{{ line.quantity|int }}
-MOALIN|{{ line.amount }}
+MOALIN|{{ edi_line.amount }}
 {% endif -%}
 PRILIN|AAA|{{ line.unit_price }}
 {% if line.base_price and line.base_price > line.unit_price -%}
@@ -70,25 +72,24 @@ RFFLIN|DQ|{{ shipment|replace(' ', '') }}
 {% if line.discount_rate and line.discount_rate > 0 -%}
 ALCLIN|A|1|TD||{{ (line.discount_rate*100)|round(2) }}|{{ line.discount_amount or '' }}
 {% endif -%}
-{% for tax in line.taxes -%}
+{% for tax in edi_line.taxes -%}
 {% if invoice.edi_document_type == '381' -%}
-TAXLIN|VAT|{{ (tax.rate*100)|int }}|{{ (-1*line.amount*tax.rate)|round(2) }}
+TAXLIN|VAT|{{ (tax.rate*100)|int }}|{{ -1*tax.amount }}
 {% else -%}
-TAXLIN|VAT|{{ (tax.rate*100)|int }}|{{ (line.amount*tax.rate)|round(2) }}
+TAXLIN|VAT|{{ (tax.rate*100)|int }}|{{ tax.amount }}
 {% endif -%}
 {% endfor -%}
-{% endif -%}
 {% endfor -%}
-CNTRES|2|{{ ns.counter }}
+CNTRES|2|{{ edi.line_count }}
 {% if invoice.edi_document_type == '381' -%}
-MOARES|{{ -1*invoice.untaxed_amount }}||{{ -1*invoice.untaxed_amount }}|{{ -1*invoice.total_amount }}|{{ -1*invoice.tax_amount }}
+MOARES|{{ -1*edi.untaxed_amount }}||{{ -1*edi.base_amount }}|{{ -1*edi.total_amount }}|{{ -1*edi.tax_amount }}|{{ edi.absolute_discount_amount or '' }}
 {% else -%}
-MOARES|{{ invoice.untaxed_amount }}||{{ invoice.untaxed_amount }}|{{ invoice.total_amount }}|{{ invoice.tax_amount }}
+MOARES|{{ edi.untaxed_amount }}||{{ edi.base_amount }}|{{ edi.total_amount }}|{{ edi.tax_amount }}|{{ edi.absolute_discount_amount or '' }}
 {% endif -%}
-{% for tax in invoice.taxes -%}
+{% for tax in edi.taxes -%}
 {% if invoice.edi_document_type == '381' -%}
-TAXRES|VAT|{{ (tax.tax.rate*100)|round(2) }}|{{ -1*tax.amount }}|{{ -1*tax.base }}
+TAXRES|VAT|{{ (tax.rate*100)|round(2) }}|{{ -1*tax.amount }}|{{ -1*tax.base }}
 {% else -%}
-TAXRES|VAT|{{ (tax.tax.rate*100)|round(2) }}|{{ tax.amount }}|{{ tax.base }}
+TAXRES|VAT|{{ (tax.rate*100)|round(2) }}|{{ tax.amount }}|{{ tax.base }}
 {% endif -%}
 {% endfor -%}
