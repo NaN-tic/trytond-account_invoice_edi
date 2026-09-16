@@ -1562,7 +1562,9 @@ class Invoice(metaclass=PoolMeta):
             if getattr(line, 'type', None) != 'line':
                 continue
             product_id = line.product.id if line.product else None
-            configurable = not line.has_edi_sale_origin
+            is_edi_sale_line = (line.has_edi_sale_origin
+                and line.get_is_edi(None))
+            configurable = not is_edi_sale_line
             if configurable and product_id in discount_products:
                 amount = (Decimal(str(line.quantity or 0))
                     * Decimal(str(line.unit_price or 0)))
