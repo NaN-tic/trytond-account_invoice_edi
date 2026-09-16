@@ -21,5 +21,8 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.message" id="msg_send_edi_invoice">
             <field name="text">The invoice %(invoice)s will processed and sended the EDI file.</field>
         </record>
+        <record model="ir.message" id="msg_invalid_discount_line">
+            <field name="text">EDI discount line "%(line)s" must be negative on invoices and positive on credit invoices.</field>
+        </record>
     </data>
 </tryton>
