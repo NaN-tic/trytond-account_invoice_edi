@@ -241,6 +241,8 @@ class AccountInvoiceEdiTestCase(CompanyTestMixin, ModuleTestCase):
         pool = Pool()
         Configuration = pool.get('invoice.edi.configuration')
         EdiSale = pool.get('edi.sale')
+        EdiSaleLine = pool.get('edi.sale.line')
+        EdiSaleLineQuantity = pool.get('edi.sale.line.quantity')
         Invoice = pool.get('account.invoice')
         Sale = pool.get('sale.sale')
         SaleLine = pool.get('sale.line')
@@ -248,7 +250,8 @@ class AccountInvoiceEdiTestCase(CompanyTestMixin, ModuleTestCase):
         company = create_company()
         with set_company(company):
             create_chart(company)
-            product, unit = self._create_product('Discount product')
+            product, unit = self._create_product(
+                'Discount product', '4006381333931')
             configuration = Configuration(1)
             configuration.discount_products = [product]
             configuration.no_edi_products = [product]
@@ -288,13 +291,33 @@ class AccountInvoiceEdiTestCase(CompanyTestMixin, ModuleTestCase):
                 edi['global_discounts'][0]['amount'], Decimal('10.00'))
             self.assertEqual(edi['untaxed_amount'], Decimal('-90.00'))
 
+            edi_sale_line = EdiSaleLine(
+                product=product,
+                code='4006381333931',
+                quantities=[EdiSaleLineQuantity(type_='21', quantity=1)])
+            edi_sale_line.quantity = edi_sale_line.get_sale_quantity(None)
+            edi_sale = EdiSale(lines=[edi_sale_line])
+            sale = Sale(origin=edi_sale)
             line.unit_price = Decimal('10.00')
-            line.origin = SaleLine(sale=Sale(origin=EdiSale()))
+            line.origin = SaleLine(sale=sale)
             invoice.lines = [line]
-            edi = invoice.edi_data
             self.assertTrue(line.has_edi_sale_origin)
+            self.assertTrue(line.get_is_edi(None))
+            edi = invoice.edi_data
             self.assertEqual(len(edi['lines']), 1)
             self.assertEqual(edi['global_discounts'], [])
+
+            pallet_product, _ = self._create_product('Pallet')
+            configuration.no_edi_products = [product, pallet_product]
+            configuration.save()
+            pallet_line = self._create_invoice_line(
+                invoice, pallet_product, unit, '1', '5.00')
+            pallet_line.origin = SaleLine(sale=sale)
+            invoice.lines = [line, pallet_line]
+            edi = invoice.edi_data
+            self.assertTrue(pallet_line.has_edi_sale_origin)
+            self.assertFalse(pallet_line.get_is_edi(None))
+            self.assertEqual([value['line'] for value in edi['lines']], [line])
 
     def test_d93a_global_discount_segments(self):
         "Test D93A global discount and summary segment positions"
