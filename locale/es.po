@@ -206,6 +206,10 @@ msgctxt "field:invoice.edi.configuration,automatic_edi_invoice_out:"
 msgid "Send EDI file automatically"
 msgstr "Enviar fichero eDI automáticamente"
 
+msgctxt "field:invoice.edi.configuration,discount_products:"
+msgid "Discount Products"
+msgstr "Productos de descuento"
+
 msgctxt "field:invoice.edi.configuration,edi_files_path:"
 msgid "EDI Invoice Inbox Path"
 msgstr "EDI Factura directorio de entrada"
@@ -218,9 +222,29 @@ msgctxt "field:invoice.edi.configuration,outbox_path_edi:"
 msgid "EDI Invoice Outbox Path"
 msgstr "EDI Factura directorio de salida"
 
+msgctxt "field:invoice.edi.configuration,no_edi_products:"
+msgid "No EDI Products"
+msgstr "Productos No EDI"
+
 msgctxt "field:invoice.edi.configuration,separator:"
 msgid "Separator"
 msgstr "Separador"
+
+msgctxt "field:invoice.edi.configuration-product.discount,configuration:"
+msgid "Configuration"
+msgstr "Configuración"
+
+msgctxt "field:invoice.edi.configuration-product.discount,product:"
+msgid "Product"
+msgstr "Producto"
+
+msgctxt "field:invoice.edi.configuration-product.no_edi,configuration:"
+msgid "Configuration"
+msgstr "Configuración"
+
+msgctxt "field:invoice.edi.configuration-product.no_edi,product:"
+msgid "Product"
+msgstr "Producto"
 
 msgctxt "field:invoice.edi.discount,amount:"
 msgid "Amount"
@@ -531,6 +555,14 @@ msgctxt "model:invoice.edi.configuration,name:"
 msgid "Invoice Edi Configuration"
 msgstr "Configuración facturas EDI"
 
+msgctxt "model:invoice.edi.configuration-product.discount,name:"
+msgid "Invoice EDI Configuration - Discount Product"
+msgstr "Configuración EDI de facturas - Producto de descuento"
+
+msgctxt "model:invoice.edi.configuration-product.no_edi,name:"
+msgid "Invoice EDI Configuration - No EDI Product"
+msgstr "Configuración EDI de facturas - Producto No EDI"
+
 msgctxt "model:invoice.edi.discount,name:"
 msgid "Edi discount"
 msgstr "Descuento EDI"
@@ -602,6 +634,10 @@ msgctxt "model:ir.message,text:msg_no_unique_edi"
 msgid "Invoice \"%(number)s\" from EDI sale cannot have more that 1 origin."
 msgstr ""
 "La factura \"%(number)s\" con origén venta EDI no puede tener más de 1 origen"
+
+msgctxt "model:ir.message,text:msg_invalid_discount_line"
+msgid "EDI discount line \"%(line)s\" must be negative on invoices and positive on credit invoices."
+msgstr "La línea de descuento EDI \"%(line)s\" debe ser negativa en las facturas y positiva en las facturas rectificativas."
 
 msgctxt "model:ir.message,text:msg_path_not_found"
 msgid "EDI path not found. Please check the configuration."

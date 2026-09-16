@@ -23,6 +23,8 @@ def register():
         invoice.Invoice,
         invoice.InvoiceLine,
         configuration.InvoiceEdiConfiguration,
+        configuration.InvoiceEdiConfigurationDiscountProduct,
+        configuration.InvoiceEdiConfigurationNoEdiProduct,
         company.Company,
         party.Party,
         module='account_invoice_edi', type_='model')

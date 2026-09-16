@@ -12,4 +12,8 @@ this repository contains the full copyright notices and license terms. -->
     <field name="automatic_edi_invoice_out"/>
     <label name="separator"/>
     <field name="separator"/>
+    <separator string="EDI Output Products" id="edi_output_products"
+        colspan="4"/>
+    <field name="discount_products" colspan="4" widget="many2many"/>
+    <field name="no_edi_products" colspan="4" widget="many2many"/>
 </form>
