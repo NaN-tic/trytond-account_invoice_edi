@@ -125,15 +125,11 @@
 
       <!-- EDI Invoice User -->
       <record model="res.user" id="user_edi_invoice">
+          <field name="administrator" eval="True"/>
           <field name="login">user_edi_invoices</field>
           <field name="name">Cron EDI Invoices</field>
           <field name="signature"></field>
           <field name="active" eval="False"/>
-      </record>
-      <record model="res.user-res.group"
-          id="user_edi_invoice_group_admin">
-          <field name="user" ref="user_edi_invoice"/>
-          <field name="group" ref="res.group_admin"/>
       </record>
 
       <menuitem parent="account_invoice_edi.menu_edi_invoices" action="act_edi_invoice_form"
