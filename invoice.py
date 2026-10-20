@@ -2027,7 +2027,11 @@ class Invoice(metaclass=PoolMeta):
                         'account_invoice_edi.confirm_invoice_with_difference',
                         invoices=",".join([x.reference for x in differences])))
         with Transaction().set_context(post_edi_invoice=True):
-            cls.generate_edi_file(invoices)
+            cls.generate_edi_file([
+                    invoice for invoice in invoices
+                    if invoice.type == 'out' and invoice.is_edi
+                    and invoice.state in ['posted', 'paid']
+                    and not invoice.edi_sent])
 
     @property
     @fields.depends('lines')
