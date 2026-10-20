@@ -13,3 +13,4 @@ class Cron(metaclass=PoolMeta):
             ('invoice.edi|import_edi_files', 'Import Edi Invoices'),
             ('account.invoice|run_generate_edi_file', 'Generate Edi Invoices'),
         ])
+        cls.methods_company_needed.add('invoice.edi|import_edi_files')
